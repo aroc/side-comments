@@ -1,0 +1,21 @@
+{
+  "name": "dom-walk",
+  "description": "Walk down a DOM tree",
+  "version": "0.1.0",
+  "keywords": [],
+  "dependencies": {
+    "timoxley/to-array": "*",
+    "JayceTDE/dom-contains": "*"
+  },
+  "development": {
+    "dependencies": {
+      "component/assert": "*"
+    }
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ],
+  "repository": "anthonyshort/dom-walk"
+}

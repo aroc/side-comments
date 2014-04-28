@@ -1,0 +1,15 @@
+{
+  "name": "type",
+  "description": "less broken typeof",
+  "keywords": [
+    "typeof",
+    "type",
+    "utility"
+  ],
+  "dependencies": {},
+  "scripts": [
+    "index.js"
+  ],
+  "version": "1.1.0",
+  "repository": "jkroso/type"
+}

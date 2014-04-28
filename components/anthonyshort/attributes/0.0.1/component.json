@@ -1,0 +1,9 @@
+{
+  "name": "attributes",
+  "description": "Get the attributes of an element as an object",
+  "version": "0.0.1",
+  "scripts": [
+    "index.js"
+  ],
+  "repository": "anthonyshort/attributes"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "is-boolean-attribute",
+  "description": "Checks if an attribute is a boolean attribute (doesn't need a value)",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ],
+  "repository": "anthonyshort/is-boolean-attribute"
+}

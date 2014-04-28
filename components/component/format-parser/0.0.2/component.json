@@ -1,0 +1,16 @@
+{
+  "name": "format-parser",
+  "description": "Declarative format parser for declarative template engines",
+  "version": "0.0.2",
+  "keywords": [
+    "format",
+    "parser"
+  ],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "scripts": [
+    "index.js"
+  ],
+  "repository": "component/format-parser"
+}

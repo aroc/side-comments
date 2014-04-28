@@ -1,0 +1,20 @@
+{
+  "name": "uniq",
+  "description": "array uniq",
+  "version": "1.0.0",
+  "twitter": "retrofox",
+  "keywords": [
+    "uniq",
+    "unique",
+    "array"
+  ],
+  "dependencies": {
+    "component/indexof": "0.0.1"
+  },
+  "development": {},
+  "license": "MIT",
+  "scripts": [
+    "index.js"
+  ],
+  "repository": "yields/uniq"
+}

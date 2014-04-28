@@ -1,0 +1,20 @@
+{
+  "name": "to-array",
+  "twitter": "secoif",
+  "description": "Convert an array-like object into an Array.",
+  "version": "0.2.1",
+  "keywords": [],
+  "dependencies": {},
+  "development": {
+    "dependencies": {
+      "component/domify": "*",
+      "visionmedia/mocha": "*",
+      "techjacker/expect.js": "*"
+    }
+  },
+  "license": "MIT",
+  "scripts": [
+    "index.js"
+  ],
+  "repository": "timoxley/to-array"
+}

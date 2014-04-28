@@ -1,0 +1,21 @@
+{
+  "name": "expression",
+  "description": "Execute a JS expression",
+  "version": "0.2.0",
+  "keywords": [],
+  "dependencies": {
+    "component/props": "*",
+    "yields/uniq": "*"
+  },
+  "development": {
+    "dependencies": {
+      "component/assert": "*"
+    }
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ],
+  "repository": "ripplejs/expression"
+}

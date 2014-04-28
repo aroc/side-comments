@@ -1,0 +1,15 @@
+{
+  "name": "clone",
+  "version": "0.2.2",
+  "dependencies": {
+    "component/type": "*"
+  },
+  "devDependencies": {
+    "visionmedia/mocha": "*",
+    "guille/expect.js": "*"
+  },
+  "scripts": [
+    "index.js"
+  ],
+  "repository": "component/clone"
+}

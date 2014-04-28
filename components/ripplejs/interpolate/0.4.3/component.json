@@ -1,0 +1,23 @@
+{
+  "name": "interpolate",
+  "description": "Interpolate a string using expressions",
+  "version": "0.4.3",
+  "keywords": [],
+  "dependencies": {
+    "ripplejs/expression": "0.2.0",
+    "component/format-parser": "0.0.2",
+    "yields/uniq": "master",
+    "component/props": "*"
+  },
+  "development": {
+    "dependencies": {
+      "component/assert": "0.3.0"
+    }
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ],
+  "repository": "ripplejs/interpolate"
+}

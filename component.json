@@ -1,0 +1,15 @@
+{
+  "name": "side-comments",
+  "dependencies": {
+    "component/emitter": "*",
+    "lodash/lodash": "*",
+    "ripplejs/ripple": "*"
+  },
+  "main": "js/main.js",
+  "scripts": [
+    "js/main.js"
+  ],
+  "styles": [
+    "css/base.css"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "raf-queue",
+  "version": "0.2.0",
+  "scripts": [
+    "index.js"
+  ],
+  "dependencies": {
+    "component/raf": "1.1.3"
+  },
+  "development": {
+    "dependencies": {
+      "component/assert": "*"
+    }
+  },
+  "repository": "anthonyshort/raf-queue"
+}
