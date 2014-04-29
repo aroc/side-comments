@@ -9936,8 +9936,8 @@ _ = require("lodash~lodash@2.4.1");
 function SideComments( el, existingComments ) {
   this.$el = $(el);
   this.$commentsContainer = this.$el.append('<div class="side-comments"></div>');
-  this.existingComments = existingComments;
-  this.initialize();
+  this.existingComments = existingComments || [];
+  this.initialize( existingComments );
 }
 
 /**
