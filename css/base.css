@@ -7,7 +7,7 @@ body.side-comments-open {
 .commentable-section p {
   position: relative;
 }
-.commentable-section p:hover .comment-marker {
+.commentable-section p:hover .comment-marker .icon {
   display: block;
 }
 .comment-markers {
@@ -16,7 +16,6 @@ body.side-comments-open {
   right: -40px;
 }
 .comment-marker {
-  display: none;
   position: absolute;
   top: 0px;
   right: -80px;
@@ -25,6 +24,7 @@ body.side-comments-open {
   height: 100%;
 }
 .comment-marker .icon {
+  display: none;
   position: absolute;
   top: 0;
   right: 30px;
@@ -33,6 +33,9 @@ body.side-comments-open {
   cursor: pointer;
   background: #DEDEDC;
   border-radius: 2px;
+}
+.comment-marker .icon.active {
+  display: block;
 }
 .comment-marker .icon:after {
   content: "";

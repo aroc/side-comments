@@ -15,8 +15,8 @@ _ = require('lodash');
 function SideComments( el, existingComments ) {
   this.$el = $(el);
   this.$commentsContainer = this.$el.append('<div class="side-comments"></div>');
-  this.existingComments = existingComments;
-  this.initialize();
+  this.existingComments = existingComments || [];
+  this.initialize( existingComments );
 }
 
 /**
@@ -24,11 +24,7 @@ function SideComments( el, existingComments ) {
  * @return {[type]} [description]
  */
 SideComments.prototype.initialize = function() {
-  var self = this;
-
-  this.$el.on('click', '.comment-marker', function(){
-    self.toggleComments();
-  });
+  this.$el.on('click', '.comment-marker .icon', _.bind(this.toggleComments, this));
 
   this.$commentSections = this.$el.find('p');
 
@@ -39,7 +35,23 @@ SideComments.prototype.initialize = function() {
 };
 
 SideComments.prototype.toggleComments = function( event ) {
-  $('body').toggleClass('side-comments-open');
+  var $icon = $(event.target);
+  var $body = $('body');
+
+  if ($icon.hasClass('active') && this.commentsAreVisible()) {
+    $body.removeClass('side-comments-open');
+    $icon.removeClass('active');
+  } else if (!$icon.hasClass('active') && this.commentsAreVisible()) {
+    $('.comment-marker .icon').removeClass('active');
+    $icon.addClass('active');
+  } else {
+    $body.addClass('side-comments-open');
+    $icon.addClass('active');
+  }
+};
+
+SideComments.prototype.commentsAreVisible = function() {
+  return $('body').hasClass('side-comments-open');
 };
 
 SideComments.prototype.addCommentMarker = function( section ) {

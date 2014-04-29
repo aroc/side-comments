@@ -7638,53 +7638,6 @@ module.exports = function(el) {
 };
 });
 
-require.register("anthonyshort~is-boolean-attribute@0.0.1", function (exports, module) {
-
-/**
- * https://github.com/kangax/html-minifier/issues/63#issuecomment-18634279
- */
-
-var attrs = [
-  "allowfullscreen",
-  "async",
-  "autofocus",
-  "checked",
-  "compact",
-  "declare",
-  "default",
-  "defer",
-  "disabled",
-  "formnovalidate",
-  "hidden",
-  "inert",
-  "ismap",
-  "itemscope",
-  "multiple",
-  "multiple",
-  "muted",
-  "nohref",
-  "noresize",
-  "noshade",
-  "novalidate",
-  "nowrap",
-  "open",
-  "readonly",
-  "required",
-  "reversed",
-  "seamless",
-  "selected",
-  "sortable",
-  "truespeed",
-  "typemustmatch",
-  "contenteditable",
-  "spellcheck"
-];
-
-module.exports = function(attr){
-  return attrs.indexOf(attr) > -1;
-};
-});
-
 require.register("component~domify@1.2.2", function (exports, module) {
 
 /**
@@ -7774,6 +7727,53 @@ function parse(html) {
   return fragment;
 }
 
+});
+
+require.register("anthonyshort~is-boolean-attribute@0.0.1", function (exports, module) {
+
+/**
+ * https://github.com/kangax/html-minifier/issues/63#issuecomment-18634279
+ */
+
+var attrs = [
+  "allowfullscreen",
+  "async",
+  "autofocus",
+  "checked",
+  "compact",
+  "declare",
+  "default",
+  "defer",
+  "disabled",
+  "formnovalidate",
+  "hidden",
+  "inert",
+  "ismap",
+  "itemscope",
+  "multiple",
+  "multiple",
+  "muted",
+  "nohref",
+  "noresize",
+  "noshade",
+  "novalidate",
+  "nowrap",
+  "open",
+  "readonly",
+  "required",
+  "reversed",
+  "seamless",
+  "selected",
+  "sortable",
+  "truespeed",
+  "typemustmatch",
+  "contenteditable",
+  "spellcheck"
+];
+
+module.exports = function(attr){
+  return attrs.indexOf(attr) > -1;
+};
 });
 
 require.register("component~props@1.1.2", function (exports, module) {
@@ -9945,11 +9945,7 @@ function SideComments( el, existingComments ) {
  * @return {[type]} [description]
  */
 SideComments.prototype.initialize = function() {
-  var self = this;
-
-  this.$el.on('click', '.comment-marker', function(){
-    self.toggleComments();
-  });
+  this.$el.on('click', '.comment-marker .icon', _.bind(this.toggleComments, this));
 
   this.$commentSections = this.$el.find('p');
 
@@ -9960,7 +9956,23 @@ SideComments.prototype.initialize = function() {
 };
 
 SideComments.prototype.toggleComments = function( event ) {
-  $('body').toggleClass('side-comments-open');
+  var $icon = $(event.target);
+  var $body = $('body');
+
+  if ($icon.hasClass('active') && this.commentsAreVisible()) {
+    $body.removeClass('side-comments-open');
+    $icon.removeClass('active');
+  } else if (!$icon.hasClass('active') && this.commentsAreVisible()) {
+    $('.comment-marker .icon').removeClass('active');
+    $icon.addClass('active');
+  } else {
+    $body.addClass('side-comments-open');
+    $icon.addClass('active');
+  }
+};
+
+SideComments.prototype.commentsAreVisible = function() {
+  return $('body').hasClass('side-comments-open');
 };
 
 SideComments.prototype.addCommentMarker = function( section ) {
