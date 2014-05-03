@@ -5,13 +5,9 @@ var SideCommentsTemplate = require('../templates/side-comment.html');
  * Creates a new SideComments instance.
  * @param {[type]} el               The selector for the element for which side comments need
  *                                  to be initialized
- * @param {[type]} existingComments An array of existing comments, in the proper structure:
- *                                  {
- *                                    "[NAME]": [
- *                                      "author":  "[THE COMMENT AUTHOR]",
- *                                      "comment": "[THE COMMENT BODY]"
- *                                    ]
- *                                  }
+ * @param {[type]} existingComments An array of existing comments, in the proper structure.
+ * 
+ * TODO: **GIVE EXAMPLE OF STRUCTURE HERE***
  */
 function SideComments( el, existingComments ) {
   this.$el = $(el);
@@ -20,7 +16,7 @@ function SideComments( el, existingComments ) {
   this.$commentableSections = this.$el.find('.commentable-section');
   this.$sideComments = null;
   this.$el.on('click', '.side-comment .marker', _.bind(this.toggleComments, this));
-  this.insertComments( existingComments );
+  this.insertComments( this.existingComments );
 }
 
 /**
@@ -39,7 +35,14 @@ SideComments.prototype.insertComments = function( existingComments ) {
  */
 SideComments.prototype.insertComment = function( section ) {
   var $section = $(section);
-  $(_.template(SideCommentsTemplate, {})).appendTo($section);
+  var sectionId = $section.data('section-id').toString();
+  var sectionComments = _.find(this.existingComments, { sectionId: sectionId });
+  var comments = [];
+  if (sectionComments) {
+    comments = sectionComments.comments;
+  }
+  var commentClass = comments.length > 0 ? 'has-comments' : '';
+  $(_.template(SideCommentsTemplate, { comments: comments, commentClass: commentClass })).appendTo($section);
 };
 
 /**
@@ -48,7 +51,7 @@ SideComments.prototype.insertComment = function( section ) {
  */
 SideComments.prototype.toggleComments = function( event ) {
   event.preventDefault();
-  
+
   var $selectedSideComment = $(event.target).closest('.side-comment');
 
   if (!this.commentsAreVisible()) {
@@ -78,6 +81,33 @@ SideComments.prototype.commentsAreVisible = function() {
 };
 
 // Temp
-var sideComments = new SideComments('#commentable-container');
+var existingComments = [
+  {
+    "sectionId": "1",
+    "comments": [
+      {
+        "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+        "authorName": "Eric Anderson",
+        "comment": "Hey there!"
+      },
+      {
+        "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+        "authorName": "Jim Beam",
+        "comment": "I'm drunk!"
+      }
+    ]
+  },
+  {
+    "sectionId": "3",
+    "comments": [
+      {
+        "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+        "authorName": "Jim Beam",
+        "comment": "I'm drunk!"
+      }
+    ]
+  }
+];
+var sideComments = new SideComments('#commentable-container', existingComments);
 
 module.exports = SideComments;

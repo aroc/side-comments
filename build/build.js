@@ -9926,13 +9926,9 @@ var SideCommentsTemplate = require("side-comments/templates/side-comment.html");
  * Creates a new SideComments instance.
  * @param {[type]} el               The selector for the element for which side comments need
  *                                  to be initialized
- * @param {[type]} existingComments An array of existing comments, in the proper structure:
- *                                  {
- *                                    "[NAME]": [
- *                                      "author":  "[THE COMMENT AUTHOR]",
- *                                      "comment": "[THE COMMENT BODY]"
- *                                    ]
- *                                  }
+ * @param {[type]} existingComments An array of existing comments, in the proper structure.
+ * 
+ * TODO: **GIVE EXAMPLE OF STRUCTURE HERE***
  */
 function SideComments( el, existingComments ) {
   this.$el = $(el);
@@ -9941,7 +9937,7 @@ function SideComments( el, existingComments ) {
   this.$commentableSections = this.$el.find('.commentable-section');
   this.$sideComments = null;
   this.$el.on('click', '.side-comment .marker', _.bind(this.toggleComments, this));
-  this.insertComments( existingComments );
+  this.insertComments( this.existingComments );
 }
 
 /**
@@ -9960,7 +9956,14 @@ SideComments.prototype.insertComments = function( existingComments ) {
  */
 SideComments.prototype.insertComment = function( section ) {
   var $section = $(section);
-  $(_.template(SideCommentsTemplate, {})).appendTo($section);
+  var sectionId = $section.data('section-id').toString();
+  var sectionComments = _.find(this.existingComments, { sectionId: sectionId });
+  var comments = [];
+  if (sectionComments) {
+    comments = sectionComments.comments;
+  }
+  var commentClass = comments.length > 0 ? 'has-comments' : '';
+  $(_.template(SideCommentsTemplate, { comments: comments, commentClass: commentClass })).appendTo($section);
 };
 
 /**
@@ -9969,7 +9972,7 @@ SideComments.prototype.insertComment = function( section ) {
  */
 SideComments.prototype.toggleComments = function( event ) {
   event.preventDefault();
-  
+
   var $selectedSideComment = $(event.target).closest('.side-comment');
 
   if (!this.commentsAreVisible()) {
@@ -9999,11 +10002,38 @@ SideComments.prototype.commentsAreVisible = function() {
 };
 
 // Temp
-var sideComments = new SideComments('#commentable-container');
+var existingComments = [
+  {
+    "sectionId": "1",
+    "comments": [
+      {
+        "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+        "authorName": "Eric Anderson",
+        "comment": "Hey there!"
+      },
+      {
+        "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+        "authorName": "Jim Beam",
+        "comment": "I'm drunk!"
+      }
+    ]
+  },
+  {
+    "sectionId": "3",
+    "comments": [
+      {
+        "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+        "authorName": "Jim Beam",
+        "comment": "I'm drunk!"
+      }
+    ]
+  }
+];
+var sideComments = new SideComments('#commentable-container', existingComments);
 
 module.exports = SideComments;
 });
 
-require.define("side-comments/templates/side-comment.html", "<div class=\"side-comment\">\n  <a href=\"#\" class=\"marker\"></a>\n  \n  <div class=\"comments\">\n    <ul>\n      <li>\n        <div class=\"author-avatar\">\n          <img src=\"https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg\">\n        </div>\n        <p class=\"author-name\">\n          Eric Anderson\n        </p>\n        <p class=\"comment\">\n          Maecenas sed diam eget risus varius blandit sit amet non magna. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.\n        </p>\n      </li>\n      <li>\n        <div class=\"author-avatar\">\n          <img src=\"https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg\">\n        </div>\n        <p class=\"author-name\">\n          Eric Anderson\n        </p>\n        <p class=\"comment\">\n          Maecenas sed diam eget risus varius blandit sit amet non magna. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.\n        </p>\n      </li>\n      <li>\n        <div class=\"author-avatar\">\n          <img src=\"https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg\">\n        </div>\n        <p class=\"author-name\">\n          Eric Anderson\n        </p>\n        <p class=\"comment\">\n          Maecenas sed diam eget risus varius blandit sit amet non magna. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.\n        </p>\n      </li>\n    </ul>\n    <a href=\"#\" class=\"add-comment\">Leave a comment</a>\n  </div>\n</div>");
+require.define("side-comments/templates/side-comment.html", "<div class=\"side-comment <%= commentClass %>\">\n  <a href=\"#\" class=\"marker\">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class=\"comments\">\n    <ul>\n      <% _.each(comments, function( comment ){ %>\n        <li>\n          <div class=\"author-avatar\">\n            <img src=\"<%= comment.authorAvatarUrl %>\">\n          </div>\n          <p class=\"author-name\">\n            <%= comment.authorName %>\n          </p>\n          <p class=\"comment\">\n            <%= comment.comment %>\n          </p>\n        </li>  \n      <% }) %>\n    </ul>\n    <a href=\"#\" class=\"add-comment\">Leave a comment</a>\n  </div>\n</div>");
 
 require("side-comments")

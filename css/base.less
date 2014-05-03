@@ -36,7 +36,23 @@ body {
     background: #DEDEDC;
     border-radius: 2px;
   }
-  &.active .marker {
+  .marker:before, .marker span {
+    content: "+";
+    display: block;
+    position: absolute;
+    width: 20px;
+    height: 18px;
+    line-height: 16px;
+    font-size: 14px;
+    color: #FFF;
+    text-align: center;
+  }
+  .marker span {
+    display: none;
+    line-height: 20px;
+    font-size: 12px;
+  }
+  &.active .marker, &.has-comments .marker {
     display: block;
   }
   .marker:after {
@@ -56,16 +72,13 @@ body {
   .marker:hover:after, &.active .marker:after {
     border-color: #4FAF62 transparent;
   }
-  .marker:before {
-    content: "+";
-    display: block;
-    position: absolute;
-    width: 20px;
-    height: 18px;
-    line-height: 16px;
-    font-size: 14px;
-    color: #FFF;
-    text-align: center;
+  &.has-comments {
+    .marker:before {
+      content: "";
+    }
+    .marker span {
+      display: block;
+    }
   }
   
   // The comments list

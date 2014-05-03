@@ -29,7 +29,25 @@ body.side-comments-open {
   background: #DEDEDC;
   border-radius: 2px;
 }
-.side-comment.active .marker {
+.side-comment .marker:before,
+.side-comment .marker span {
+  content: "+";
+  display: block;
+  position: absolute;
+  width: 20px;
+  height: 18px;
+  line-height: 16px;
+  font-size: 14px;
+  color: #FFF;
+  text-align: center;
+}
+.side-comment .marker span {
+  display: none;
+  line-height: 20px;
+  font-size: 12px;
+}
+.side-comment.active .marker,
+.side-comment.has-comments .marker {
   display: block;
 }
 .side-comment .marker:after {
@@ -51,16 +69,11 @@ body.side-comments-open {
 .side-comment.active .marker:after {
   border-color: #4FAF62 transparent;
 }
-.side-comment .marker:before {
-  content: "+";
+.side-comment.has-comments .marker:before {
+  content: "";
+}
+.side-comment.has-comments .marker span {
   display: block;
-  position: absolute;
-  width: 20px;
-  height: 18px;
-  line-height: 16px;
-  font-size: 14px;
-  color: #FFF;
-  text-align: center;
 }
 .side-comment .comments {
   display: none;
