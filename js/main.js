@@ -65,6 +65,10 @@ SideComments.prototype.toggleComments = function( event ) {
     this.$body.addClass('side-comments-open');
     this.$selectedSideComment.addClass('active');
 
+    if (!this.$selectedSideComment.hasClass('has-comments')) {
+      this.focusCommentBox();
+    }
+
   } else if (this.commentsAreVisible() && this.$selectedSideComment.hasClass('active')) {
 
     this.hideComments();
@@ -96,8 +100,15 @@ SideComments.prototype.toggleCommentForm = function( show ) {
   this.$selectedSideComment.find('.comment-form').toggleClass('active', show);
 
   if (show) {
-    this.$selectedSideComment.find('.comment-box').get(0).focus();
+    this.focusCommentBox();
   }
+};
+
+/**
+ * Focus on the comment box for the currently selected seide comment.
+ */
+SideComments.prototype.focusCommentBox = function() {
+  this.$selectedSideComment.find('.comment-box').get(0).focus();
 };
 
 /**
