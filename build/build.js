@@ -9939,7 +9939,9 @@ function SideComments( el, existingComments ) {
   
   // Event bindings
   this.$el.on('click', '.side-comment .marker', _.bind(this.toggleComments, this));
-  this.$el.on('click', '.add-comment', _.bind(this.showCommentForm, this));
+  this.$el.on('click', '.add-comment', _.bind(function(){
+    this.toggleCommentForm(true);
+  }, this));
   this.$el.on('click', '.actions .cancel', _.bind(this.cancelComment, this));
 
   this.insertComments( this.existingComments );
@@ -10007,17 +10009,16 @@ SideComments.prototype.hideComments = function() {
 };
 
 /**
- * Shows the comment form for a given section.
- * @param  {Object} event The jQuery event object.
+ * Toggle showing the comment form for a section.
+ * @param  {Boolean} show Whether to show the comment form or hide it.
  */
-SideComments.prototype.showCommentForm = function( event ) {
-  event.preventDefault();
+SideComments.prototype.toggleCommentForm = function( show ) {
+  this.$selectedSideComment.find('.add-comment').toggleClass('hide', show);
+  this.$selectedSideComment.find('.comment-form').toggleClass('active', show);
 
-  var $addLink = $(event.target);
-  var $sideComment = $addLink.closest('.side-comment');
-
-  $addLink.addClass('hide');
-  $sideComment.find('.comment-form').addClass('active');
+  if (show) {
+    this.$selectedSideComment.find('.comment-box').get(0).focus();
+  }
 };
 
 /**
@@ -10032,15 +10033,6 @@ SideComments.prototype.cancelComment = function( event ) {
   } else {
     this.hideComments();
   }
-};
-
-/**
- * Toggle showing the comment form for a section.
- * @param  {Boolean} show Whether to show the comment form or hide it.
- */
-SideComments.prototype.toggleCommentForm = function( show ) {
-  this.$selectedSideComment.find('.add-comment').toggleClass('hide', show);
-  this.$selectedSideComment.find('.comment-form').toggleClass('active', show);
 };
 
 /**
