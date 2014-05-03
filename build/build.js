@@ -9937,6 +9937,7 @@ function SideComments( el, existingComments ) {
   this.$commentableSections = this.$el.find('.commentable-section');
   this.$sideComments = null;
   this.$el.on('click', '.side-comment .marker', _.bind(this.toggleComments, this));
+  this.$el.on('click', '.add-comment', _.bind(this.showCommentForm, this));
   this.insertComments( this.existingComments );
 }
 
@@ -9991,6 +9992,20 @@ SideComments.prototype.toggleComments = function( event ) {
     $selectedSideComment.addClass('active');
 
   }
+};
+
+/**
+ * Shows the comment form for a given section.
+ * @param  {Object} event The jQuery event object.
+ */
+SideComments.prototype.showCommentForm = function( event ) {
+  event.preventDefault();
+
+  var $addLink = $(event.target);
+  var $sideComment = $addLink.closest('.side-comment');
+
+  $addLink.hide();
+  $sideComment.find('.comment-form').show();
 };
 
 /**
