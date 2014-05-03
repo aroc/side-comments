@@ -65,10 +65,6 @@ SideComments.prototype.toggleComments = function( event ) {
     this.$body.addClass('side-comments-open');
     this.$selectedSideComment.addClass('active');
 
-    if (!this.$selectedSideComment.hasClass('has-comments')) {
-      this.focusCommentBox();
-    }
-
   } else if (this.commentsAreVisible() && this.$selectedSideComment.hasClass('active')) {
 
     this.hideComments();
@@ -78,6 +74,10 @@ SideComments.prototype.toggleComments = function( event ) {
     this.$sideComments.removeClass('active');
     this.$selectedSideComment.addClass('active');
 
+  }
+
+  if (!this.$selectedSideComment.hasClass('has-comments')) {
+    this.focusCommentBox();
   }
 };
 
