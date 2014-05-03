@@ -10,9 +10,11 @@ body {
   position: relative;
 
   &:hover {
+
     .side-comment .marker {
       display: block;
     }
+
   }
 }
 
@@ -24,7 +26,7 @@ body {
   min-height: 100%;
   height: 100%;
   
-  // The comment marker
+  
   .marker {
     display: none;
     position: absolute;
@@ -36,6 +38,7 @@ body {
     background: #DEDEDC;
     border-radius: 2px;
   }
+
   .marker:before, .marker span {
     content: "+";
     display: block;
@@ -47,14 +50,17 @@ body {
     color: #FFF;
     text-align: center;
   }
+
   .marker span {
     display: none;
     line-height: 20px;
     font-size: 12px;
   }
+
   &.active .marker, &.has-comments .marker {
     display: block;
   }
+
   .marker:after {
     content: "";
     display: block;
@@ -66,22 +72,35 @@ body {
     border-style: solid;
     border-color: #DEDEDC transparent;
   }
+
   .marker:hover, &.active .marker {
     background: #4FAF62;
   }
+
   .marker:hover:after, &.active .marker:after {
     border-color: #4FAF62 transparent;
   }
+
   &.has-comments {
+
     .marker:before {
       content: "";
     }
+
     .marker span {
       display: block;
     }
+
+    .add-comment {
+      display: block;
+    }
+
+    .comment-form {
+      display: none;
+    }
+
   }
   
-  // The comments list
   .comments {
     display: none;
     position: absolute;
@@ -92,32 +111,58 @@ body {
     ul {
       list-style: none;
       padding: 0;
-    }
-    ul li {
-      .author-avatar {
-        float: left;
-        width: 32px;
-        height: 32px;
-        margin-right: 10px;
 
-        img {
-          width: 100%;
-          height: 100%;
-        }
-      }
-      .author-name {
-        float: left;        
-        margin: 0 0 5px 0;
-        width: 238px;
-      }
-      .comment {
-        margin: 0;
-        width: 238px;
-        margin-left: 42px;
+      li {
+        overflow: hidden;
       }
     }
+
   }
+
+  .author-avatar {
+    float: left;
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+  }
+
+  .author-name {
+    float: left;        
+    margin: 0 0 5px 0;
+    width: 238px;
+  }
+
+  .add-comment {
+    display: none;
+  }
+
+  .comment-box:empty:not(:focus):before {
+    content: attr(data-placeholder-content);
+    float: left;
+  }
+
+  .comment, .comment-box, .actions {
+    margin: 0;
+    width: 238px;
+    float: left;
+  }
+
+  .actions {
+    margin-left: 42px;
+  }
+
+  .comment-box {
+    outline: none;
+  }
+
   &.active .comments {
     display: block;
   }
+
 }

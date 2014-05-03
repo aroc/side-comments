@@ -19,6 +19,21 @@
         </li>  
       <% }) %>
     </ul>
-    <a href="#" class="add-comment">Leave a comment</a>
+    
+    <a href="#" class="add-comment <%= commentClass %>">Leave a comment</a>
+
+    <div class="comment-form">
+      <div class="author-avatar">
+        <img src="https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg">
+      </div>
+      <p class="author-name">
+        Eric Anderson
+      </p>
+      <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>
+      <div class="actions">
+        <a href="#" class="save">Post</a>
+        <a href="#" class="cancel">Cancel</a>
+      </div>
+    </div>
   </div>
 </div>

@@ -15,18 +15,20 @@
         font-size: 15px;
         font-weight: 700;
       }
+
       .comment {
         font-size: 14px;
         line-height: 18px;
       }
+
     }
+
   }
   .add-comment {
     color: #B3B3B1;
     font-size: 14px;
     font-weight: 300;
     padding: 15px;
-    display: block;
     letter-spacing: 0.05em;
     line-height: 24px;
 
@@ -45,9 +47,11 @@
       margin-right: 15px;
       letter-spacing: 0;
     }
+
     &:hover {
       text-decoration: none;
     }
+
     &:hover {
       color: #4FAF62;
 
@@ -55,6 +59,51 @@
         border-color: #4FAF62;
         color: #4FAF62;
       }
+
     }
+
   }
+  
+  .comment-box:empty:not(:focus):before {
+    color: #B5B5B5;
+    font-size: 15px;
+    line-height: 18px;
+  }
+
+  .actions {
+  
+    a {
+      color: #B3B3B1;
+      font-size: 14px;
+      float: left;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    .save {
+      color: #89C794;
+
+      &:hover {
+        color: #468C54
+      }
+    }
+
+    .cancel {
+
+      &:before {
+        content: '\00B7';
+        color: #B3B3B1;
+        padding: 0 5px;
+      }
+
+      &:hover {
+        color: #57AD68;
+      }
+      
+    }
+
+  }
+
 }
