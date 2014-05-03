@@ -4,18 +4,13 @@ body {
 body.side-comments-open {
   -webkit-transform: translate3d(-200px, 0, 0);
 }
-.commentable-section p {
+.commentable-section {
   position: relative;
 }
-.commentable-section p:hover .comment-marker .icon {
+.commentable-section:hover .side-comment .marker {
   display: block;
 }
-.comment-markers {
-  position: absolute;
-  top: 0;
-  right: -40px;
-}
-.comment-marker {
+.side-comment {
   position: absolute;
   top: 0px;
   right: -80px;
@@ -23,7 +18,7 @@ body.side-comments-open {
   min-height: 100%;
   height: 100%;
 }
-.comment-marker .icon {
+.side-comment .marker {
   display: none;
   position: absolute;
   top: 0;
@@ -34,10 +29,10 @@ body.side-comments-open {
   background: #DEDEDC;
   border-radius: 2px;
 }
-.comment-marker .icon.active {
+.side-comment.active .marker {
   display: block;
 }
-.comment-marker .icon:after {
+.side-comment .marker:after {
   content: "";
   display: block;
   position: absolute;
@@ -48,15 +43,15 @@ body.side-comments-open {
   border-style: solid;
   border-color: #DEDEDC transparent;
 }
-.comment-marker .icon:hover,
-.comment-marker .icon.active {
+.side-comment .marker:hover,
+.side-comment.active .marker {
   background: #4FAF62;
 }
-.comment-marker .icon:hover:after,
-.comment-marker .icon.active:after {
+.side-comment .marker:hover:after,
+.side-comment.active .marker:after {
   border-color: #4FAF62 transparent;
 }
-.comment-marker .icon:before {
+.side-comment .marker:before {
   content: "+";
   display: block;
   position: absolute;
@@ -66,6 +61,97 @@ body.side-comments-open {
   font-size: 14px;
   color: #FFF;
   text-align: center;
+}
+.side-comment .comments {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 80px;
+  width: 280px;
+}
+.side-comment .comments ul {
+  list-style: none;
+  padding: 0;
+}
+.side-comment .comments ul li .author-avatar {
+  float: left;
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+}
+.side-comment .comments ul li .author-avatar img {
+  width: 100%;
+  height: 100%;
+}
+.side-comment .comments ul li .author-name {
+  float: left;
+  margin: 0 0 5px 0;
+  width: 238px;
+}
+.side-comment .comments ul li .comment {
+  margin: 0;
+  width: 238px;
+  margin-left: 42px;
+}
+.side-comment.active .comments {
+  display: block;
+}
+
+
+.side-comment {
+  padding-bottom: 20px;
+}
+.side-comment .comments {
+  top: -19px;
+}
+.side-comment .comments ul li {
+  border: 1px solid #F2F2F0;
+  border-left: 0;
+  border-right: 0;
+  padding: 15px 0;
+  margin-top: -1px;
+}
+.side-comment .comments ul li .author-name {
+  font-size: 15px;
+  font-weight: 700;
+}
+.side-comment .comments ul li .comment {
+  font-size: 14px;
+  line-height: 18px;
+}
+.side-comment .add-comment {
+  color: #B3B3B1;
+  font-size: 14px;
+  font-weight: 300;
+  padding: 15px;
+  display: block;
+  letter-spacing: 0.05em;
+  line-height: 24px;
+}
+.side-comment .add-comment:before {
+  content: "+";
+  border: 2px solid #DEDEDC;
+  border-radius: 309px;
+  width: 24px;
+  height: 24px;
+  color: #DEDEDC;
+  display: block;
+  text-align: center;
+  font-size: 18px;
+  line-height: 18px;
+  float: left;
+  margin-right: 15px;
+  letter-spacing: 0;
+}
+.side-comment .add-comment:hover {
+  text-decoration: none;
+}
+.side-comment .add-comment:hover {
+  color: #4FAF62;
+}
+.side-comment .add-comment:hover:before {
+  border-color: #4FAF62;
+  color: #4FAF62;
 }
 
 

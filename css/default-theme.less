@@ -1,0 +1,60 @@
+.side-comment {
+  padding-bottom: 20px;
+
+  .comments {
+    top: -19px;
+
+    ul li {
+      border: 1px solid #F2F2F0;
+      border-left: 0;
+      border-right: 0;
+      padding: 15px 0;
+      margin-top: -1px;
+      
+      .author-name {
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .comment {
+        font-size: 14px;
+        line-height: 18px;
+      }
+    }
+  }
+  .add-comment {
+    color: #B3B3B1;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 15px;
+    display: block;
+    letter-spacing: 0.05em;
+    line-height: 24px;
+
+    &:before {
+      content: "+";
+      border: 2px solid #DEDEDC;
+      border-radius: 309px;
+      width: 24px;
+      height: 24px;
+      color: #DEDEDC;
+      display: block;
+      text-align: center;
+      font-size: 18px;
+      line-height: 18px;
+      float: left;
+      margin-right: 15px;
+      letter-spacing: 0;
+    }
+    &:hover {
+      text-decoration: none;
+    }
+    &:hover {
+      color: #4FAF62;
+
+      &:before {
+        border-color: #4FAF62;
+        color: #4FAF62;
+      }
+    }
+  }
+}

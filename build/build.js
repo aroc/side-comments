@@ -7638,6 +7638,53 @@ module.exports = function(el) {
 };
 });
 
+require.register("anthonyshort~is-boolean-attribute@0.0.1", function (exports, module) {
+
+/**
+ * https://github.com/kangax/html-minifier/issues/63#issuecomment-18634279
+ */
+
+var attrs = [
+  "allowfullscreen",
+  "async",
+  "autofocus",
+  "checked",
+  "compact",
+  "declare",
+  "default",
+  "defer",
+  "disabled",
+  "formnovalidate",
+  "hidden",
+  "inert",
+  "ismap",
+  "itemscope",
+  "multiple",
+  "multiple",
+  "muted",
+  "nohref",
+  "noresize",
+  "noshade",
+  "novalidate",
+  "nowrap",
+  "open",
+  "readonly",
+  "required",
+  "reversed",
+  "seamless",
+  "selected",
+  "sortable",
+  "truespeed",
+  "typemustmatch",
+  "contenteditable",
+  "spellcheck"
+];
+
+module.exports = function(attr){
+  return attrs.indexOf(attr) > -1;
+};
+});
+
 require.register("component~domify@1.2.2", function (exports, module) {
 
 /**
@@ -7727,53 +7774,6 @@ function parse(html) {
   return fragment;
 }
 
-});
-
-require.register("anthonyshort~is-boolean-attribute@0.0.1", function (exports, module) {
-
-/**
- * https://github.com/kangax/html-minifier/issues/63#issuecomment-18634279
- */
-
-var attrs = [
-  "allowfullscreen",
-  "async",
-  "autofocus",
-  "checked",
-  "compact",
-  "declare",
-  "default",
-  "defer",
-  "disabled",
-  "formnovalidate",
-  "hidden",
-  "inert",
-  "ismap",
-  "itemscope",
-  "multiple",
-  "multiple",
-  "muted",
-  "nohref",
-  "noresize",
-  "noshade",
-  "novalidate",
-  "nowrap",
-  "open",
-  "readonly",
-  "required",
-  "reversed",
-  "seamless",
-  "selected",
-  "sortable",
-  "truespeed",
-  "typemustmatch",
-  "contenteditable",
-  "spellcheck"
-];
-
-module.exports = function(attr){
-  return attrs.indexOf(attr) > -1;
-};
 });
 
 require.register("component~props@1.1.2", function (exports, module) {
@@ -9920,6 +9920,7 @@ module.exports = ChildBinding;
 
 require.register("side-comments", function (exports, module) {
 _ = require("lodash~lodash@2.4.1");
+var SideCommentsTemplate = require("side-comments/templates/side-comment.html");
 
 /**
  * Creates a new SideComments instance.
@@ -9935,54 +9936,74 @@ _ = require("lodash~lodash@2.4.1");
  */
 function SideComments( el, existingComments ) {
   this.$el = $(el);
-  this.$commentsContainer = this.$el.append('<div class="side-comments"></div>');
   this.existingComments = existingComments || [];
-  this.initialize( existingComments );
+  this.$body = $('body');
+  this.$commentableSections = this.$el.find('.commentable-section');
+  this.$sideComments = null;
+  this.$el.on('click', '.side-comment .marker', _.bind(this.toggleComments, this));
+  this.insertComments( existingComments );
 }
 
 /**
- * Initialize the comments beside each section.
- * @return {[type]} [description]
+ * Adds the comments beside each commentable section.
  */
-SideComments.prototype.initialize = function() {
-  this.$el.on('click', '.comment-marker .icon', _.bind(this.toggleComments, this));
-
-  this.$commentSections = this.$el.find('p');
-
-  _.each(this.$commentSections, function( section ){
-    this.addCommentMarker( section );
-    // this.addExistingComments( section );
+SideComments.prototype.insertComments = function( existingComments ) {
+  _.each(this.$commentableSections, function( section ){
+    this.insertComment( section );
   }, this);
+  this.$sideComments = this.$el.find('.side-comment');
 };
 
-SideComments.prototype.toggleComments = function( event ) {
-  var $icon = $(event.target);
-  var $body = $('body');
+/**
+ * Adds a comment
+ * @param  {Object} section The dom element for the section to add comments to.
+ */
+SideComments.prototype.insertComment = function( section ) {
+  var $section = $(section);
+  $(_.template(SideCommentsTemplate, {})).appendTo($section);
+};
 
-  if ($icon.hasClass('active') && this.commentsAreVisible()) {
-    $body.removeClass('side-comments-open');
-    $icon.removeClass('active');
-  } else if (!$icon.hasClass('active') && this.commentsAreVisible()) {
-    $('.comment-marker .icon').removeClass('active');
-    $icon.addClass('active');
+/**
+ * Toggles show/hide of the comments.
+ * @param  {Object} event The jQuery event object.
+ */
+SideComments.prototype.toggleComments = function( event ) {
+  event.preventDefault();
+  
+  var $selectedSideComment = $(event.target).closest('.side-comment');
+
+  if (!this.commentsAreVisible()) {
+    
+    this.$body.addClass('side-comments-open');
+    $selectedSideComment.addClass('active');
+
+  } else if (this.commentsAreVisible() && $selectedSideComment.hasClass('active')) {
+
+    this.$body.removeClass('side-comments-open');
+    $selectedSideComment.removeClass('active');
+
   } else {
-    $body.addClass('side-comments-open');
-    $icon.addClass('active');
+
+    this.$sideComments.removeClass('active');
+    $selectedSideComment.addClass('active');
+
   }
 };
 
+/**
+ * Checks if comments are visible or not.
+ * @return {Boolean} Whether or not the comments are visible.
+ */
 SideComments.prototype.commentsAreVisible = function() {
-  return $('body').hasClass('side-comments-open');
+  return this.$body.hasClass('side-comments-open');
 };
 
-SideComments.prototype.addCommentMarker = function( section ) {
-  var $section = $(section);
-  var marker = $('<div class="comment-marker"><span class="icon"></span></div>').appendTo($section);
-};
-
-var sideComments = new SideComments('#commentable-section');
+// Temp
+var sideComments = new SideComments('#commentable-container');
 
 module.exports = SideComments;
 });
+
+require.define("side-comments/templates/side-comment.html", "<div class=\"side-comment\">\n  <a href=\"#\" class=\"marker\"></a>\n  \n  <div class=\"comments\">\n    <ul>\n      <li>\n        <div class=\"author-avatar\">\n          <img src=\"https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg\">\n        </div>\n        <p class=\"author-name\">\n          Eric Anderson\n        </p>\n        <p class=\"comment\">\n          Maecenas sed diam eget risus varius blandit sit amet non magna. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.\n        </p>\n      </li>\n      <li>\n        <div class=\"author-avatar\">\n          <img src=\"https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg\">\n        </div>\n        <p class=\"author-name\">\n          Eric Anderson\n        </p>\n        <p class=\"comment\">\n          Maecenas sed diam eget risus varius blandit sit amet non magna. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.\n        </p>\n      </li>\n      <li>\n        <div class=\"author-avatar\">\n          <img src=\"https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg\">\n        </div>\n        <p class=\"author-name\">\n          Eric Anderson\n        </p>\n        <p class=\"comment\">\n          Maecenas sed diam eget risus varius blandit sit amet non magna. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.\n        </p>\n      </li>\n    </ul>\n    <a href=\"#\" class=\"add-comment\">Leave a comment</a>\n  </div>\n</div>");
 
 require("side-comments")

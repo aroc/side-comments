@@ -1,4 +1,5 @@
 _ = require('lodash');
+var SideCommentsTemplate = require('../templates/side-comment.html');
 
 /**
  * Creates a new SideComments instance.
@@ -14,51 +15,69 @@ _ = require('lodash');
  */
 function SideComments( el, existingComments ) {
   this.$el = $(el);
-  this.$commentsContainer = this.$el.append('<div class="side-comments"></div>');
   this.existingComments = existingComments || [];
-  this.initialize( existingComments );
+  this.$body = $('body');
+  this.$commentableSections = this.$el.find('.commentable-section');
+  this.$sideComments = null;
+  this.$el.on('click', '.side-comment .marker', _.bind(this.toggleComments, this));
+  this.insertComments( existingComments );
 }
 
 /**
- * Initialize the comments beside each section.
- * @return {[type]} [description]
+ * Adds the comments beside each commentable section.
  */
-SideComments.prototype.initialize = function() {
-  this.$el.on('click', '.comment-marker .icon', _.bind(this.toggleComments, this));
-
-  this.$commentSections = this.$el.find('p');
-
-  _.each(this.$commentSections, function( section ){
-    this.addCommentMarker( section );
-    // this.addExistingComments( section );
+SideComments.prototype.insertComments = function( existingComments ) {
+  _.each(this.$commentableSections, function( section ){
+    this.insertComment( section );
   }, this);
+  this.$sideComments = this.$el.find('.side-comment');
 };
 
-SideComments.prototype.toggleComments = function( event ) {
-  var $icon = $(event.target);
-  var $body = $('body');
+/**
+ * Adds a comment
+ * @param  {Object} section The dom element for the section to add comments to.
+ */
+SideComments.prototype.insertComment = function( section ) {
+  var $section = $(section);
+  $(_.template(SideCommentsTemplate, {})).appendTo($section);
+};
 
-  if ($icon.hasClass('active') && this.commentsAreVisible()) {
-    $body.removeClass('side-comments-open');
-    $icon.removeClass('active');
-  } else if (!$icon.hasClass('active') && this.commentsAreVisible()) {
-    $('.comment-marker .icon').removeClass('active');
-    $icon.addClass('active');
+/**
+ * Toggles show/hide of the comments.
+ * @param  {Object} event The jQuery event object.
+ */
+SideComments.prototype.toggleComments = function( event ) {
+  event.preventDefault();
+  
+  var $selectedSideComment = $(event.target).closest('.side-comment');
+
+  if (!this.commentsAreVisible()) {
+    
+    this.$body.addClass('side-comments-open');
+    $selectedSideComment.addClass('active');
+
+  } else if (this.commentsAreVisible() && $selectedSideComment.hasClass('active')) {
+
+    this.$body.removeClass('side-comments-open');
+    $selectedSideComment.removeClass('active');
+
   } else {
-    $body.addClass('side-comments-open');
-    $icon.addClass('active');
+
+    this.$sideComments.removeClass('active');
+    $selectedSideComment.addClass('active');
+
   }
 };
 
+/**
+ * Checks if comments are visible or not.
+ * @return {Boolean} Whether or not the comments are visible.
+ */
 SideComments.prototype.commentsAreVisible = function() {
-  return $('body').hasClass('side-comments-open');
+  return this.$body.hasClass('side-comments-open');
 };
 
-SideComments.prototype.addCommentMarker = function( section ) {
-  var $section = $(section);
-  var marker = $('<div class="comment-marker"><span class="icon"></span></div>').appendTo($section);
-};
-
-var sideComments = new SideComments('#commentable-section');
+// Temp
+var sideComments = new SideComments('#commentable-container');
 
 module.exports = SideComments;
