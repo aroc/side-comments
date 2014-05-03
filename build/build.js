@@ -9940,7 +9940,7 @@ function SideComments( el, existingComments ) {
   // Event bindings
   this.$el.on('click', '.side-comment .marker', _.bind(this.toggleComments, this));
   this.$el.on('click', '.add-comment', _.bind(function(){
-    this.toggleCommentForm(true);
+    this.toggleCommentForm(this.$selectedSideComment, true);
   }, this));
   this.$el.on('click', '.actions .cancel', _.bind(this.cancelComment, this));
 
@@ -9979,27 +9979,31 @@ SideComments.prototype.insertComment = function( section ) {
  */
 SideComments.prototype.toggleComments = function( event ) {
   event.preventDefault();
-  this.$selectedSideComment = $(event.target).closest('.side-comment');
+  var $nextSideComment = $(event.target).closest('.side-comment');
 
   if (!this.commentsAreVisible()) {
     
     this.$body.addClass('side-comments-open');
-    this.$selectedSideComment.addClass('active');
+    $nextSideComment.addClass('active');
 
-  } else if (this.commentsAreVisible() && this.$selectedSideComment.hasClass('active')) {
+  } else if (this.commentsAreVisible() && $nextSideComment.hasClass('active')) {
 
     this.hideComments();
 
   } else {
 
     this.$sideComments.removeClass('active');
-    this.$selectedSideComment.addClass('active');
+    $nextSideComment.addClass('active');
 
   }
 
-  if (!this.$selectedSideComment.hasClass('has-comments')) {
-    this.focusCommentBox();
+  if (!$nextSideComment.hasClass('has-comments')) {
+    this.focusCommentBox($nextSideComment);
+  } else {
+    this.toggleCommentForm($nextSideComment, false);
   }
+
+  this.$selectedSideComment = $nextSideComment;
 };
 
 /**
@@ -10008,28 +10012,29 @@ SideComments.prototype.toggleComments = function( event ) {
 SideComments.prototype.hideComments = function() {
   this.$body.removeClass('side-comments-open');
   this.$selectedSideComment.removeClass('active');
-  this.$selectedSideComment.find('.comment-form').removeClass('active').find('.comment-box').empty();
-  this.$selectedSideComment.find('.add-comment').removeClass('hide');
+  this.toggleCommentForm(this.$selectedSideComment, false);
 };
 
 /**
  * Toggle showing the comment form for a section.
  * @param  {Boolean} show Whether to show the comment form or hide it.
  */
-SideComments.prototype.toggleCommentForm = function( show ) {
-  this.$selectedSideComment.find('.add-comment').toggleClass('hide', show);
-  this.$selectedSideComment.find('.comment-form').toggleClass('active', show);
+SideComments.prototype.toggleCommentForm = function( $sideComment, show ) {
+  $sideComment.find('.add-comment').toggleClass('hide', show);
+  $sideComment.find('.comment-form').toggleClass('active', show);
 
   if (show) {
-    this.focusCommentBox();
+    this.focusCommentBox(this.$selectedSideComment);
+  } else {
+    $sideComment.find('.comment-form').removeClass('active').find('.comment-box').empty();
   }
 };
 
 /**
  * Focus on the comment box for the currently selected seide comment.
  */
-SideComments.prototype.focusCommentBox = function() {
-  this.$selectedSideComment.find('.comment-box').get(0).focus();
+SideComments.prototype.focusCommentBox = function( $sideComment ) {
+  $sideComment.find('.comment-box').get(0).focus();
 };
 
 /**
@@ -10040,7 +10045,7 @@ SideComments.prototype.cancelComment = function( event ) {
   event.preventDefault();
 
   if (this.$selectedSideComment.hasClass('has-comments')) {
-    this.toggleCommentForm(false);
+    this.toggleCommentForm(this.$selectedSideComment, false);
   } else {
     this.hideComments();
   }
