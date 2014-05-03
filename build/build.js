@@ -9973,25 +9973,33 @@ SideComments.prototype.insertComment = function( section ) {
  */
 SideComments.prototype.toggleComments = function( event ) {
   event.preventDefault();
-
-  var $selectedSideComment = $(event.target).closest('.side-comment');
+  this.$selectedSideComment = $(event.target).closest('.side-comment');
 
   if (!this.commentsAreVisible()) {
     
     this.$body.addClass('side-comments-open');
-    $selectedSideComment.addClass('active');
+    this.$selectedSideComment.addClass('active');
 
-  } else if (this.commentsAreVisible() && $selectedSideComment.hasClass('active')) {
+  } else if (this.commentsAreVisible() && this.$selectedSideComment.hasClass('active')) {
 
-    this.$body.removeClass('side-comments-open');
-    $selectedSideComment.removeClass('active');
+    this.hideComments();
 
   } else {
 
     this.$sideComments.removeClass('active');
-    $selectedSideComment.addClass('active');
+    this.$selectedSideComment.addClass('active');
 
   }
+};
+
+/**
+ * Hide the comments.
+ */
+SideComments.prototype.hideComments = function() {
+  this.$body.removeClass('side-comments-open');
+  this.$selectedSideComment.removeClass('active');
+  this.$selectedSideComment.find('.comment-form').removeClass('active').find('.comment-box').empty();
+  this.$selectedSideComment.find('.add-comment').removeClass('hide');
 };
 
 /**
@@ -10004,8 +10012,8 @@ SideComments.prototype.showCommentForm = function( event ) {
   var $addLink = $(event.target);
   var $sideComment = $addLink.closest('.side-comment');
 
-  $addLink.hide();
-  $sideComment.find('.comment-form').show();
+  $addLink.addClass('hide');
+  $sideComment.find('.comment-form').addClass('active');
 };
 
 /**

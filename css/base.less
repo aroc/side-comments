@@ -25,7 +25,10 @@ body {
   width: 80px;
   min-height: 100%;
   height: 100%;
-  
+
+  .hide {
+    display: none;
+  }
   
   .marker {
     display: none;
@@ -79,6 +82,10 @@ body {
 
   .marker:hover:after, &.active .marker:after {
     border-color: #4FAF62 transparent;
+  }
+
+  .add-comment {
+    display: none;
   }
 
   &.has-comments {
@@ -138,10 +145,6 @@ body {
     width: 238px;
   }
 
-  .add-comment {
-    display: none;
-  }
-
   .comment-box:empty:not(:focus):before {
     content: attr(data-placeholder-content);
     float: left;
@@ -159,6 +162,14 @@ body {
 
   .comment-box {
     outline: none;
+  }
+
+  .add-comment.active {
+    display: block;
+  }
+
+  .comment-form.active {
+    display: block;
   }
 
   &.active .comments {

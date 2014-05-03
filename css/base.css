@@ -18,6 +18,9 @@ body.side-comments-open {
   min-height: 100%;
   height: 100%;
 }
+.side-comment .hide {
+  display: none;
+}
 .side-comment .marker {
   display: none;
   position: absolute;
@@ -69,6 +72,9 @@ body.side-comments-open {
 .side-comment.active .marker:after {
   border-color: #4FAF62 transparent;
 }
+.side-comment .add-comment {
+  display: none;
+}
 .side-comment.has-comments .marker:before {
   content: "";
 }
@@ -110,9 +116,6 @@ body.side-comments-open {
   margin: 0 0 5px 0;
   width: 238px;
 }
-.side-comment .add-comment {
-  display: none;
-}
 .side-comment .comment-box:empty:not(:focus):before {
   content: attr(data-placeholder-content);
   float: left;
@@ -129,6 +132,12 @@ body.side-comments-open {
 }
 .side-comment .comment-box {
   outline: none;
+}
+.side-comment .add-comment.active {
+  display: block;
+}
+.side-comment .comment-form.active {
+  display: block;
 }
 .side-comment.active .comments {
   display: block;
