@@ -15,8 +15,12 @@ function SideComments( el, existingComments ) {
   this.$body = $('body');
   this.$commentableSections = this.$el.find('.commentable-section');
   this.$sideComments = null;
+  
+  // Event bindings
   this.$el.on('click', '.side-comment .marker', _.bind(this.toggleComments, this));
   this.$el.on('click', '.add-comment', _.bind(this.showCommentForm, this));
+  this.$el.on('click', '.actions .cancel', _.bind(this.cancelComment, this));
+
   this.insertComments( this.existingComments );
 }
 
@@ -93,6 +97,29 @@ SideComments.prototype.showCommentForm = function( event ) {
 
   $addLink.addClass('hide');
   $sideComment.find('.comment-form').addClass('active');
+};
+
+/**
+ * Cancel action callback.
+ * @param  {Object} event The jQuery event object.
+ */
+SideComments.prototype.cancelComment = function( event ) {
+  event.preventDefault();
+
+  if (this.$selectedSideComment.hasClass('has-comments')) {
+    this.toggleCommentForm(false);
+  } else {
+    this.hideComments();
+  }
+};
+
+/**
+ * Toggle showing the comment form for a section.
+ * @param  {Boolean} show Whether to show the comment form or hide it.
+ */
+SideComments.prototype.toggleCommentForm = function( show ) {
+  this.$selectedSideComment.find('.add-comment').toggleClass('hide', show);
+  this.$selectedSideComment.find('.comment-form').toggleClass('active', show);
 };
 
 /**
