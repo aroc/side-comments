@@ -168,34 +168,5 @@ SideComments.prototype.bodyClick = function( event ) {
   }
 };
 
-// Temp
-var existingComments = [
-  {
-    "sectionId": "1",
-    "comments": [
-      {
-        "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
-        "authorName": "Eric Anderson",
-        "comment": "Hey there!"
-      },
-      {
-        "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
-        "authorName": "Jim Beam",
-        "comment": "I'm drunk!"
-      }
-    ]
-  },
-  {
-    "sectionId": "3",
-    "comments": [
-      {
-        "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
-        "authorName": "Jim Beam",
-        "comment": "I'm drunk!"
-      }
-    ]
-  }
-];
-var sideComments = new SideComments('#commentable-container', existingComments);
-
 module.exports = SideComments;
+window.SideComments = SideComments;

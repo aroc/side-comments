@@ -1,9 +1,7 @@
 {
   "name": "side-comments",
   "dependencies": {
-    "component/emitter": "*",
-    "lodash/lodash": "*",
-    "ripplejs/ripple": "*"
+    "lodash/lodash": "*"
   },
   "main": "js/main.js",
   "scripts": [
