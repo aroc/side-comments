@@ -21,6 +21,7 @@ function SideComments( el, existingComments ) {
   this.$el.on('click', '.add-comment', _.bind(function(){
     this.toggleCommentForm(this.$activeCommentSection, true);
   }, this));
+  this.$el.on('click', '.actions .post', _.bind(this.postComment, this));
   this.$el.on('click', '.actions .cancel', _.bind(this.cancelComment, this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
@@ -56,7 +57,7 @@ SideComments.prototype.insertComment = function( section ) {
 
 /**
  * Toggles show/hide of the comments.
- * @param  {Object} event The jQuery event object.
+ * @param  {Object} event The event object.
  */
 SideComments.prototype.toggleComments = function( event ) {
   event.preventDefault();
@@ -135,8 +136,18 @@ SideComments.prototype.focusCommentBox = function( $commentSection ) {
 };
 
 /**
+ * Post action callback.
+ * @param  {Object} event The event object.
+ */
+SideComments.prototype.postComment = function( event ) {
+  event.preventDefault();
+
+  // TODO
+};
+
+/**
  * Cancel action callback.
- * @param  {Object} event The jQuery event object.
+ * @param  {Object} event The event object.
  */
 SideComments.prototype.cancelComment = function( event ) {
   event.preventDefault();
