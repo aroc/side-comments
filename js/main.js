@@ -18,7 +18,7 @@ function SideComments( el, existingComments ) {
   this.sections = [];
   
   // Event bindings
-  this.$el.on('click', '.side-comment .marker', _.bind(this.toggleComments, this));
+  this.$el.on('click', '.side-comment .marker', _.bind(this.markerClickCallback, this));
   this.$el.on('click', '.add-comment', _.bind(function(){
     this.toggleCommentForm(this.$activeCommentSection, true);
   }, this));
@@ -43,12 +43,21 @@ SideComments.prototype.initialize = function( existingComments ) {
 };
 
 /**
- * Toggles show/hide of the comments.
+ * Callback on click of section markers.
  * @param  {Object} event The event object.
  */
-SideComments.prototype.toggleComments = function( event ) {
+SideComments.prototype.markerClickCallback = function( event ) {
   event.preventDefault();
-  var $commentSection = $(event.target).closest('.side-comment');
+  var $marker = $(event.target);
+  this.toggleComments($marker);
+};
+
+/**
+ * Toggles show/hide of the comments.
+ * @param  {Object} $marker The marker that was clicked.
+ */
+SideComments.prototype.toggleComments = function( $marker ) {
+  var $commentSection = $marker.closest('.side-comment');
 
   if (!this.commentsAreVisible()) {
     
@@ -190,6 +199,11 @@ SideComments.prototype.bodyClick = function( event ) {
   if ($target.closest('.side-comment').length < 1) {
     this.hideComments();
   }
+};
+
+SideComments.prototype.destroy = function() {
+  this.$body.removeClass('side-comments-open');
+  this.$el.off();
 };
 
 module.exports = SideComments;

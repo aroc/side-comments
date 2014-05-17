@@ -8924,7 +8924,7 @@ function SideComments( el, existingComments ) {
   this.sections = [];
   
   // Event bindings
-  this.$el.on('click', '.side-comment .marker', _.bind(this.toggleComments, this));
+  this.$el.on('click', '.side-comment .marker', _.bind(this.markerClickCallback, this));
   this.$el.on('click', '.add-comment', _.bind(function(){
     this.toggleCommentForm(this.$activeCommentSection, true);
   }, this));
@@ -8949,12 +8949,21 @@ SideComments.prototype.initialize = function( existingComments ) {
 };
 
 /**
- * Toggles show/hide of the comments.
+ * Callback on click of section markers.
  * @param  {Object} event The event object.
  */
-SideComments.prototype.toggleComments = function( event ) {
+SideComments.prototype.markerClickCallback = function( event ) {
   event.preventDefault();
-  var $commentSection = $(event.target).closest('.side-comment');
+  var $marker = $(event.target);
+  this.toggleComments($marker);
+};
+
+/**
+ * Toggles show/hide of the comments.
+ * @param  {Object} $marker The marker that was clicked.
+ */
+SideComments.prototype.toggleComments = function( $marker ) {
+  var $commentSection = $marker.closest('.side-comment');
 
   if (!this.commentsAreVisible()) {
     
@@ -9098,12 +9107,18 @@ SideComments.prototype.bodyClick = function( event ) {
   }
 };
 
+SideComments.prototype.destroy = function() {
+  this.$body.removeClass('side-comments-open');
+  this.$el.off();
+};
+
 module.exports = SideComments;
 window.SideComments = SideComments;
 });
 require.register("side-comments/js/section.js", function(exports, require, module){
 _ = require('lodash');
-var SideCommentsTemplate = require('../templates/section.html');
+var Template = require('../templates/section.html');
+var CommentTemplate = require('../templates/comment.html');
 
 function Section( $parentEl, comments ) {
 	this.$parentEl = $parentEl;
@@ -9112,7 +9127,7 @@ function Section( $parentEl, comments ) {
 	this.render();
 }
 
-Section.prototype.className = function() {
+Section.prototype.commentClass = function() {
 	return this.comments.length > 0 ? 'has-comments' : '';
 };
 
@@ -9120,28 +9135,16 @@ Section.prototype.render = function() {
 	var data = {
 	  commentTemplate: CommentTemplate,
 	  comments: this.comments,
-	  commentClass: this.className
+	  commentClass: this.commentClass
 	};
-	ths.$el = $(_.template(SideCommentsTemplate, data)).appendTo(this.$parentEl);
+	this.$el = $(_.template(Template, data)).appendTo(this.$parentEl);
 };
 
 module.exports = Section;
 });
-require.register("side-comments/js/comment.js", function(exports, require, module){
-_ = require('lodash');
-var CommentTemplate = require('../templates/comment.html');
-
-function Comment( attributes ){
-	this.attributes = attributes;
-}
-
-Comment.prototype.render = function(first_argument) {
-	// body...
-};
-});
 
 require.register("side-comments/templates/section.html", function(exports, require, module){
-module.exports = '<div class="side-comment <%= commentClass %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments">\n    <ul>\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(CommentTemplate, { comment: comment }); %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment <%= commentClass %>">Leave a comment</a>\n\n    <div class="comment-form">\n      <div class="author-avatar">\n        <img src="https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg">\n      </div>\n      <p class="author-name">\n        Eric Anderson\n      </p>\n      <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>\n      <div class="actions">\n        <a href="#" class="save">Post</a>\n        <a href="#" class="cancel">Cancel</a>\n      </div>\n    </div>\n  </div>\n</div>';
+module.exports = '<div class="side-comment <%= commentClass %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments">\n    <ul>\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(CommentTemplate, { comment: comment }) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment <%= commentClass %>">Leave a comment</a>\n\n    <div class="comment-form">\n      <div class="author-avatar">\n        <img src="https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg">\n      </div>\n      <p class="author-name">\n        Eric Anderson\n      </p>\n      <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>\n      <div class="actions">\n        <a href="#" class="save">Post</a>\n        <a href="#" class="cancel">Cancel</a>\n      </div>\n    </div>\n  </div>\n</div>';
 });
 require.register("side-comments/templates/comment.html", function(exports, require, module){
 module.exports = '<li>\n  <div class="author-avatar">\n    <img src="<%= comment.authorAvatarUrl %>">\n  </div>\n  <p class="author-name">\n    <%= comment.authorName %>\n  </p>\n  <p class="comment">\n    <%= comment.comment %>\n  </p>\n</li>';

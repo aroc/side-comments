@@ -2,18 +2,39 @@
 <head>
   <meta charset="utf-8">
   <title>Mocha Tests</title>
+  <link rel="stylesheet" href="../build/build.css" />
+  <link rel="stylesheet" href="vendor/basics.css" />
   <link rel="stylesheet" href="vendor/mocha.css" />
 </head>
 <body>
   <div id="mocha"><p><a href=".">Index</a></p></div>
-  <div id="messages"></div>
-  <div id="fixtures"></div>
+  <div id="fixtures">
+    <div id="commentable-container" class="container" style="max-width: 750px;">
+      <h1>
+        This is an article that has some awesome side comments.
+      </h1>
+      <hr>
+      <p data-section-id="1" class="commentable-section">
+        Maecenas sed diam eget risus varius blandit sit amet non magna. Curabitur blandit tempus porttitor. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Maecenas sed diam eget risus varius blandit sit amet non magna. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cum sociis natoque penatibus et magnis dis parturient montes.
+      </p>
+      <p data-section-id="2" class="commentable-section">
+        Curabitur blandit tempus porttitor. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec sed odio dui. Nulla vitae elit libero, a pharetra augue.
+      </p>
+      <p data-section-id="3" class="commentable-section">
+        Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Curabitur blandit tempus porttitor.
+      </p>
+    </div>
+  </div>
   <script src="vendor/jquery.js"></script>
+  <script src="../build/build.js"></script>
   <script src="vendor/mocha.js"></script>
   <script src="vendor/chai.js"></script>
-  <script src="../build/build.js"></script>
   <script>mocha.setup('bdd')</script>
   <script src="test_main.js"></script>
-  <script>mocha.run();</script>
+  <script>
+    $(document).ready(function(){
+      mocha.run();
+    });
+  </script>
 </body>
 </html>

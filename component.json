@@ -1,14 +1,14 @@
 {
   "name": "side-comments",
+  "repo": "aroc/side-comments",
   "dependencies": {
     "lodash/lodash": "*"
   },
-  "main": "js/main.js",
   "scripts": [
     "js/main.js",
-    "js/section.js",
-    "js/comment.js"
+    "js/section.js"
   ],
+  "main": "js/main.js",
   "templates":[
     "templates/section.html",
     "templates/comment.html"

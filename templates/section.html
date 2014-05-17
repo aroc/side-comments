@@ -6,7 +6,7 @@
   <div class="comments">
     <ul>
       <% _.each(comments, function( comment ){ %>
-        <%= _.template(CommentTemplate, { comment: comment }); %>
+        <%= _.template(CommentTemplate, { comment: comment }) %>
       <% }) %>
     </ul>
     

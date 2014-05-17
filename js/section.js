@@ -1,5 +1,6 @@
 _ = require('lodash');
-var SideCommentsTemplate = require('../templates/section.html');
+var Template = require('../templates/section.html');
+var CommentTemplate = require('../templates/comment.html');
 
 function Section( $parentEl, comments ) {
 	this.$parentEl = $parentEl;
@@ -8,7 +9,7 @@ function Section( $parentEl, comments ) {
 	this.render();
 }
 
-Section.prototype.className = function() {
+Section.prototype.commentClass = function() {
 	return this.comments.length > 0 ? 'has-comments' : '';
 };
 
@@ -16,9 +17,9 @@ Section.prototype.render = function() {
 	var data = {
 	  commentTemplate: CommentTemplate,
 	  comments: this.comments,
-	  commentClass: this.className
+	  commentClass: this.commentClass
 	};
-	ths.$el = $(_.template(SideCommentsTemplate, data)).appendTo(this.$parentEl);
+	this.$el = $(_.template(Template, data)).appendTo(this.$parentEl);
 };
 
 module.exports = Section;
