@@ -143,7 +143,6 @@ body.side-comments-open {
   display: block;
 }
 
-
 .side-comment {
   padding-bottom: 20px;
 }
@@ -225,5 +224,3 @@ body.side-comments-open {
 .side-comment .actions .cancel:hover {
   color: #57AD68;
 }
-
-

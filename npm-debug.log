@@ -1,0 +1,17 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install' ]
+2 info using npm@1.4.9
+3 info using node@v0.10.28
+4 error install Couldn't read dependencies
+5 error package.json ENOENT, open '/Users/ericanderson/Projects/side-comments/package.json'
+5 error package.json This is most likely not a problem with npm itself.
+5 error package.json npm can't find a package.json file in your current directory.
+6 error System Darwin 13.1.0
+7 error command "node" "/usr/local/bin/npm" "install"
+8 error cwd /Users/ericanderson/Projects/side-comments
+9 error node -v v0.10.28
+10 error npm -v 1.4.9
+11 error path /Users/ericanderson/Projects/side-comments/package.json
+12 error code ENOPACKAGEJSON
+13 error errno 34
+14 verbose exit [ 34, true ]

@@ -1,5 +1,7 @@
 _ = require('lodash');
+var Section = require('./section.js');
 var SideCommentsTemplate = require('../templates/side-comment.html');
+var CommentTemplate = require('../templates/comment.html');
 
 /**
  * Creates a new SideComments instance.
@@ -14,7 +16,7 @@ function SideComments( el, existingComments ) {
   this.existingComments = existingComments || [];
   this.$body = $('body');
   this.$commentableSections = this.$el.find('.commentable-section');
-  this.$commentSections = null;
+  this.sections = [];
   
   // Event bindings
   this.$el.on('click', '.side-comment .marker', _.bind(this.toggleComments, this));
@@ -25,34 +27,20 @@ function SideComments( el, existingComments ) {
   this.$el.on('click', '.actions .cancel', _.bind(this.cancelComment, this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
-  this.insertComments( this.existingComments );
+  this.initialize( this.existingComments );
 }
 
 /**
  * Adds the comments beside each commentable section.
  */
-SideComments.prototype.insertComments = function( existingComments ) {
+SideComments.prototype.initialize = function( existingComments ) {
   _.each(this.$commentableSections, function( section ){
-    this.insertComment( section );
-  }, this);
-  this.$commentSections = this.$el.find('.side-comment');
-};
+    var $section = $(section);
+    var sectionId = $section.data('section-id').toString();
+    var sectionComments = _.find(this.existingComments, { sectionId: sectionId });
 
-/**
- * Adds a comment
- * @param  {Object} section The dom element for the section to add comments to.
- */
-SideComments.prototype.insertComment = function( section ) {
-  var $section = $(section);
-  var sectionId = $section.data('section-id').toString();
-  var sectionComments = _.find(this.existingComments, { sectionId: sectionId });
-  var comments = sectionComments ? sectionComments.comments : [];
-  var commentClass = comments.length > 0 ? 'has-comments' : '';
-  var data = {
-    comments: comments,
-    commentClass: commentClass
-  };
-  $(_.template(SideCommentsTemplate, data)).appendTo($section);
+    this.sections.push(new Section($section, sectionComments));
+  }, this);
 };
 
 /**
@@ -142,7 +130,33 @@ SideComments.prototype.focusCommentBox = function( $commentSection ) {
 SideComments.prototype.postComment = function( event ) {
   event.preventDefault();
 
-  // TODO
+  var $commentSection = $(event.target).closest('.side-comment');
+  var comment = {
+    authorName: 'New Commenter',
+    authorAvatarUrl: "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+    comment: $commentSection.find('.comment-box').text(),
+    sectionId: $commentSection.data('section-id')
+  };
+  this.insertComment(comment);
+  this.emit('commentPosted', comment);
+};
+
+/**
+ * Insert a comment into a conversation for a given section.
+ * @param {Object} comment A comment object to be inserted to the section specified by the comment.
+ */
+SideComments.prototype.insertComment = function( comment ) {
+   var $commentSection = $('[data-section-id="' + comment.sectionId + '"').find('.side-comment');
+   var commentHTML = _.template(CommentTemplate, comment);
+   $commentSection.find('.comments').append(commentHTML);
+};
+
+/**
+ * Remove a comment from a conversation for a given section.
+ * @param {Object} comment The comment to be removed.
+ */
+SideComments.prototype.removeComment = function( comment ) {
+  
 };
 
 /**

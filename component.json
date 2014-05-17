@@ -5,10 +5,13 @@
   },
   "main": "js/main.js",
   "scripts": [
-    "js/main.js"
+    "js/main.js",
+    "js/section.js",
+    "js/comment.js"
   ],
   "templates":[
-    "templates/side-comment.html"
+    "templates/section.html",
+    "templates/comment.html"
   ],
   "styles": [
     "css/base.css",

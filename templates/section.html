@@ -6,17 +6,7 @@
   <div class="comments">
     <ul>
       <% _.each(comments, function( comment ){ %>
-        <li>
-          <div class="author-avatar">
-            <img src="<%= comment.authorAvatarUrl %>">
-          </div>
-          <p class="author-name">
-            <%= comment.authorName %>
-          </p>
-          <p class="comment">
-            <%= comment.comment %>
-          </p>
-        </li>  
+        <%= _.template(CommentTemplate, { comment: comment }); %>
       <% }) %>
     </ul>
     
