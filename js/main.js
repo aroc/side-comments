@@ -1,6 +1,5 @@
 _ = require('lodash');
 var Section = require('./section.js');
-var SideCommentsTemplate = require('../templates/side-comment.html');
 var CommentTemplate = require('../templates/comment.html');
 
 /**

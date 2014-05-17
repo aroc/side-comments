@@ -8906,7 +8906,6 @@ require.register("lodash-lodash/dist/lodash.compat.js", function(exports, requir
 require.register("side-comments/js/main.js", function(exports, require, module){
 _ = require('lodash');
 var Section = require('./section.js');
-var SideCommentsTemplate = require('../templates/side-comment.html');
 var CommentTemplate = require('../templates/comment.html');
 
 /**
@@ -9132,7 +9131,7 @@ require.register("side-comments/js/comment.js", function(exports, require, modul
 _ = require('lodash');
 var CommentTemplate = require('../templates/comment.html');
 
-funciton Comment( attributes ){
+function Comment( attributes ){
 	this.attributes = attributes;
 }
 
