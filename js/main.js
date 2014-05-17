@@ -12,9 +12,9 @@ var CommentTemplate = require('../templates/comment.html');
  */
 function SideComments( el, existingComments ) {
   this.$el = $(el);
-  this.existingComments = existingComments || [];
   this.$body = $('body');
-  this.$commentableSections = this.$el.find('.commentable-section');
+  
+  this.existingComments = existingComments || [];
   this.sections = [];
   
   // Event bindings
@@ -26,14 +26,14 @@ function SideComments( el, existingComments ) {
   this.$el.on('click', '.actions .cancel', _.bind(this.cancelComment, this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
-  this.initialize( this.existingComments );
+  this.initialize(this.existingComments);
 }
 
 /**
  * Adds the comments beside each commentable section.
  */
 SideComments.prototype.initialize = function( existingComments ) {
-  _.each(this.$commentableSections, function( section ){
+  _.each(this.$el.find('.commentable-section'), function( section ){
     var $section = $(section);
     var sectionId = $section.data('section-id').toString();
     var sectionComments = _.find(this.existingComments, { sectionId: sectionId });
@@ -104,7 +104,9 @@ SideComments.prototype.deselectCommentSection = function( $commentSection ) {
  */
 SideComments.prototype.hideComments = function() {
   this.$body.removeClass('side-comments-open');
-  this.deselectCommentSection(this.$activeCommentSection);
+  if (this.$activeCommentSection) {
+    this.deselectCommentSection(this.$activeCommentSection);
+  }
 };
 
 /**
@@ -202,7 +204,7 @@ SideComments.prototype.bodyClick = function( event ) {
 };
 
 SideComments.prototype.destroy = function() {
-  this.$body.removeClass('side-comments-open');
+  this.hideComments();
   this.$el.off();
 };
 

@@ -10,14 +10,18 @@ function Section( $parentEl, comments ) {
 }
 
 Section.prototype.commentClass = function() {
-	return this.comments.length > 0 ? 'has-comments' : '';
+	if (this.comments.length > 0) {
+		return 'has-comments';
+	} else {
+		return '';
+	}
 };
 
 Section.prototype.render = function() {
 	var data = {
 	  commentTemplate: CommentTemplate,
 	  comments: this.comments,
-	  commentClass: this.commentClass
+	  commentClass: this.commentClass()
 	};
 	this.$el = $(_.template(Template, data)).appendTo(this.$parentEl);
 };
