@@ -142,7 +142,6 @@ describe("SideComments", function() {
 			$section1 = $('.side-comment').eq(0);
 			$section2 = $('.side-comment').eq(1);
 			$section3 = $('.side-comment').eq(2);
-
 			done();
 		});
 

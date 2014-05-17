@@ -13,16 +13,16 @@ var CommentTemplate = require('../templates/comment.html');
 function SideComments( el, existingComments ) {
   this.$el = $(el);
   this.$body = $('body');
-  
+
   this.existingComments = existingComments || [];
   this.sections = [];
   
   // Event bindings
   this.$el.on('click', '.side-comment .marker', _.bind(this.markerClickCallback, this));
   this.$el.on('click', '.add-comment', _.bind(function(){
-    this.toggleCommentForm(this.$activeCommentSection, true);
+    this.toggleCommentForm(this.activeSection, true);
   }, this));
-  this.$el.on('click', '.actions .post', _.bind(this.postComment, this));
+  // this.$el.on('click', '.actions .post', _.bind(this.postComment, this));
   this.$el.on('click', '.actions .cancel', _.bind(this.cancelComment, this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
@@ -57,46 +57,46 @@ SideComments.prototype.markerClickCallback = function( event ) {
  * @param  {Object} $marker The marker that was clicked.
  */
 SideComments.prototype.toggleComments = function( $marker ) {
-  var $commentSection = $marker.closest('.side-comment');
+  var sectionId = $marker.closest('.commentable-section').data('section-id');
 
   if (!this.commentsAreVisible()) {
     
     this.$body.addClass('side-comments-open');
-    this.selectCommentSection($commentSection);
+    this.selectSection(sectionId);
 
-  } else if (this.commentsAreVisible() && $commentSection.hasClass('active')) {
+  } else if (this.commentsAreVisible() && (this.activeSection.id === sectionId)) {
 
     this.hideComments();
 
   } else {
 
-    this.deselectCommentSection(this.$activeCommentSection);
-    this.selectCommentSection($commentSection);
+    this.selectSection(sectionId);
 
   }
 };
 
 /**
- * Selects the given $section making it the currently active comment section.
- * @param  {Object} $section The jQuery element representing the comment section to be selected.
+ * Selects the given section making it the currently active comment section.
+ * @param  {String} sectionId The ID of the section to be selected.
  */
-SideComments.prototype.selectCommentSection = function( $commentSection ) {
-  this.$activeCommentSection = $commentSection;
-  this.$activeCommentSection.addClass('active');
-
-  if (!$commentSection.hasClass('has-comments')) {
-    this.focusCommentBox(this.$activeCommentSection);
+SideComments.prototype.selectSection = function( sectionId ) {
+  if (this.activeSection) {
+    this.deselectSection(this.activeSection.id);
   }
+
+  var section = _.find(this.sections, { id: sectionId });
+  section.select();
+  this.activeSection = section;
 };
 
 /**
  * Deselect the given comment section.
  * @param  {Object} $commentSection The jQuery element for the comment section to be deselected.
  */
-SideComments.prototype.deselectCommentSection = function( $commentSection ) {
-  $commentSection.removeClass('active');
-  this.toggleCommentForm($commentSection, false);
-  this.$activeCommentSection = null;
+SideComments.prototype.deselectSection = function( sectionId ) {
+  var section = _.find(this.sections, { id: sectionId });
+  section.deselect();
+  this.activeSection = null;
 };
 
 /**
@@ -104,69 +104,9 @@ SideComments.prototype.deselectCommentSection = function( $commentSection ) {
  */
 SideComments.prototype.hideComments = function() {
   this.$body.removeClass('side-comments-open');
-  if (this.$activeCommentSection) {
-    this.deselectCommentSection(this.$activeCommentSection);
+  if (this.activeSection) {
+    this.deselectSection(this.activeSection.id);
   }
-};
-
-/**
- * Toggle showing the comment form for a section.
- * @param  {Boolean} show Whether to show the comment form or hide it.
- */
-SideComments.prototype.toggleCommentForm = function( $commentSection, show ) {
-  if ($commentSection.hasClass('has-comments')) {
-    $commentSection.find('.add-comment').toggleClass('hide', show);
-    $commentSection.find('.comment-form').toggleClass('active', show);
-  }
-
-  if (show) {
-    this.focusCommentBox(this.$activeCommentSection);
-  } else {
-    $commentSection.find('.comment-box').empty();
-  }
-};
-
-/**
- * Focus on the comment box for the currently selected seide comment.
- */
-SideComments.prototype.focusCommentBox = function( $commentSection ) {
-  $commentSection.find('.comment-box').get(0).focus();
-};
-
-/**
- * Post action callback.
- * @param  {Object} event The event object.
- */
-SideComments.prototype.postComment = function( event ) {
-  event.preventDefault();
-
-  var $commentSection = $(event.target).closest('.side-comment');
-  var comment = {
-    authorName: 'New Commenter',
-    authorAvatarUrl: "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
-    comment: $commentSection.find('.comment-box').text(),
-    sectionId: $commentSection.data('section-id')
-  };
-  this.insertComment(comment);
-  this.emit('commentPosted', comment);
-};
-
-/**
- * Insert a comment into a conversation for a given section.
- * @param {Object} comment A comment object to be inserted to the section specified by the comment.
- */
-SideComments.prototype.insertComment = function( comment ) {
-   var $commentSection = $('[data-section-id="' + comment.sectionId + '"').find('.side-comment');
-   var commentHTML = _.template(CommentTemplate, comment);
-   $commentSection.find('.comments').append(commentHTML);
-};
-
-/**
- * Remove a comment from a conversation for a given section.
- * @param {Object} comment The comment to be removed.
- */
-SideComments.prototype.removeComment = function( comment ) {
-  
 };
 
 /**
@@ -176,8 +116,8 @@ SideComments.prototype.removeComment = function( comment ) {
 SideComments.prototype.cancelComment = function( event ) {
   event.preventDefault();
 
-  if (this.$activeCommentSection.hasClass('has-comments')) {
-    this.toggleCommentForm(this.$activeCommentSection, false);
+  if (this.activeSection.comments.length > 0) {
+    this.activeSection.toggleCommentForm(false);
   } else {
     this.hideComments();
   }

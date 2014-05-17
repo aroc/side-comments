@@ -17,6 +17,36 @@ Section.prototype.commentClass = function() {
 	}
 };
 
+Section.prototype.select = function() {
+	this.$el.addClass('active');
+
+	if (this.comments.length === 0) {
+	  this.focusCommentBox();
+	}
+};
+
+Section.prototype.deselect = function() {
+	this.$el.removeClass('active');
+	this.toggleCommentForm(false);
+};
+
+Section.prototype.focusCommentBox = function() {
+	this.$el.find('.comment-box').get(0).focus();
+};
+
+Section.prototype.toggleCommentForm = function( show ) {
+  if (this.comments.length > 0) {
+    this.$el.find('.add-comment').toggleClass('hide', show);
+    this.$el.find('.comment-form').toggleClass('active', show);
+  }
+
+  if (show) {
+    this.focusCommentBox();
+  } else {
+    this.$el.find('.comment-box').empty();
+  }
+};
+
 Section.prototype.render = function() {
 	var data = {
 	  commentTemplate: CommentTemplate,
