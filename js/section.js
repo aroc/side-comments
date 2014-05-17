@@ -4,7 +4,7 @@ var CommentTemplate = require('../templates/comment.html');
 
 function Section( $parentEl, comments ) {
 	this.$parentEl = $parentEl;
-	this.comments = comments ? comments : [];
+	this.comments = comments ? comments.comments : [];
 	this.id = $parentEl.data('section-id');
 	this.render();
 }

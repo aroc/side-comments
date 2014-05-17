@@ -2,6 +2,33 @@ var expect = chai.expect;
 var SideComments = require('side-comments');
 var sideComments;
 var fixturesHTML = $('#fixtures').html();
+var existingComments = [
+  {
+    "sectionId": "1",
+    "comments": [
+      {
+        "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+        "authorName": "Eric Anderson",
+        "comment": "Hey there!"
+      },
+      {
+        "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+        "authorName": "Jim Beam",
+        "comment": "I'm drunk!"
+      }
+    ]
+  },
+  {
+    "sectionId": "3",
+    "comments": [
+      {
+        "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+        "authorName": "Jim Beam",
+        "comment": "I'm drunk!"
+      }
+    ]
+  }
+];
 
 function setupSideComments() {
 	if (sideComments) {
@@ -9,7 +36,7 @@ function setupSideComments() {
 		sideComments = null;
 	}
 	$('#fixtures').html(fixturesHTML);
-	sideComments = new SideComments('#commentable-container');
+	sideComments = new SideComments('#commentable-container', existingComments);
 }
  
 describe("SideComments", function() {
@@ -104,5 +131,33 @@ describe("SideComments", function() {
   	});
 
   });
+
+	describe("Comments", function() {
+
+		var $section1;
+		var $section2;
+		var $section3;
+
+		beforeEach(function( done ) {
+			$section1 = $('.side-comment').eq(0);
+			$section2 = $('.side-comment').eq(1);
+			$section3 = $('.side-comment').eq(2);
+
+			done();
+		});
+
+		it("should display the right number of comments in the markers for each sections", function(){
+			expect($section1.find('.marker span').text()).to.equal('2');
+			expect($section2.find('.marker span').text()).to.equal('0');
+			expect($section3.find('.marker span').text()).to.equal('1');
+		});
+
+		it("should display the right number of comments in the list for each sections", function(){
+			expect($section1.find('.comments li')).to.have.length.of(2);
+			expect($section2.find('.comments li')).to.have.length.of(0);
+			expect($section3.find('.comments li')).to.have.length.of(1);
+		});
+
+	});
 
 });

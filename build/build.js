@@ -9124,7 +9124,7 @@ var CommentTemplate = require('../templates/comment.html');
 
 function Section( $parentEl, comments ) {
 	this.$parentEl = $parentEl;
-	this.comments = comments ? comments : [];
+	this.comments = comments ? comments.comments : [];
 	this.id = $parentEl.data('section-id');
 	this.render();
 }
@@ -9150,7 +9150,7 @@ module.exports = Section;
 });
 
 require.register("side-comments/templates/section.html", function(exports, require, module){
-module.exports = '<div class="side-comment <%= commentClass %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments">\n    <ul>\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(CommentTemplate, { comment: comment }) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment <%= commentClass %>">Leave a comment</a>\n\n    <div class="comment-form">\n      <div class="author-avatar">\n        <img src="https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg">\n      </div>\n      <p class="author-name">\n        Eric Anderson\n      </p>\n      <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>\n      <div class="actions">\n        <a href="#" class="save">Post</a>\n        <a href="#" class="cancel">Cancel</a>\n      </div>\n    </div>\n  </div>\n</div>';
+module.exports = '<div class="side-comment <%= commentClass %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments">\n    <ul>\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(commentTemplate, { comment: comment }) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment <%= commentClass %>">Leave a comment</a>\n\n    <div class="comment-form">\n      <div class="author-avatar">\n        <img src="https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg">\n      </div>\n      <p class="author-name">\n        Eric Anderson\n      </p>\n      <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>\n      <div class="actions">\n        <a href="#" class="save">Post</a>\n        <a href="#" class="cancel">Cancel</a>\n      </div>\n    </div>\n  </div>\n</div>';
 });
 require.register("side-comments/templates/comment.html", function(exports, require, module){
 module.exports = '<li>\n  <div class="author-avatar">\n    <img src="<%= comment.authorAvatarUrl %>">\n  </div>\n  <p class="author-name">\n    <%= comment.authorName %>\n  </p>\n  <p class="comment">\n    <%= comment.comment %>\n  </p>\n</li>';
