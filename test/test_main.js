@@ -46,12 +46,12 @@ describe("SideComments", function() {
 		done();
 	});
 
-	// after(function( done ) {
-	// 	sideComments.destroy();
-	// 	sideComments = null;
-	// 	$('#fixtures').html(fixturesHTML);
-	// 	done();
-	// });
+	after(function( done ) {
+		sideComments.destroy();
+		sideComments = null;
+		$('#fixtures').html(fixturesHTML);
+		done();
+	});
   
   describe("Constructor", function() {
     
@@ -166,6 +166,26 @@ describe("SideComments", function() {
       $section1.find('.marker').trigger('click');
       $section1.find('.add-comment').trigger('click');
       expect($section1.find('.add-comment').is(':visible')).to.be.false;
+    });
+
+    it("should hide the comment form when the cancel button is clicked for a section with comments", function(){
+      $section1.find('.marker').trigger('click');
+      $section1.find('.add-comment').trigger('click');
+      $section1.find('.actions .cancel').trigger('click');
+      expect($section1.find('.actions').is(':visible')).to.be.false;
+    });
+
+    it("should show the add comment button again when the cancel button is clicked for a section with comments", function(){
+      $section1.find('.marker').trigger('click');
+      $section1.find('.add-comment').trigger('click');
+      $section1.find('.actions .cancel').trigger('click');
+      expect($section1.find('.add-comment').is(':visible')).to.be.true;
+    });
+
+    it("should hide the side comments when the cancel button is clicked for a section without comments", function(){
+      $section2.find('.marker').trigger('click');
+      $section1.find('.actions .cancel').trigger('click');
+      expect(sideComments.commentsAreVisible()).to.be.false;
     });
 
 	});

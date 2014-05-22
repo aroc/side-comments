@@ -8926,8 +8926,8 @@ function SideComments( el, existingComments ) {
   // Event bindings
   this.$el.on('click', '.side-comment .marker', _.bind(this.markerClickCallback, this));
   this.$el.on('click', '.add-comment', _.bind(this.addCommentClickCallback, this));
-  // this.$el.on('click', '.actions .post', _.bind(this.postComment, this));
-  this.$el.on('click', '.actions .cancel', _.bind(this.cancelComment, this));
+  this.$el.on('click', '.actions .cancel', _.bind(this.cancelCommentCallback, this));
+  // this.$el.on('click', '.actions .post', _.bind(this.postCommentCallback, this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
   this.initialize(this.existingComments);
@@ -9019,12 +9019,18 @@ SideComments.prototype.hideComments = function() {
 };
 
 /**
- * Cancel action callback.
+ * Cancel callback.
  * @param  {Object} event The event object.
  */
-SideComments.prototype.cancelComment = function( event ) {
+SideComments.prototype.cancelCommentCallback = function( event ) {
   event.preventDefault();
+  this.cancelComment();
+};
 
+/**
+ * Cancel adding of a comment.
+ */
+SideComments.prototype.cancelComment = function() {
   if (this.activeSection.comments.length > 0) {
     this.activeSection.toggleCommentForm(false);
   } else {
@@ -9052,6 +9058,9 @@ SideComments.prototype.bodyClick = function( event ) {
   }
 };
 
+/**
+ * Destroys the instance of SideComments, including unbinding from DOM events.
+ */
 SideComments.prototype.destroy = function() {
   this.hideComments();
   this.$el.off();
