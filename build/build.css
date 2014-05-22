@@ -1,23 +1,15 @@
 body {
   -webkit-transition: all .15s ease;
-
-  &.side-comments-open {
-    -webkit-transform: translate3d(-200px, 0, 0);
-  }
 }
-
+body.side-comments-open {
+  -webkit-transform: translate3d(-200px, 0, 0);
+}
 .commentable-section {
   position: relative;
-
-  &:hover {
-
-    .side-comment .marker {
-      display: block;
-    }
-
-  }
 }
-
+.commentable-section:hover .side-comment .marker {
+  display: block;
+}
 .side-comment {
   position: absolute;
   top: 0px;
@@ -25,264 +17,210 @@ body {
   width: 80px;
   min-height: 100%;
   height: 100%;
-
-  .hide {
-    display: none;
-  }
-  
-  .marker {
-    display: none;
-    position: absolute;
-    top: 0;
-    right: 30px;
-    width: 20px;
-    height: 18px;
-    cursor: pointer;
-    background: #DEDEDC;
-    border-radius: 2px;
-  }
-
-  .marker:before, .marker span {
-    content: "+";
-    display: block;
-    position: absolute;
-    width: 20px;
-    height: 18px;
-    line-height: 16px;
-    font-size: 14px;
-    color: #FFF;
-    text-align: center;
-  }
-
-  .marker span {
-    display: none;
-    line-height: 20px;
-    font-size: 12px;
-  }
-
-  &.active .marker, &.has-comments .marker {
-    display: block;
-  }
-
-  .marker:after {
-    content: "";
-    display: block;
-    position: absolute;
-    bottom: -7px;
-    left: 5px;
-    width: 0;
-    border-width: 7px 8px 0 0;
-    border-style: solid;
-    border-color: #DEDEDC transparent;
-  }
-
-  .marker:hover, &.active .marker {
-    background: #4FAF62;
-  }
-
-  .marker:hover:after, &.active .marker:after {
-    border-color: #4FAF62 transparent;
-  }
-
-  .add-comment {
-    display: none;
-  }
-
-  &.has-comments {
-
-    .marker:before {
-      content: "";
-    }
-
-    .marker span {
-      display: block;
-    }
-
-    .add-comment {
-      display: auto;
-    }
-
-    .comment-form {
-      display: none;
-    }
-
-  }
-  
-  .comments {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 80px;
-    width: 280px;
-
-    ul {
-      list-style: none;
-      padding: 0;
-
-      li {
-        overflow: hidden;
-      }
-    }
-
-  }
-
-  .author-avatar {
-    float: left;
-    width: 32px;
-    height: 32px;
-    margin-right: 10px;
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
-
-  }
-
-  .author-name {
-    float: left;        
-    margin: 0 0 5px 0;
-    width: 238px;
-  }
-
-  .comment-box:empty:not(:focus):before {
-    content: attr(data-placeholder-content);
-    float: left;
-  }
-
-  .comment, .comment-box, .actions {
-    margin: 0;
-    width: 238px;
-    float: left;
-  }
-
-  .actions {
-    margin-left: 42px;
-  }
-
-  .comment-box {
-    outline: none;
-  }
-
-  .add-comment.active {
-    display: block;
-  }
-
-  .comment-form.active {
-    display: block;
-  }
-
-  &.active .comments {
-    display: block;
-  }
-
 }
+.side-comment .hide {
+  display: none;
+}
+.side-comment .marker {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 30px;
+  width: 20px;
+  height: 18px;
+  cursor: pointer;
+  background: #DEDEDC;
+  border-radius: 2px;
+}
+.side-comment .marker:before,
+.side-comment .marker span {
+  content: "+";
+  display: block;
+  position: absolute;
+  width: 20px;
+  height: 18px;
+  line-height: 16px;
+  font-size: 14px;
+  color: #FFF;
+  text-align: center;
+}
+.side-comment .marker span {
+  display: none;
+  line-height: 20px;
+  font-size: 12px;
+}
+.side-comment.active .marker,
+.side-comment.has-comments .marker {
+  display: block;
+}
+.side-comment .marker:after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: -7px;
+  left: 5px;
+  width: 0;
+  border-width: 7px 8px 0 0;
+  border-style: solid;
+  border-color: #DEDEDC transparent;
+}
+.side-comment .marker:hover,
+.side-comment.active .marker {
+  background: #4FAF62;
+}
+.side-comment .marker:hover:after,
+.side-comment.active .marker:after {
+  border-color: #4FAF62 transparent;
+}
+.side-comment .add-comment {
+  display: none;
+}
+.side-comment.has-comments .marker:before {
+  content: "";
+}
+.side-comment.has-comments .marker span {
+  display: block;
+}
+.side-comment.has-comments .add-comment {
+  display: auto;
+}
+.side-comment.has-comments .comment-form {
+  display: none;
+}
+.side-comment .comments {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 80px;
+  width: 280px;
+}
+.side-comment .comments ul {
+  list-style: none;
+  padding: 0;
+}
+.side-comment .comments ul li {
+  overflow: hidden;
+}
+.side-comment .author-avatar {
+  float: left;
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+}
+.side-comment .author-avatar img {
+  width: 100%;
+  height: 100%;
+}
+.side-comment .author-name {
+  float: left;
+  margin: 0 0 5px 0;
+  width: 238px;
+}
+.side-comment .comment-box:empty:not(:focus):before {
+  content: attr(data-placeholder-content);
+  float: left;
+}
+.side-comment .comment,
+.side-comment .comment-box,
+.side-comment .actions {
+  margin: 0;
+  width: 238px;
+  float: left;
+}
+.side-comment .actions {
+  margin-left: 42px;
+}
+.side-comment .comment-box {
+  outline: none;
+}
+.side-comment .add-comment.active {
+  display: block;
+}
+.side-comment .comment-form.active {
+  display: block;
+}
+.side-comment.active .comments {
+  display: block;
+}
+
 .side-comment {
   padding-bottom: 20px;
-
-  .comments {
-    top: -19px;
-
-    ul li {
-      border: 1px solid #F2F2F0;
-      border-left: 0;
-      border-right: 0;
-      padding: 15px 0;
-      margin-top: -1px;
-      
-      .author-name {
-        font-size: 15px;
-        font-weight: 700;
-      }
-
-      .comment {
-        font-size: 14px;
-        line-height: 18px;
-      }
-
-    }
-
-  }
-  .add-comment {
-    color: #B3B3B1;
-    font-size: 14px;
-    font-weight: 300;
-    padding: 15px;
-    letter-spacing: 0.05em;
-    line-height: 24px;
-
-    &:before {
-      content: "+";
-      border: 2px solid #DEDEDC;
-      border-radius: 309px;
-      width: 24px;
-      height: 24px;
-      color: #DEDEDC;
-      display: block;
-      text-align: center;
-      font-size: 18px;
-      line-height: 18px;
-      float: left;
-      margin-right: 15px;
-      letter-spacing: 0;
-    }
-
-    &:hover {
-      text-decoration: none;
-    }
-
-    &:hover {
-      color: #4FAF62;
-
-      &:before {
-        border-color: #4FAF62;
-        color: #4FAF62;
-      }
-
-    }
-
-  }
-  
-  .comment-box:empty:not(:focus):before {
-    color: #B5B5B5;
-    font-size: 15px;
-    line-height: 18px;
-  }
-
-  .actions {
-  
-    a {
-      color: #B3B3B1;
-      font-size: 14px;
-      float: left;
-
-      &:hover {
-        text-decoration: none;
-      }
-    }
-
-    .save {
-      color: #89C794;
-
-      &:hover {
-        color: #468C54
-      }
-    }
-
-    .cancel {
-
-      &:before {
-        content: '\00B7';
-        color: #B3B3B1;
-        padding: 0 5px;
-      }
-
-      &:hover {
-        color: #57AD68;
-      }
-      
-    }
-
-  }
-
+}
+.side-comment .comments {
+  top: -19px;
+}
+.side-comment .comments ul li {
+  border: 1px solid #F2F2F0;
+  border-left: 0;
+  border-right: 0;
+  padding: 15px 0;
+  margin-top: -1px;
+}
+.side-comment .comments ul li .author-name {
+  font-size: 15px;
+  font-weight: 700;
+}
+.side-comment .comments ul li .comment {
+  font-size: 14px;
+  line-height: 18px;
+}
+.side-comment .add-comment {
+  color: #B3B3B1;
+  font-size: 14px;
+  font-weight: 300;
+  padding: 15px;
+  letter-spacing: 0.05em;
+  line-height: 24px;
+}
+.side-comment .add-comment:before {
+  content: "+";
+  border: 2px solid #DEDEDC;
+  border-radius: 309px;
+  width: 24px;
+  height: 24px;
+  color: #DEDEDC;
+  display: block;
+  text-align: center;
+  font-size: 18px;
+  line-height: 18px;
+  float: left;
+  margin-right: 15px;
+  letter-spacing: 0;
+}
+.side-comment .add-comment:hover {
+  text-decoration: none;
+}
+.side-comment .add-comment:hover {
+  color: #4FAF62;
+}
+.side-comment .add-comment:hover:before {
+  border-color: #4FAF62;
+  color: #4FAF62;
+}
+.side-comment .comment-box:empty:not(:focus):before {
+  color: #B5B5B5;
+  font-size: 15px;
+  line-height: 18px;
+}
+.side-comment .actions a {
+  color: #B3B3B1;
+  font-size: 14px;
+  float: left;
+}
+.side-comment .actions a:hover {
+  text-decoration: none;
+}
+.side-comment .actions .save {
+  color: #89C794;
+}
+.side-comment .actions .save:hover {
+  color: #468c54;
+}
+.side-comment .actions .cancel:before {
+  content: '\00B7';
+  color: #B3B3B1;
+  padding: 0 5px;
+}
+.side-comment .actions .cancel:hover {
+  color: #57AD68;
 }

@@ -18,6 +18,9 @@ gulp.task('scripts', function() {
 
 gulp.task('less', function () {
   return gulp.src(paths.less)
+    .pipe(less({
+      paths: paths.less
+    }))
     .pipe(concat('side-comments.css'))
     .pipe(gulp.dest("./"))
     .pipe(concat('styles.css'))
