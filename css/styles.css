@@ -174,6 +174,7 @@ body.side-comments-open {
   padding: 15px;
   letter-spacing: 0.05em;
   line-height: 24px;
+  text-decoration: none;
 }
 .side-comment .add-comment:before {
   content: "+";
@@ -185,7 +186,7 @@ body.side-comments-open {
   display: block;
   text-align: center;
   font-size: 18px;
-  line-height: 18px;
+  line-height: 21px;
   float: left;
   margin-right: 15px;
   letter-spacing: 0;
@@ -205,10 +206,14 @@ body.side-comments-open {
   font-size: 15px;
   line-height: 18px;
 }
+.side-comment .actions {
+  margin-top: 5px;
+}
 .side-comment .actions a {
   color: #B3B3B1;
   font-size: 14px;
   float: left;
+  text-decoration: none;
 }
 .side-comment .actions a:hover {
   text-decoration: none;

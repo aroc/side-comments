@@ -46,12 +46,12 @@ describe("SideComments", function() {
 		done();
 	});
 
-	after(function( done ) {
-		sideComments.destroy();
-		sideComments = null;
-		$('#fixtures').html(fixturesHTML);
-		done();
-	});
+	// after(function( done ) {
+	// 	sideComments.destroy();
+	// 	sideComments = null;
+	// 	$('#fixtures').html(fixturesHTML);
+	// 	done();
+	// });
   
   describe("Constructor", function() {
     
