@@ -19,9 +19,7 @@ function SideComments( el, existingComments ) {
   
   // Event bindings
   this.$el.on('click', '.side-comment .marker', _.bind(this.markerClickCallback, this));
-  this.$el.on('click', '.add-comment', _.bind(function(){
-    this.toggleCommentForm(this.activeSection, true);
-  }, this));
+  this.$el.on('click', '.add-comment', _.bind(this.addCommentClickCallback, this));
   // this.$el.on('click', '.actions .post', _.bind(this.postComment, this));
   this.$el.on('click', '.actions .cancel', _.bind(this.cancelComment, this));
   this.$body.on('click', _.bind(this.bodyClick, this));
@@ -50,6 +48,11 @@ SideComments.prototype.markerClickCallback = function( event ) {
   event.preventDefault();
   var $marker = $(event.target);
   this.toggleComments($marker);
+};
+
+SideComments.prototype.addCommentClickCallback = function( event ) {
+  event.preventDefault();
+  this.activeSection.toggleCommentForm(true);
 };
 
 /**

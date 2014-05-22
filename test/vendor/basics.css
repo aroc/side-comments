@@ -4,3 +4,6 @@
 h1,h2,h3,h4,div,p,li {
 	font-family: 'Helvetica', sans-serif;
 }
+#fixtures {
+	margin-bottom: 100px;
+}

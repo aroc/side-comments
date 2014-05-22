@@ -157,6 +157,12 @@ describe("SideComments", function() {
 			expect($section3.find('.comments li')).to.have.length.of(1);
 		});
 
+    it("should hide the add button after click", function(){
+      var $addBtn = $section1.find('.add-comment');
+      $addBtn.click();
+      expect($addBtn.is(':visible')).to.be.false;
+    });
+
 	});
 
 });
