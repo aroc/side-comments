@@ -82,7 +82,10 @@ body.side-comments-open {
   display: block;
 }
 .side-comment.has-comments .add-comment {
-  display: auto;
+  display: block;
+}
+.side-comment.has-comments .add-comment.hide {
+  display: none;
 }
 .side-comment.has-comments .comment-form {
   display: none;

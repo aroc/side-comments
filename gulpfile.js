@@ -30,7 +30,7 @@ gulp.task('less', function () {
 // Rerun the task when a file changes
 gulp.task('watch', function() {
   gulp.watch(paths.scripts, ['scripts']);
-  gulp.watch(paths.styles, ['styles']);
+  gulp.watch(paths.less, ['less']);
 });
 
 // The default task (called when you run `gulp` from cli)

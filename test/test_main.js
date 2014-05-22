@@ -157,10 +157,15 @@ describe("SideComments", function() {
 			expect($section3.find('.comments li')).to.have.length.of(1);
 		});
 
-    it("should hide the add button after click", function(){
-      var $addBtn = $section1.find('.add-comment');
-      $addBtn.click();
-      expect($addBtn.is(':visible')).to.be.false;
+    it("should show the add button when there is one or more comments", function(){
+      $section1.find('.marker').trigger('click');
+      expect($section1.find('.add-comment').is(':visible')).to.be.true;
+    });
+
+    it("should hide the add button after it's clicked", function(){
+      $section1.find('.marker').trigger('click');
+      $section1.find('.add-comment').trigger('click');
+      expect($section1.find('.add-comment').is(':visible')).to.be.false;
     });
 
 	});
