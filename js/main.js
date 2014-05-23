@@ -18,9 +18,7 @@ function SideComments( el, existingComments ) {
   this.sections = [];
   
   // Event bindings
-  this.$el.on('click', '.side-comment .marker', _.bind(this.markerClickCallback, this));
-  this.$el.on('click', '.actions .cancel', _.bind(this.cancelCommentCallback, this));
-  // this.$el.on('click', '.actions .post', _.bind(this.postCommentCallback, this));
+  this.$el.on('click', '.side-comment .marker', _.bind(this.markerClick, this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
   this.initialize(this.existingComments);
@@ -35,7 +33,7 @@ SideComments.prototype.initialize = function( existingComments ) {
     var sectionId = $section.data('section-id').toString();
     var sectionComments = _.find(this.existingComments, { sectionId: sectionId });
 
-    this.sections.push(new Section($section, sectionComments));
+    this.sections.push(new Section(this, $section, sectionComments));
   }, this);
 };
 
@@ -43,7 +41,7 @@ SideComments.prototype.initialize = function( existingComments ) {
  * Callback on click of section markers.
  * @param  {Object} event The event object.
  */
-SideComments.prototype.markerClickCallback = function( event ) {
+SideComments.prototype.markerClick = function( event ) {
   event.preventDefault();
   var $marker = $(event.target);
   var sectionId = $marker.closest('.commentable-section').data('section-id');
@@ -102,26 +100,6 @@ SideComments.prototype.hideComments = function() {
   this.$body.removeClass('side-comments-open');
   if (this.activeSection) {
     this.deselectSection(this.activeSection.id);
-  }
-};
-
-/**
- * Cancel callback.
- * @param  {Object} event The event object.
- */
-SideComments.prototype.cancelCommentCallback = function( event ) {
-  event.preventDefault();
-  this.cancelComment();
-};
-
-/**
- * Cancel adding of a comment.
- */
-SideComments.prototype.cancelComment = function() {
-  if (this.activeSection.comments.length > 0) {
-    this.activeSection.toggleCommentForm(false);
-  } else {
-    this.hideComments();
   }
 };
 

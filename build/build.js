@@ -8903,6 +8903,173 @@ require.register("lodash-lodash/dist/lodash.compat.js", function(exports, requir
 }.call(this));
 
 });
+require.register("component-emitter/index.js", function(exports, require, module){
+
+/**
+ * Expose `Emitter`.
+ */
+
+module.exports = Emitter;
+
+/**
+ * Initialize a new `Emitter`.
+ *
+ * @api public
+ */
+
+function Emitter(obj) {
+  if (obj) return mixin(obj);
+};
+
+/**
+ * Mixin the emitter properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+function mixin(obj) {
+  for (var key in Emitter.prototype) {
+    obj[key] = Emitter.prototype[key];
+  }
+  return obj;
+}
+
+/**
+ * Listen on the given `event` with `fn`.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.on =
+Emitter.prototype.addEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  (this._callbacks[event] = this._callbacks[event] || [])
+    .push(fn);
+  return this;
+};
+
+/**
+ * Adds an `event` listener that will be invoked a single
+ * time then automatically removed.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.once = function(event, fn){
+  var self = this;
+  this._callbacks = this._callbacks || {};
+
+  function on() {
+    self.off(event, on);
+    fn.apply(this, arguments);
+  }
+
+  on.fn = fn;
+  this.on(event, on);
+  return this;
+};
+
+/**
+ * Remove the given callback for `event` or all
+ * registered callbacks.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.off =
+Emitter.prototype.removeListener =
+Emitter.prototype.removeAllListeners =
+Emitter.prototype.removeEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+
+  // all
+  if (0 == arguments.length) {
+    this._callbacks = {};
+    return this;
+  }
+
+  // specific event
+  var callbacks = this._callbacks[event];
+  if (!callbacks) return this;
+
+  // remove all handlers
+  if (1 == arguments.length) {
+    delete this._callbacks[event];
+    return this;
+  }
+
+  // remove specific handler
+  var cb;
+  for (var i = 0; i < callbacks.length; i++) {
+    cb = callbacks[i];
+    if (cb === fn || cb.fn === fn) {
+      callbacks.splice(i, 1);
+      break;
+    }
+  }
+  return this;
+};
+
+/**
+ * Emit `event` with the given args.
+ *
+ * @param {String} event
+ * @param {Mixed} ...
+ * @return {Emitter}
+ */
+
+Emitter.prototype.emit = function(event){
+  this._callbacks = this._callbacks || {};
+  var args = [].slice.call(arguments, 1)
+    , callbacks = this._callbacks[event];
+
+  if (callbacks) {
+    callbacks = callbacks.slice(0);
+    for (var i = 0, len = callbacks.length; i < len; ++i) {
+      callbacks[i].apply(this, args);
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Return array of callbacks for `event`.
+ *
+ * @param {String} event
+ * @return {Array}
+ * @api public
+ */
+
+Emitter.prototype.listeners = function(event){
+  this._callbacks = this._callbacks || {};
+  return this._callbacks[event] || [];
+};
+
+/**
+ * Check if this emitter has `event` handlers.
+ *
+ * @param {String} event
+ * @return {Boolean}
+ * @api public
+ */
+
+Emitter.prototype.hasListeners = function(event){
+  return !! this.listeners(event).length;
+};
+
+});
 require.register("side-comments/js/main.js", function(exports, require, module){
 _ = require('lodash');
 var Section = require('./section.js');
@@ -8924,9 +9091,7 @@ function SideComments( el, existingComments ) {
   this.sections = [];
   
   // Event bindings
-  this.$el.on('click', '.side-comment .marker', _.bind(this.markerClickCallback, this));
-  this.$el.on('click', '.actions .cancel', _.bind(this.cancelCommentCallback, this));
-  // this.$el.on('click', '.actions .post', _.bind(this.postCommentCallback, this));
+  this.$el.on('click', '.side-comment .marker', _.bind(this.markerClick, this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
   this.initialize(this.existingComments);
@@ -8941,7 +9106,7 @@ SideComments.prototype.initialize = function( existingComments ) {
     var sectionId = $section.data('section-id').toString();
     var sectionComments = _.find(this.existingComments, { sectionId: sectionId });
 
-    this.sections.push(new Section($section, sectionComments));
+    this.sections.push(new Section(this, $section, sectionComments));
   }, this);
 };
 
@@ -8949,7 +9114,7 @@ SideComments.prototype.initialize = function( existingComments ) {
  * Callback on click of section markers.
  * @param  {Object} event The event object.
  */
-SideComments.prototype.markerClickCallback = function( event ) {
+SideComments.prototype.markerClick = function( event ) {
   event.preventDefault();
   var $marker = $(event.target);
   var sectionId = $marker.closest('.commentable-section').data('section-id');
@@ -9012,26 +9177,6 @@ SideComments.prototype.hideComments = function() {
 };
 
 /**
- * Cancel callback.
- * @param  {Object} event The event object.
- */
-SideComments.prototype.cancelCommentCallback = function( event ) {
-  event.preventDefault();
-  this.cancelComment();
-};
-
-/**
- * Cancel adding of a comment.
- */
-SideComments.prototype.cancelComment = function() {
-  if (this.activeSection.comments.length > 0) {
-    this.activeSection.toggleCommentForm(false);
-  } else {
-    this.hideComments();
-  }
-};
-
-/**
  * Checks if comments are visible or not.
  * @return {Boolean} Whether or not the comments are visible.
  */
@@ -9072,11 +9217,13 @@ var CommentTemplate = require('../templates/comment.html');
  * @param {Object} $parentEl The jQuery object that represents the section.
  * @param {Array} comments   The array of comments for this section. Optional.
  */
-function Section( $parentEl, comments ) {
+function Section( sideComments, $parentEl, comments ) {
+	this.sideComments = sideComments;
 	this.$parentEl = $parentEl;
 	this.comments = comments ? comments.comments : [];
 	this.id = $parentEl.data('section-id');
-	this.$parentEl.on('click', '.side-comment .add-comment', _.bind(this.addCommentClickCallback, this));
+	this.$parentEl.on('click', '.side-comment .add-comment', _.bind(this.addCommentClick, this));
+	this.$parentEl.on('click', '.actions .cancel', _.bind(this.cancelCommentClick, this));
 	this.render();
 }
 
@@ -9084,21 +9231,61 @@ function Section( $parentEl, comments ) {
  * Callback for the comment button click event.
  * @param {Object} event The event object.
  */
-Section.prototype.addCommentClickCallback = function( event ) {
+Section.prototype.addCommentClick = function( event ) {
   event.preventDefault();
-  this.toggleCommentForm(true);
+  this.showCommentForm();
 };
 
 /**
- * Get the class to be used on the side comment section wrapper.
- * @return {String} The class names to use.
+ * Show the comment form for this section.
  */
-Section.prototype.commentClass = function() {
-	if (this.comments.length > 0) {
-		return 'has-comments';
-	} else {
-		return '';
-	}
+Section.prototype.showCommentForm = function() {
+  if (this.comments.length > 0) {
+    this.$el.find('.add-comment').addClass('hide');
+    this.$el.find('.comment-form').addClass('active');
+  }
+
+  this.focusCommentBox();
+};
+
+/**
+ * Hides the comment form for this section.
+ * @param  {Boolean} show Whether to show or hide the form.
+ */
+Section.prototype.hideCommentForm = function() {
+  if (this.comments.length > 0) {
+    this.$el.find('.add-comment').removeClass('hide');
+    this.$el.find('.comment-form').removeClass('active');
+  }
+
+  this.$el.find('.comment-box').empty();
+};
+
+/**
+ * Focus on the comment box in the comment form.
+ */
+Section.prototype.focusCommentBox = function() {
+	this.$el.find('.comment-box').get(0).focus();
+};
+
+/**
+ * Cancel callback.
+ * @param  {Object} event The event object.
+ */
+Section.prototype.cancelCommentClick = function( event ) {
+  event.preventDefault();
+  this.cancelComment();
+};
+
+/**
+ * Cancel adding of a comment.
+ */
+Section.prototype.cancelComment = function() {
+  if (this.comments.length > 0) {
+    this.hideCommentForm();
+  } else {
+    this.sideComments.hideComments();
+  }
 };
 
 /**
@@ -9117,31 +9304,19 @@ Section.prototype.select = function() {
  */
 Section.prototype.deselect = function() {
 	this.$el.removeClass('active');
-	this.toggleCommentForm(false);
+	this.hideCommentForm();
 };
 
 /**
- * Focus on the comment box in the comment form.
+ * Get the class to be used on the side comment section wrapper.
+ * @return {String} The class names to use.
  */
-Section.prototype.focusCommentBox = function() {
-	this.$el.find('.comment-box').get(0).focus();
-};
-
-/**
- * Toggle showing or hiding the comment form for this section.
- * @param  {Boolean} show Whether to show or hide the form.
- */
-Section.prototype.toggleCommentForm = function( show ) {
-  if (this.comments.length > 0) {
-    this.$el.find('.add-comment').toggleClass('hide', show);
-    this.$el.find('.comment-form').toggleClass('active', show);
-  }
-
-  if (show) {
-    this.focusCommentBox();
-  } else {
-    this.$el.find('.comment-box').empty();
-  }
+Section.prototype.commentClass = function() {
+	if (this.comments.length > 0) {
+		return 'has-comments';
+	} else {
+		return '';
+	}
 };
 
 /**
@@ -9166,6 +9341,9 @@ Section.prototype.destroy = function() {
 module.exports = Section;
 });
 
+
+
+
 require.register("side-comments/templates/section.html", function(exports, require, module){
 module.exports = '<div class="side-comment <%= commentClass %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments">\n    <ul>\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(commentTemplate, { comment: comment }) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment">Leave a comment</a>\n\n    <div class="comment-form">\n      <div class="author-avatar">\n        <img src="https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg">\n      </div>\n      <p class="author-name">\n        Eric Anderson\n      </p>\n      <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>\n      <div class="actions">\n        <a href="#" class="save">Post</a>\n        <a href="#" class="cancel">Cancel</a>\n      </div>\n    </div>\n  </div>\n</div>';
 });
@@ -9176,4 +9354,7 @@ require.alias("lodash-lodash/dist/lodash.compat.js", "side-comments/deps/lodash/
 require.alias("lodash-lodash/dist/lodash.compat.js", "side-comments/deps/lodash/index.js");
 require.alias("lodash-lodash/dist/lodash.compat.js", "lodash/index.js");
 require.alias("lodash-lodash/dist/lodash.compat.js", "lodash-lodash/index.js");
+require.alias("component-emitter/index.js", "side-comments/deps/emitter/index.js");
+require.alias("component-emitter/index.js", "emitter/index.js");
+
 require.alias("side-comments/js/main.js", "side-comments/index.js");

@@ -7,11 +7,13 @@ var CommentTemplate = require('../templates/comment.html');
  * @param {Object} $parentEl The jQuery object that represents the section.
  * @param {Array} comments   The array of comments for this section. Optional.
  */
-function Section( $parentEl, comments ) {
+function Section( sideComments, $parentEl, comments ) {
+	this.sideComments = sideComments;
 	this.$parentEl = $parentEl;
 	this.comments = comments ? comments.comments : [];
 	this.id = $parentEl.data('section-id');
-	this.$parentEl.on('click', '.side-comment .add-comment', _.bind(this.addCommentClickCallback, this));
+	this.$parentEl.on('click', '.side-comment .add-comment', _.bind(this.addCommentClick, this));
+	this.$parentEl.on('click', '.actions .cancel', _.bind(this.cancelCommentClick, this));
 	this.render();
 }
 
@@ -19,21 +21,61 @@ function Section( $parentEl, comments ) {
  * Callback for the comment button click event.
  * @param {Object} event The event object.
  */
-Section.prototype.addCommentClickCallback = function( event ) {
+Section.prototype.addCommentClick = function( event ) {
   event.preventDefault();
-  this.toggleCommentForm(true);
+  this.showCommentForm();
 };
 
 /**
- * Get the class to be used on the side comment section wrapper.
- * @return {String} The class names to use.
+ * Show the comment form for this section.
  */
-Section.prototype.commentClass = function() {
-	if (this.comments.length > 0) {
-		return 'has-comments';
-	} else {
-		return '';
-	}
+Section.prototype.showCommentForm = function() {
+  if (this.comments.length > 0) {
+    this.$el.find('.add-comment').addClass('hide');
+    this.$el.find('.comment-form').addClass('active');
+  }
+
+  this.focusCommentBox();
+};
+
+/**
+ * Hides the comment form for this section.
+ * @param  {Boolean} show Whether to show or hide the form.
+ */
+Section.prototype.hideCommentForm = function() {
+  if (this.comments.length > 0) {
+    this.$el.find('.add-comment').removeClass('hide');
+    this.$el.find('.comment-form').removeClass('active');
+  }
+
+  this.$el.find('.comment-box').empty();
+};
+
+/**
+ * Focus on the comment box in the comment form.
+ */
+Section.prototype.focusCommentBox = function() {
+	this.$el.find('.comment-box').get(0).focus();
+};
+
+/**
+ * Cancel callback.
+ * @param  {Object} event The event object.
+ */
+Section.prototype.cancelCommentClick = function( event ) {
+  event.preventDefault();
+  this.cancelComment();
+};
+
+/**
+ * Cancel adding of a comment.
+ */
+Section.prototype.cancelComment = function() {
+  if (this.comments.length > 0) {
+    this.hideCommentForm();
+  } else {
+    this.sideComments.hideComments();
+  }
 };
 
 /**
@@ -52,31 +94,19 @@ Section.prototype.select = function() {
  */
 Section.prototype.deselect = function() {
 	this.$el.removeClass('active');
-	this.toggleCommentForm(false);
+	this.hideCommentForm();
 };
 
 /**
- * Focus on the comment box in the comment form.
+ * Get the class to be used on the side comment section wrapper.
+ * @return {String} The class names to use.
  */
-Section.prototype.focusCommentBox = function() {
-	this.$el.find('.comment-box').get(0).focus();
-};
-
-/**
- * Toggle showing or hiding the comment form for this section.
- * @param  {Boolean} show Whether to show or hide the form.
- */
-Section.prototype.toggleCommentForm = function( show ) {
-  if (this.comments.length > 0) {
-    this.$el.find('.add-comment').toggleClass('hide', show);
-    this.$el.find('.comment-form').toggleClass('active', show);
-  }
-
-  if (show) {
-    this.focusCommentBox();
-  } else {
-    this.$el.find('.comment-box').empty();
-  }
+Section.prototype.commentClass = function() {
+	if (this.comments.length > 0) {
+		return 'has-comments';
+	} else {
+		return '';
+	}
 };
 
 /**

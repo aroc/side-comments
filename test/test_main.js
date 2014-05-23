@@ -184,7 +184,7 @@ describe("SideComments", function() {
 
     it("should hide the side comments when the cancel button is clicked for a section without comments", function(){
       $section2.find('.marker').trigger('click');
-      $section1.find('.actions .cancel').trigger('click');
+      $section2.find('.actions .cancel').trigger('click');
       expect(sideComments.commentsAreVisible()).to.be.false;
     });
 
