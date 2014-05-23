@@ -8953,7 +8953,8 @@ SideComments.prototype.initialize = function( existingComments ) {
 SideComments.prototype.markerClickCallback = function( event ) {
   event.preventDefault();
   var $marker = $(event.target);
-  this.toggleComments($marker);
+  var sectionId = $marker.closest('.commentable-section').data('section-id');
+  this.toggleComments(sectionId);
 };
 
 SideComments.prototype.addCommentClickCallback = function( event ) {
@@ -8963,11 +8964,9 @@ SideComments.prototype.addCommentClickCallback = function( event ) {
 
 /**
  * Toggles show/hide of the comments.
- * @param  {Object} $marker The marker that was clicked.
+ * @param  {String} sectionId The ID of the section to toggle comments for.
  */
-SideComments.prototype.toggleComments = function( $marker ) {
-  var sectionId = $marker.closest('.commentable-section').data('section-id');
-
+SideComments.prototype.toggleComments = function( sectionId ) {
   if (!this.commentsAreVisible()) {
     
     this.$body.addClass('side-comments-open');
