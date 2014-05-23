@@ -8906,7 +8906,6 @@ require.register("lodash-lodash/dist/lodash.compat.js", function(exports, requir
 require.register("side-comments/js/main.js", function(exports, require, module){
 _ = require('lodash');
 var Section = require('./section.js');
-var CommentTemplate = require('../templates/comment.html');
 
 /**
  * Creates a new SideComments instance.
@@ -8924,8 +8923,9 @@ function SideComments( el, existingComments ) {
   this.sections = [];
   
   // Event bindings
+  this.$el.on('showComments', _.bind(this.showComments ,this));
   this.$el.on('hideComments', _.bind(this.hideComments ,this));
-  this.$el.on('click', '.side-comment .marker', _.bind(this.markerClick, this));
+  this.$el.on('deselectSections', _.bind(this.deselectSections ,this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
   this.initialize(this.existingComments);
@@ -8945,59 +8945,10 @@ SideComments.prototype.initialize = function( existingComments ) {
 };
 
 /**
- * Callback on click of section markers.
- * @param  {Object} event The event object.
+ * Shows the side comments.
  */
-SideComments.prototype.markerClick = function( event ) {
-  event.preventDefault();
-  var $marker = $(event.target);
-  var sectionId = $marker.closest('.commentable-section').data('section-id');
-  this.toggleComments(sectionId);
-};
-
-/**
- * Toggles show/hide of the comments.
- * @param  {String} sectionId The ID of the section to toggle comments for.
- */
-SideComments.prototype.toggleComments = function( sectionId ) {
-  if (!this.commentsAreVisible()) {
-    
-    this.$body.addClass('side-comments-open');
-    this.selectSection(sectionId);
-
-  } else if (this.commentsAreVisible() && (this.activeSection.id === sectionId)) {
-
-    this.hideComments();
-
-  } else {
-
-    this.selectSection(sectionId);
-
-  }
-};
-
-/**
- * Selects the given section making it the currently active comment section.
- * @param  {String} sectionId The ID of the section to be selected.
- */
-SideComments.prototype.selectSection = function( sectionId ) {
-  if (this.activeSection) {
-    this.deselectSection(this.activeSection.id);
-  }
-
-  var section = _.find(this.sections, { id: sectionId });
-  section.select();
-  this.activeSection = section;
-};
-
-/**
- * Deselect the given comment section.
- * @param  {Object} $commentSection The jQuery element for the comment section to be deselected.
- */
-SideComments.prototype.deselectSection = function( sectionId ) {
-  var section = _.find(this.sections, { id: sectionId });
-  section.deselect();
-  this.activeSection = null;
+SideComments.prototype.showComments = function() {
+  this.$body.addClass('side-comments-open');
 };
 
 /**
@@ -9005,9 +8956,14 @@ SideComments.prototype.deselectSection = function( sectionId ) {
  */
 SideComments.prototype.hideComments = function() {
   this.$body.removeClass('side-comments-open');
-  if (this.activeSection) {
-    this.deselectSection(this.activeSection.id);
-  }
+  this.deselectSections();
+};
+
+/**
+ * Deselects all sections.
+ */
+SideComments.prototype.deselectSections = function() {
+  _.invoke(this.sections, 'deselect');
 };
 
 /**
@@ -9058,10 +9014,27 @@ function Section( $parentEl, $el, comments ) {
 	
 	this.id = $el.data('section-id');
 	
+	this.$el.on('click', '.side-comment .marker', _.bind(this.markerClick, this));
 	this.$el.on('click', '.side-comment .add-comment', _.bind(this.addCommentClick, this));
 	this.$el.on('click', '.actions .cancel', _.bind(this.cancelCommentClick, this));
 
 	this.render();
+}
+
+/**
+ * Click callback event on markers.
+ * @param  {Object} event The event object.
+ */
+Section.prototype.markerClick = function( event ) {
+	event.preventDefault();
+
+	if (this.isActive()) {
+		this.$parentEl.trigger('hideComments');
+	} else {
+		this.$parentEl.trigger('deselectSections');
+		this.$parentEl.trigger('showComments');
+		this.select();
+	}
 }
 
 /**
@@ -9142,6 +9115,13 @@ Section.prototype.deselect = function() {
 	this.$el.find('.side-comment').removeClass('active');
 	this.hideCommentForm();
 };
+
+/**
+ * Returns whether or not this section is considered active.
+ */
+Section.prototype.isActive = function() {
+	return this.$el.find('.side-comment').hasClass('active');
+}
 
 /**
  * Get the class to be used on the side comment section wrapper.
