@@ -40,7 +40,6 @@ Section.prototype.showCommentForm = function() {
 
 /**
  * Hides the comment form for this section.
- * @param  {Boolean} show Whether to show or hide the form.
  */
 Section.prototype.hideCommentForm = function() {
   if (this.comments.length > 0) {
