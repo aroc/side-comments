@@ -7,11 +7,13 @@ var existingComments = [
     "sectionId": "1",
     "comments": [
       {
+        "id": 88,
         "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
         "authorName": "Eric Anderson",
         "comment": "Hey there!"
       },
       {
+        "id": 100,
         "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
         "authorName": "Jim Beam",
         "comment": "I'm drunk!"
@@ -22,6 +24,7 @@ var existingComments = [
     "sectionId": "3",
     "comments": [
       {
+        "id": 34,
         "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
         "authorName": "Jim Beam",
         "comment": "I'm drunk!"

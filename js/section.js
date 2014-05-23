@@ -16,6 +16,7 @@ function Section( $parentEl, $el, comments ) {
 	
 	this.$el.on('click', '.side-comment .marker', _.bind(this.markerClick, this));
 	this.$el.on('click', '.side-comment .add-comment', _.bind(this.addCommentClick, this));
+	this.$el.on('click', '.actions .post', _.bind(this.postCommentClick, this));
 	this.$el.on('click', '.actions .cancel', _.bind(this.cancelCommentClick, this));
 
 	this.render();
@@ -78,7 +79,7 @@ Section.prototype.focusCommentBox = function() {
 };
 
 /**
- * Cancel callback.
+ * Cancel comment callback.
  * @param  {Object} event The event object.
  */
 Section.prototype.cancelCommentClick = function( event ) {
@@ -95,6 +96,30 @@ Section.prototype.cancelComment = function() {
   } else {
     this.$parentEl.trigger('hideComments');
   }
+};
+
+/**
+ * Post comment callback.
+ * @param  {Object} event The event object.
+ */
+Section.prototype.postCommentClick = function( event ) {
+  event.preventDefault();
+  this.postComment();
+};
+
+/**
+ * Post a comment to this section.
+ */
+Section.prototype.postComment = function() {
+  // TODO
+};
+
+/**
+ * Insert a comment into this sections comment list.
+ * @param  {Object} comment A comment object.
+ */
+Section.prototype.insertComment = function( comment ) {
+	// TODO - Insert a comment into this section's comment list.
 };
 
 /**
