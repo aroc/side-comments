@@ -18,6 +18,7 @@ function SideComments( el, existingComments ) {
   this.sections = [];
   
   // Event bindings
+  this.$el.on('hideComments', _.bind(this.hideComments ,this));
   this.$el.on('click', '.side-comment .marker', _.bind(this.markerClick, this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
@@ -33,7 +34,7 @@ SideComments.prototype.initialize = function( existingComments ) {
     var sectionId = $section.data('section-id').toString();
     var sectionComments = _.find(this.existingComments, { sectionId: sectionId });
 
-    this.sections.push(new Section(this, $section, sectionComments));
+    this.sections.push(new Section(this.$el, $section, sectionComments));
   }, this);
 };
 

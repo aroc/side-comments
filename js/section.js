@@ -7,13 +7,16 @@ var CommentTemplate = require('../templates/comment.html');
  * @param {Object} $parentEl The jQuery object that represents the section.
  * @param {Array} comments   The array of comments for this section. Optional.
  */
-function Section( sideComments, $parentEl, comments ) {
-	this.sideComments = sideComments;
+function Section( $parentEl, $el, comments ) {
 	this.$parentEl = $parentEl;
+	this.$el = $el;
 	this.comments = comments ? comments.comments : [];
-	this.id = $parentEl.data('section-id');
-	this.$parentEl.on('click', '.side-comment .add-comment', _.bind(this.addCommentClick, this));
-	this.$parentEl.on('click', '.actions .cancel', _.bind(this.cancelCommentClick, this));
+	
+	this.id = $el.data('section-id');
+	
+	this.$el.on('click', '.side-comment .add-comment', _.bind(this.addCommentClick, this));
+	this.$el.on('click', '.actions .cancel', _.bind(this.cancelCommentClick, this));
+
 	this.render();
 }
 
@@ -73,7 +76,7 @@ Section.prototype.cancelComment = function() {
   if (this.comments.length > 0) {
     this.hideCommentForm();
   } else {
-    this.sideComments.hideComments();
+    this.$parentEl.trigger('hideComments');
   }
 };
 
@@ -81,7 +84,7 @@ Section.prototype.cancelComment = function() {
  * Mark this section as selected.
  */
 Section.prototype.select = function() {
-	this.$el.addClass('active');
+	this.$el.find('.side-comment').addClass('active');
 
 	if (this.comments.length === 0) {
 	  this.focusCommentBox();
@@ -92,7 +95,7 @@ Section.prototype.select = function() {
  * Deselect this section.
  */
 Section.prototype.deselect = function() {
-	this.$el.removeClass('active');
+	this.$el.find('.side-comment').removeClass('active');
 	this.hideCommentForm();
 };
 
@@ -117,14 +120,14 @@ Section.prototype.render = function() {
 	  comments: this.comments,
 	  commentClass: this.commentClass()
 	};
-	this.$el = $(_.template(Template, data)).appendTo(this.$parentEl);
+	$(_.template(Template, data)).appendTo(this.$el);
 };
 
 /**
  * Desttroy this Section object. Generally meaning unbind events.
  */
 Section.prototype.destroy = function() {
-	this.$parentEl.off();
+	this.$el.off();
 }
 
 module.exports = Section;

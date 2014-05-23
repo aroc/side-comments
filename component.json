@@ -2,8 +2,7 @@
   "name": "side-comments",
   "repo": "aroc/side-comments",
   "dependencies": {
-    "lodash/lodash": "*",
-    "component/emitter": "*"
+    "lodash/lodash": "*"
   },
   "scripts": [
     "js/main.js",
