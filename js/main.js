@@ -19,7 +19,6 @@ function SideComments( el, existingComments ) {
   
   // Event bindings
   this.$el.on('click', '.side-comment .marker', _.bind(this.markerClickCallback, this));
-  this.$el.on('click', '.add-comment', _.bind(this.addCommentClickCallback, this));
   this.$el.on('click', '.actions .cancel', _.bind(this.cancelCommentCallback, this));
   // this.$el.on('click', '.actions .post', _.bind(this.postCommentCallback, this));
   this.$body.on('click', _.bind(this.bodyClick, this));
@@ -49,11 +48,6 @@ SideComments.prototype.markerClickCallback = function( event ) {
   var $marker = $(event.target);
   var sectionId = $marker.closest('.commentable-section').data('section-id');
   this.toggleComments(sectionId);
-};
-
-SideComments.prototype.addCommentClickCallback = function( event ) {
-  event.preventDefault();
-  this.activeSection.toggleCommentForm(true);
 };
 
 /**

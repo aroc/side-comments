@@ -8925,7 +8925,6 @@ function SideComments( el, existingComments ) {
   
   // Event bindings
   this.$el.on('click', '.side-comment .marker', _.bind(this.markerClickCallback, this));
-  this.$el.on('click', '.add-comment', _.bind(this.addCommentClickCallback, this));
   this.$el.on('click', '.actions .cancel', _.bind(this.cancelCommentCallback, this));
   // this.$el.on('click', '.actions .post', _.bind(this.postCommentCallback, this));
   this.$body.on('click', _.bind(this.bodyClick, this));
@@ -8955,11 +8954,6 @@ SideComments.prototype.markerClickCallback = function( event ) {
   var $marker = $(event.target);
   var sectionId = $marker.closest('.commentable-section').data('section-id');
   this.toggleComments(sectionId);
-};
-
-SideComments.prototype.addCommentClickCallback = function( event ) {
-  event.preventDefault();
-  this.activeSection.toggleCommentForm(true);
 };
 
 /**
@@ -9077,8 +9071,14 @@ function Section( $parentEl, comments ) {
 	this.$parentEl = $parentEl;
 	this.comments = comments ? comments.comments : [];
 	this.id = $parentEl.data('section-id');
+	this.$parentEl.on('click', '.side-comment .add-comment', _.bind(this.addCommentClickCallback, this));
 	this.render();
 }
+
+Section.prototype.addCommentClickCallback = function( event ) {
+  event.preventDefault();
+  this.toggleCommentForm(true);
+};
 
 Section.prototype.commentClass = function() {
 	if (this.comments.length > 0) {
@@ -9126,6 +9126,10 @@ Section.prototype.render = function() {
 	};
 	this.$el = $(_.template(Template, data)).appendTo(this.$parentEl);
 };
+
+Section.prototype.destroy = function() {
+	this.$parentEl.off();
+}
 
 module.exports = Section;
 });

@@ -6,8 +6,14 @@ function Section( $parentEl, comments ) {
 	this.$parentEl = $parentEl;
 	this.comments = comments ? comments.comments : [];
 	this.id = $parentEl.data('section-id');
+	this.$parentEl.on('click', '.side-comment .add-comment', _.bind(this.addCommentClickCallback, this));
 	this.render();
 }
+
+Section.prototype.addCommentClickCallback = function( event ) {
+  event.preventDefault();
+  this.toggleCommentForm(true);
+};
 
 Section.prototype.commentClass = function() {
 	if (this.comments.length > 0) {
@@ -55,5 +61,9 @@ Section.prototype.render = function() {
 	};
 	this.$el = $(_.template(Template, data)).appendTo(this.$parentEl);
 };
+
+Section.prototype.destroy = function() {
+	this.$parentEl.off();
+}
 
 module.exports = Section;
