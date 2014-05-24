@@ -8921,11 +8921,13 @@ function SideComments( el, existingComments ) {
 
   this.existingComments = existingComments || [];
   this.sections = [];
+  this.activeSection = null;
   
   // Event bindings
   this.$el.on('showComments', _.bind(this.showComments ,this));
   this.$el.on('hideComments', _.bind(this.hideComments ,this));
-  this.$el.on('deselectSections', _.bind(this.deselectSections ,this));
+  this.$el.on('sectionSelected', _.bind(this.sectionSelected ,this));
+  this.$el.on('sectionDeselected', _.bind(this.sectionDeselected ,this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
   this.initialize(this.existingComments);
@@ -8956,14 +8958,31 @@ SideComments.prototype.showComments = function() {
  */
 SideComments.prototype.hideComments = function() {
   this.$body.removeClass('side-comments-open');
-  this.deselectSections();
 };
 
 /**
- * Deselects all sections.
+ * Callback after a section has been selected.
+ * @param  {Object} event The event object.
+ * @param  {Object} section The Section object to be selected.
  */
-SideComments.prototype.deselectSections = function() {
-  _.invoke(this.sections, 'deselect');
+SideComments.prototype.sectionSelected = function( event, section ) {
+  this.showComments();
+
+  if (this.activeSection) {
+    this.activeSection.deselect();
+  }
+  
+  this.activeSection = section;
+};
+
+/**
+ * Callback after a section has been deselected.
+ * @param  {Object} event The event object.
+ * @param  {Object} section The Section object to be selected.
+ */
+SideComments.prototype.sectionDeselected = function( event, section ) {
+  this.hideComments();
+  this.activeSection = null;
 };
 
 /**
@@ -9014,6 +9033,8 @@ function Section( $parentEl, $el, comments ) {
 	
 	this.id = $el.data('section-id');
 	
+	this.$parentEl.on('deselectSelectedSections', _.bind(this.deselect, this));
+
 	this.$el.on('click', '.side-comment .marker', _.bind(this.markerClick, this));
 	this.$el.on('click', '.side-comment .add-comment', _.bind(this.addCommentClick, this));
 	this.$el.on('click', '.actions .post', _.bind(this.postCommentClick, this));
@@ -9028,13 +9049,13 @@ function Section( $parentEl, $el, comments ) {
  */
 Section.prototype.markerClick = function( event ) {
 	event.preventDefault();
-
-	if (this.isActive()) {
-		this.$parentEl.trigger('hideComments');
+	
+	if (this.isSelected()) {
+		this.deselect();
+		this.$parentEl.trigger('sectionDeselected', this);
 	} else {
-		this.$parentEl.trigger('deselectSections');
-		this.$parentEl.trigger('showComments');
 		this.select();
+		this.$parentEl.trigger('sectionSelected', this);
 	}
 }
 
@@ -9141,12 +9162,9 @@ Section.prototype.deselect = function() {
 	this.hideCommentForm();
 };
 
-/**
- * Returns whether or not this section is considered active.
- */
-Section.prototype.isActive = function() {
+Section.prototype.isSelected = function() {
 	return this.$el.find('.side-comment').hasClass('active');
-}
+};
 
 /**
  * Get the class to be used on the side comment section wrapper.

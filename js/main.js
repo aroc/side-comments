@@ -15,11 +15,13 @@ function SideComments( el, existingComments ) {
 
   this.existingComments = existingComments || [];
   this.sections = [];
+  this.activeSection = null;
   
   // Event bindings
   this.$el.on('showComments', _.bind(this.showComments ,this));
   this.$el.on('hideComments', _.bind(this.hideComments ,this));
-  this.$el.on('deselectSections', _.bind(this.deselectSections ,this));
+  this.$el.on('sectionSelected', _.bind(this.sectionSelected ,this));
+  this.$el.on('sectionDeselected', _.bind(this.sectionDeselected ,this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
   this.initialize(this.existingComments);
@@ -50,14 +52,31 @@ SideComments.prototype.showComments = function() {
  */
 SideComments.prototype.hideComments = function() {
   this.$body.removeClass('side-comments-open');
-  this.deselectSections();
 };
 
 /**
- * Deselects all sections.
+ * Callback after a section has been selected.
+ * @param  {Object} event The event object.
+ * @param  {Object} section The Section object to be selected.
  */
-SideComments.prototype.deselectSections = function() {
-  _.invoke(this.sections, 'deselect');
+SideComments.prototype.sectionSelected = function( event, section ) {
+  this.showComments();
+
+  if (this.activeSection) {
+    this.activeSection.deselect();
+  }
+  
+  this.activeSection = section;
+};
+
+/**
+ * Callback after a section has been deselected.
+ * @param  {Object} event The event object.
+ * @param  {Object} section The Section object to be selected.
+ */
+SideComments.prototype.sectionDeselected = function( event, section ) {
+  this.hideComments();
+  this.activeSection = null;
 };
 
 /**
