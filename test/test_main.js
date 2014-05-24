@@ -72,7 +72,7 @@ describe("SideComments", function() {
 
   });
 
-  describe("Display interactions", function() {
+  describe("High level display and interactions", function() {
 
   	it("should have the comment sections hidden at start", function() {
   		expect(sideComments.commentsAreVisible()).to.be.false;
@@ -133,9 +133,16 @@ describe("SideComments", function() {
   		expect(sideComments.commentsAreVisible()).to.be.false;
   	});
 
+    it("should hide the comments when the body is clicked", function(){
+      $('.side-comment').first().find('.marker').trigger('click');
+      $('body p').first().trigger('click');
+      expect($('.side-comment').hasClass('active')).to.be.false;
+      expect(sideComments.commentsAreVisible()).to.be.false;
+    });
+
   });
 
-	describe("Comments", function() {
+	describe("Comments display and interactions", function() {
 
 		var $section1;
 		var $section2;
@@ -192,5 +199,38 @@ describe("SideComments", function() {
     });
 
 	});
+
+  describe("Comment management", function(){
+
+    var $section1;
+    var $section2;
+    var $section3;
+
+    beforeEach(function( done ) {
+      $section1 = $('.side-comment').eq(0);
+      $section2 = $('.side-comment').eq(1);
+      $section3 = $('.side-comment').eq(2);
+      done();
+    });
+    
+    it("should emit an event when a comment is posted", function(){
+      this.timeout(5000);
+      var eventFired = false;
+      
+      $section2.find('.marker').trigger('click');
+      $section2.find('.comment-box').html("This is a test comment.");
+      $section2.find('.actions .post').trigger('click');
+
+      setTimeout(function () {
+        expect(eventFired).to.be.true;
+        done();
+      }, 1000);
+
+      sideComments.on('commentPosted', function( comment ) {
+        eventFired = true;
+      });
+    });
+
+  });
 
 });

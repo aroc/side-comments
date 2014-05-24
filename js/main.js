@@ -1,5 +1,6 @@
 _ = require('lodash');
 var Section = require('./section.js');
+var Emitter = require('emitter');
 
 /**
  * Creates a new SideComments instance.
@@ -22,10 +23,14 @@ function SideComments( el, existingComments ) {
   this.$el.on('hideComments', _.bind(this.hideComments ,this));
   this.$el.on('sectionSelected', _.bind(this.sectionSelected ,this));
   this.$el.on('sectionDeselected', _.bind(this.sectionDeselected ,this));
+  this.$el.on('commentPosted', _.bind(this.commentPosted ,this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
   this.initialize(this.existingComments);
 }
+
+// Mix in Emitter
+Emitter(SideComments.prototype);
 
 /**
  * Adds the comments beside each commentable section.
@@ -80,6 +85,24 @@ SideComments.prototype.sectionDeselected = function( event, section ) {
 };
 
 /**
+ * Fired when the commentPosted event is triggered.
+ * @param  {Object} event     The event.
+ * @param  {comment} comment  The comment object to be posted.
+ */
+SideComments.prototype.commentPosted = function( event, comment ) {
+  this.emit('commentPosted', comment);
+}
+
+/**
+ * Inserts the given comment into the right section.
+ * @param  {Object} comment A comment to be inserted.
+ */
+SideComments.prototype.insertComment = function( comment ) {
+  var section = _.find(this.sections, { id: comment.sectionId });
+  section.insertComment(comment);
+}
+
+/**
  * Checks if comments are visible or not.
  * @return {Boolean} Whether or not the comments are visible.
  */
@@ -95,6 +118,9 @@ SideComments.prototype.bodyClick = function( event ) {
   var $target = $(event.target);
   
   if ($target.closest('.side-comment').length < 1) {
+    if (this.activeSection) {
+      this.activeSection.deselect();
+    }
     this.hideComments();
   }
 };

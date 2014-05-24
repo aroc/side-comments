@@ -8903,9 +8903,177 @@ require.register("lodash-lodash/dist/lodash.compat.js", function(exports, requir
 }.call(this));
 
 });
+require.register("component-emitter/index.js", function(exports, require, module){
+
+/**
+ * Expose `Emitter`.
+ */
+
+module.exports = Emitter;
+
+/**
+ * Initialize a new `Emitter`.
+ *
+ * @api public
+ */
+
+function Emitter(obj) {
+  if (obj) return mixin(obj);
+};
+
+/**
+ * Mixin the emitter properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+function mixin(obj) {
+  for (var key in Emitter.prototype) {
+    obj[key] = Emitter.prototype[key];
+  }
+  return obj;
+}
+
+/**
+ * Listen on the given `event` with `fn`.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.on =
+Emitter.prototype.addEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  (this._callbacks[event] = this._callbacks[event] || [])
+    .push(fn);
+  return this;
+};
+
+/**
+ * Adds an `event` listener that will be invoked a single
+ * time then automatically removed.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.once = function(event, fn){
+  var self = this;
+  this._callbacks = this._callbacks || {};
+
+  function on() {
+    self.off(event, on);
+    fn.apply(this, arguments);
+  }
+
+  on.fn = fn;
+  this.on(event, on);
+  return this;
+};
+
+/**
+ * Remove the given callback for `event` or all
+ * registered callbacks.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.off =
+Emitter.prototype.removeListener =
+Emitter.prototype.removeAllListeners =
+Emitter.prototype.removeEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+
+  // all
+  if (0 == arguments.length) {
+    this._callbacks = {};
+    return this;
+  }
+
+  // specific event
+  var callbacks = this._callbacks[event];
+  if (!callbacks) return this;
+
+  // remove all handlers
+  if (1 == arguments.length) {
+    delete this._callbacks[event];
+    return this;
+  }
+
+  // remove specific handler
+  var cb;
+  for (var i = 0; i < callbacks.length; i++) {
+    cb = callbacks[i];
+    if (cb === fn || cb.fn === fn) {
+      callbacks.splice(i, 1);
+      break;
+    }
+  }
+  return this;
+};
+
+/**
+ * Emit `event` with the given args.
+ *
+ * @param {String} event
+ * @param {Mixed} ...
+ * @return {Emitter}
+ */
+
+Emitter.prototype.emit = function(event){
+  this._callbacks = this._callbacks || {};
+  var args = [].slice.call(arguments, 1)
+    , callbacks = this._callbacks[event];
+
+  if (callbacks) {
+    callbacks = callbacks.slice(0);
+    for (var i = 0, len = callbacks.length; i < len; ++i) {
+      callbacks[i].apply(this, args);
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Return array of callbacks for `event`.
+ *
+ * @param {String} event
+ * @return {Array}
+ * @api public
+ */
+
+Emitter.prototype.listeners = function(event){
+  this._callbacks = this._callbacks || {};
+  return this._callbacks[event] || [];
+};
+
+/**
+ * Check if this emitter has `event` handlers.
+ *
+ * @param {String} event
+ * @return {Boolean}
+ * @api public
+ */
+
+Emitter.prototype.hasListeners = function(event){
+  return !! this.listeners(event).length;
+};
+
+});
 require.register("side-comments/js/main.js", function(exports, require, module){
 _ = require('lodash');
 var Section = require('./section.js');
+var Emitter = require('emitter');
 
 /**
  * Creates a new SideComments instance.
@@ -8928,10 +9096,14 @@ function SideComments( el, existingComments ) {
   this.$el.on('hideComments', _.bind(this.hideComments ,this));
   this.$el.on('sectionSelected', _.bind(this.sectionSelected ,this));
   this.$el.on('sectionDeselected', _.bind(this.sectionDeselected ,this));
+  this.$el.on('commentPosted', _.bind(this.commentPosted ,this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
   this.initialize(this.existingComments);
 }
+
+// Mix in Emitter
+Emitter(SideComments.prototype);
 
 /**
  * Adds the comments beside each commentable section.
@@ -8986,6 +9158,24 @@ SideComments.prototype.sectionDeselected = function( event, section ) {
 };
 
 /**
+ * Fired when the commentPosted event is triggered.
+ * @param  {Object} event     The event.
+ * @param  {comment} comment  The comment object to be posted.
+ */
+SideComments.prototype.commentPosted = function( event, comment ) {
+  this.emit('commentPosted', comment);
+}
+
+/**
+ * Inserts the given comment into the right section.
+ * @param  {Object} comment A comment to be inserted.
+ */
+SideComments.prototype.insertComment = function( comment ) {
+  var section = _.find(this.sections, { id: comment.sectionId });
+  section.insertComment(comment);
+}
+
+/**
  * Checks if comments are visible or not.
  * @return {Boolean} Whether or not the comments are visible.
  */
@@ -9001,6 +9191,9 @@ SideComments.prototype.bodyClick = function( event ) {
   var $target = $(event.target);
   
   if ($target.closest('.side-comment').length < 1) {
+    if (this.activeSection) {
+      this.activeSection.deselect();
+    }
     this.hideComments();
   }
 };
@@ -9132,7 +9325,14 @@ Section.prototype.postCommentClick = function( event ) {
  * Post a comment to this section.
  */
 Section.prototype.postComment = function() {
-  // TODO
+  var commentBody = this.$el.find('.comment-box').html();
+  var comment = {
+  	sectionId: this.id,
+  	authorAvatarUrl: "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+  	authorName: "Eric Anderson",
+  	comment: commentBody
+  };
+  this.$parentEl.trigger('commentPosted', comment);
 };
 
 /**
@@ -9140,7 +9340,15 @@ Section.prototype.postComment = function() {
  * @param  {Object} comment A comment object.
  */
 Section.prototype.insertComment = function( comment ) {
-	// TODO - Insert a comment into this section's comment list.
+	this.comments.push(comment);
+	this.updateCommentCount();
+};
+
+/**
+ * Increments the comment count for a given section.
+ */
+Section.prototype.incrementCommentCount = function() {
+	this.$el.find('.marker span').text(this.comments.length);
 };
 
 /**
@@ -9200,8 +9408,11 @@ Section.prototype.destroy = function() {
 module.exports = Section;
 });
 
+
+
+
 require.register("side-comments/templates/section.html", function(exports, require, module){
-module.exports = '<div class="side-comment <%= commentClass %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments">\n    <ul>\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(commentTemplate, { comment: comment }) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment">Leave a comment</a>\n\n    <div class="comment-form">\n      <div class="author-avatar">\n        <img src="https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg">\n      </div>\n      <p class="author-name">\n        Eric Anderson\n      </p>\n      <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>\n      <div class="actions">\n        <a href="#" class="save">Post</a>\n        <a href="#" class="cancel">Cancel</a>\n      </div>\n    </div>\n  </div>\n</div>';
+module.exports = '<div class="side-comment <%= commentClass %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments">\n    <ul>\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(commentTemplate, { comment: comment }) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment">Leave a comment</a>\n\n    <div class="comment-form">\n      <div class="author-avatar">\n        <img src="https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg">\n      </div>\n      <p class="author-name">\n        Eric Anderson\n      </p>\n      <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>\n      <div class="actions">\n        <a href="#" class="post">Post</a>\n        <a href="#" class="cancel">Cancel</a>\n      </div>\n    </div>\n  </div>\n</div>';
 });
 require.register("side-comments/templates/comment.html", function(exports, require, module){
 module.exports = '<li>\n  <div class="author-avatar">\n    <img src="<%= comment.authorAvatarUrl %>">\n  </div>\n  <p class="author-name">\n    <%= comment.authorName %>\n  </p>\n  <p class="comment">\n    <%= comment.comment %>\n  </p>\n</li>';
@@ -9210,4 +9421,7 @@ require.alias("lodash-lodash/dist/lodash.compat.js", "side-comments/deps/lodash/
 require.alias("lodash-lodash/dist/lodash.compat.js", "side-comments/deps/lodash/index.js");
 require.alias("lodash-lodash/dist/lodash.compat.js", "lodash/index.js");
 require.alias("lodash-lodash/dist/lodash.compat.js", "lodash-lodash/index.js");
+require.alias("component-emitter/index.js", "side-comments/deps/emitter/index.js");
+require.alias("component-emitter/index.js", "emitter/index.js");
+
 require.alias("side-comments/js/main.js", "side-comments/index.js");

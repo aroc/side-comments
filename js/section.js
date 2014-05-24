@@ -113,7 +113,14 @@ Section.prototype.postCommentClick = function( event ) {
  * Post a comment to this section.
  */
 Section.prototype.postComment = function() {
-  // TODO
+  var commentBody = this.$el.find('.comment-box').html();
+  var comment = {
+  	sectionId: this.id,
+  	authorAvatarUrl: "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+  	authorName: "Eric Anderson",
+  	comment: commentBody
+  };
+  this.$parentEl.trigger('commentPosted', comment);
 };
 
 /**
@@ -121,7 +128,15 @@ Section.prototype.postComment = function() {
  * @param  {Object} comment A comment object.
  */
 Section.prototype.insertComment = function( comment ) {
-	// TODO - Insert a comment into this section's comment list.
+	this.comments.push(comment);
+	this.updateCommentCount();
+};
+
+/**
+ * Increments the comment count for a given section.
+ */
+Section.prototype.incrementCommentCount = function() {
+	this.$el.find('.marker span').text(this.comments.length);
 };
 
 /**
