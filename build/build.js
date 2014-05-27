@@ -9074,6 +9074,7 @@ require.register("side-comments/js/main.js", function(exports, require, module){
 _ = require('lodash');
 var Section = require('./section.js');
 var Emitter = require('emitter');
+var eventPipe = new Emitter;
 
 /**
  * Creates a new SideComments instance.
@@ -9086,17 +9087,18 @@ var Emitter = require('emitter');
 function SideComments( el, existingComments ) {
   this.$el = $(el);
   this.$body = $('body');
+  this.eventPipe = eventPipe;
 
   this.existingComments = existingComments || [];
   this.sections = [];
   this.activeSection = null;
   
   // Event bindings
-  this.$el.on('showComments', _.bind(this.showComments ,this));
-  this.$el.on('hideComments', _.bind(this.hideComments ,this));
-  this.$el.on('sectionSelected', _.bind(this.sectionSelected ,this));
-  this.$el.on('sectionDeselected', _.bind(this.sectionDeselected ,this));
-  this.$el.on('commentPosted', _.bind(this.commentPosted ,this));
+  this.eventPipe.on('showComments', _.bind(this.showComments ,this));
+  this.eventPipe.on('hideComments', _.bind(this.hideComments ,this));
+  this.eventPipe.on('sectionSelected', _.bind(this.sectionSelected ,this));
+  this.eventPipe.on('sectionDeselected', _.bind(this.sectionDeselected ,this));
+  this.eventPipe.on('commentPosted', _.bind(this.commentPosted ,this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
   this.initialize(this.existingComments);
@@ -9114,7 +9116,7 @@ SideComments.prototype.initialize = function( existingComments ) {
     var sectionId = $section.data('section-id').toString();
     var sectionComments = _.find(this.existingComments, { sectionId: sectionId });
 
-    this.sections.push(new Section(this.$el, $section, sectionComments));
+    this.sections.push(new Section(this.eventPipe, $section, sectionComments));
   }, this);
 };
 
@@ -9134,10 +9136,9 @@ SideComments.prototype.hideComments = function() {
 
 /**
  * Callback after a section has been selected.
- * @param  {Object} event The event object.
  * @param  {Object} section The Section object to be selected.
  */
-SideComments.prototype.sectionSelected = function( event, section ) {
+SideComments.prototype.sectionSelected = function( section ) {
   this.showComments();
 
   if (this.activeSection) {
@@ -9149,20 +9150,18 @@ SideComments.prototype.sectionSelected = function( event, section ) {
 
 /**
  * Callback after a section has been deselected.
- * @param  {Object} event The event object.
  * @param  {Object} section The Section object to be selected.
  */
-SideComments.prototype.sectionDeselected = function( event, section ) {
+SideComments.prototype.sectionDeselected = function( section ) {
   this.hideComments();
   this.activeSection = null;
 };
 
 /**
  * Fired when the commentPosted event is triggered.
- * @param  {Object} event     The event.
  * @param  {comment} comment  The comment object to be posted.
  */
-SideComments.prototype.commentPosted = function( event, comment ) {
+SideComments.prototype.commentPosted = function( comment ) {
   this.emit('commentPosted', comment);
 }
 
@@ -9216,17 +9215,15 @@ var CommentTemplate = require('../templates/comment.html');
 
 /**
  * Creates a new Section object, which is responsible for managing a single comment section.
- * @param {Object} $parentEl The jQuery object that represents the section.
+ * @param {Object} eventPipe The Emitter object used for passing around events.
  * @param {Array} comments   The array of comments for this section. Optional.
  */
-function Section( $parentEl, $el, comments ) {
-	this.$parentEl = $parentEl;
+function Section( eventPipe, $el, comments ) {
+	this.eventPipe = eventPipe;
 	this.$el = $el;
 	this.comments = comments ? comments.comments : [];
 	
 	this.id = $el.data('section-id');
-	
-	this.$parentEl.on('deselectSelectedSections', _.bind(this.deselect, this));
 
 	this.$el.on('click', '.side-comment .marker', _.bind(this.markerClick, this));
 	this.$el.on('click', '.side-comment .add-comment', _.bind(this.addCommentClick, this));
@@ -9245,10 +9242,10 @@ Section.prototype.markerClick = function( event ) {
 	
 	if (this.isSelected()) {
 		this.deselect();
-		this.$parentEl.trigger('sectionDeselected', this);
+		this.eventPipe.emit('sectionDeselected', this);
 	} else {
 		this.select();
-		this.$parentEl.trigger('sectionSelected', this);
+		this.eventPipe.emit('sectionSelected', this);
 	}
 }
 
@@ -9308,7 +9305,7 @@ Section.prototype.cancelComment = function() {
   if (this.comments.length > 0) {
     this.hideCommentForm();
   } else {
-    this.$parentEl.trigger('hideComments');
+    this.eventPipe.emit('hideComments');
   }
 };
 
@@ -9332,7 +9329,7 @@ Section.prototype.postComment = function() {
   	authorName: "Eric Anderson",
   	comment: commentBody
   };
-  this.$parentEl.trigger('commentPosted', comment);
+  this.eventPipe.emit('commentPosted', comment);
 };
 
 /**

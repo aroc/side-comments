@@ -4,17 +4,15 @@ var CommentTemplate = require('../templates/comment.html');
 
 /**
  * Creates a new Section object, which is responsible for managing a single comment section.
- * @param {Object} $parentEl The jQuery object that represents the section.
+ * @param {Object} eventPipe The Emitter object used for passing around events.
  * @param {Array} comments   The array of comments for this section. Optional.
  */
-function Section( $parentEl, $el, comments ) {
-	this.$parentEl = $parentEl;
+function Section( eventPipe, $el, comments ) {
+	this.eventPipe = eventPipe;
 	this.$el = $el;
 	this.comments = comments ? comments.comments : [];
 	
 	this.id = $el.data('section-id');
-	
-	this.$parentEl.on('deselectSelectedSections', _.bind(this.deselect, this));
 
 	this.$el.on('click', '.side-comment .marker', _.bind(this.markerClick, this));
 	this.$el.on('click', '.side-comment .add-comment', _.bind(this.addCommentClick, this));
@@ -33,10 +31,10 @@ Section.prototype.markerClick = function( event ) {
 	
 	if (this.isSelected()) {
 		this.deselect();
-		this.$parentEl.trigger('sectionDeselected', this);
+		this.eventPipe.emit('sectionDeselected', this);
 	} else {
 		this.select();
-		this.$parentEl.trigger('sectionSelected', this);
+		this.eventPipe.emit('sectionSelected', this);
 	}
 }
 
@@ -96,7 +94,7 @@ Section.prototype.cancelComment = function() {
   if (this.comments.length > 0) {
     this.hideCommentForm();
   } else {
-    this.$parentEl.trigger('hideComments');
+    this.eventPipe.emit('hideComments');
   }
 };
 
@@ -120,7 +118,7 @@ Section.prototype.postComment = function() {
   	authorName: "Eric Anderson",
   	comment: commentBody
   };
-  this.$parentEl.trigger('commentPosted', comment);
+  this.eventPipe.emit('commentPosted', comment);
 };
 
 /**
