@@ -3,10 +3,10 @@
     <span><%= comments.length %></span>
   </a>
   
-  <div class="comments">
-    <ul>
+  <div class="comments-wrapper">
+    <ul class="comments">
       <% _.each(comments, function( comment ){ %>
-        <%= _.template(commentTemplate, { comment: comment }) %>
+        <%= _.template(commentTemplate, comment) %>
       <% }) %>
     </ul>
     

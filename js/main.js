@@ -58,6 +58,11 @@ SideComments.prototype.showComments = function() {
  * Hide the comments.
  */
 SideComments.prototype.hideComments = function() {
+  if (this.activeSection) {
+    this.activeSection.deselect();
+    this.activeSection = null;
+  }
+
   this.$body.removeClass('side-comments-open');
 };
 

@@ -1,10 +1,16 @@
 _ = require('lodash');
 var CommentTemplate = require('../templates/comment.html');
 
-function Comment( attributes ){
+/**
+ * Creates a new Comment
+ * @param {[type]} section    [description]
+ * @param {[type]} attributes [description]
+ */
+function Comment( section, attributes ){
+	this.section = section;
 	this.attributes = attributes;
 }
 
-Comment.prototype.render = function(first_argument) {
-	// body...
+Comment.prototype.render = function() {
+	
 };

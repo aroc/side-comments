@@ -94,6 +94,7 @@ Section.prototype.cancelComment = function() {
   if (this.comments.length > 0) {
     this.hideCommentForm();
   } else {
+  	this.deselect();
     this.eventPipe.emit('hideComments');
   }
 };
@@ -127,13 +128,15 @@ Section.prototype.postComment = function() {
  */
 Section.prototype.insertComment = function( comment ) {
 	this.comments.push(comment);
+	var newCommentHtml = _.template(CommentTemplate, comment);
+	this.$el.find('.comments').append(newCommentHtml);
 	this.updateCommentCount();
 };
 
 /**
  * Increments the comment count for a given section.
  */
-Section.prototype.incrementCommentCount = function() {
+Section.prototype.updateCommentCount = function() {
 	this.$el.find('.marker span').text(this.comments.length);
 };
 

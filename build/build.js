@@ -9131,6 +9131,11 @@ SideComments.prototype.showComments = function() {
  * Hide the comments.
  */
 SideComments.prototype.hideComments = function() {
+  if (this.activeSection) {
+    this.activeSection.deselect();
+    this.activeSection = null;
+  }
+
   this.$body.removeClass('side-comments-open');
 };
 
@@ -9305,6 +9310,7 @@ Section.prototype.cancelComment = function() {
   if (this.comments.length > 0) {
     this.hideCommentForm();
   } else {
+  	this.deselect();
     this.eventPipe.emit('hideComments');
   }
 };
@@ -9338,13 +9344,15 @@ Section.prototype.postComment = function() {
  */
 Section.prototype.insertComment = function( comment ) {
 	this.comments.push(comment);
+	var newCommentHtml = _.template(CommentTemplate, comment);
+	this.$el.find('.comments').append(newCommentHtml);
 	this.updateCommentCount();
 };
 
 /**
  * Increments the comment count for a given section.
  */
-Section.prototype.incrementCommentCount = function() {
+Section.prototype.updateCommentCount = function() {
 	this.$el.find('.marker span').text(this.comments.length);
 };
 
@@ -9409,10 +9417,10 @@ module.exports = Section;
 
 
 require.register("side-comments/templates/section.html", function(exports, require, module){
-module.exports = '<div class="side-comment <%= commentClass %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments">\n    <ul>\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(commentTemplate, { comment: comment }) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment">Leave a comment</a>\n\n    <div class="comment-form">\n      <div class="author-avatar">\n        <img src="https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg">\n      </div>\n      <p class="author-name">\n        Eric Anderson\n      </p>\n      <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>\n      <div class="actions">\n        <a href="#" class="post">Post</a>\n        <a href="#" class="cancel">Cancel</a>\n      </div>\n    </div>\n  </div>\n</div>';
+module.exports = '<div class="side-comment <%= commentClass %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments-wrapper">\n    <ul class="comments">\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(commentTemplate, comment) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment">Leave a comment</a>\n\n    <div class="comment-form">\n      <div class="author-avatar">\n        <img src="https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg">\n      </div>\n      <p class="author-name">\n        Eric Anderson\n      </p>\n      <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>\n      <div class="actions">\n        <a href="#" class="post">Post</a>\n        <a href="#" class="cancel">Cancel</a>\n      </div>\n    </div>\n  </div>\n</div>';
 });
 require.register("side-comments/templates/comment.html", function(exports, require, module){
-module.exports = '<li>\n  <div class="author-avatar">\n    <img src="<%= comment.authorAvatarUrl %>">\n  </div>\n  <p class="author-name">\n    <%= comment.authorName %>\n  </p>\n  <p class="comment">\n    <%= comment.comment %>\n  </p>\n</li>';
+module.exports = '<li>\n  <div class="author-avatar">\n    <img src="<%= authorAvatarUrl %>">\n  </div>\n  <p class="author-name">\n    <%= authorName %>\n  </p>\n  <p class="comment">\n    <%= comment %>\n  </p>\n</li>';
 });
 require.alias("lodash-lodash/dist/lodash.compat.js", "side-comments/deps/lodash/dist/lodash.compat.js");
 require.alias("lodash-lodash/dist/lodash.compat.js", "side-comments/deps/lodash/index.js");
