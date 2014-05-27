@@ -9346,6 +9346,7 @@ Section.prototype.insertComment = function( comment ) {
 	this.comments.push(comment);
 	var newCommentHtml = _.template(CommentTemplate, comment);
 	this.$el.find('.comments').append(newCommentHtml);
+	this.$el.find('.side-comment').addClass('has-comments');
 	this.updateCommentCount();
 };
 
