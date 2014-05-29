@@ -16,7 +16,7 @@ function SideComments( el, existingComments ) {
   this.$body = $('body');
   this.eventPipe = eventPipe;
 
-  this.existingComments = existingComments || [];
+  this.existingComments = _.cloneDeep(existingComments) || [];
   this.sections = [];
   this.activeSection = null;
   
