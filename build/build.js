@@ -9078,17 +9078,23 @@ var eventPipe = new Emitter;
 
 /**
  * Creates a new SideComments instance.
- * @param {[type]} el               The selector for the element for which side comments need
- *                                  to be initialized
- * @param {[type]} existingComments An array of existing comments, in the proper structure.
+ * @param {Object} el               The selector for the element for
+ *                                  which side comments need to be initialized
+ * @param {Object} currentUser      An object defining the current user. Used
+ *                                  for posting new comments and deciding
+ *                                  whether existing ones can be deleted
+ *                                  or not.
+ * @param {Array} existingComments An array of existing comments, in
+ *                                 the proper structure.
  * 
  * TODO: **GIVE EXAMPLE OF STRUCTURE HERE***
  */
-function SideComments( el, existingComments ) {
+function SideComments( el, currentUser, existingComments ) {
   this.$el = $(el);
   this.$body = $('body');
   this.eventPipe = eventPipe;
 
+  this.currentUser = _.clone(currentUser) || null;
   this.existingComments = _.cloneDeep(existingComments) || [];
   this.sections = [];
   this.activeSection = null;
@@ -9116,7 +9122,7 @@ SideComments.prototype.initialize = function( existingComments ) {
     var sectionId = $section.data('section-id').toString();
     var sectionComments = _.find(this.existingComments, { sectionId: sectionId });
 
-    this.sections.push(new Section(this.eventPipe, $section, sectionComments));
+    this.sections.push(new Section(this.eventPipe, $section, this.currentUser, sectionComments));
   }, this);
 };
 
@@ -9219,21 +9225,24 @@ var Template = require('../templates/section.html');
 var CommentTemplate = require('../templates/comment.html');
 
 /**
- * Creates a new Section object, which is responsible for managing a single comment section.
+ * Creates a new Section object, which is responsible for managing a
+ * single comment section.
  * @param {Object} eventPipe The Emitter object used for passing around events.
  * @param {Array} comments   The array of comments for this section. Optional.
  */
-function Section( eventPipe, $el, comments ) {
+function Section( eventPipe, $el, currentUser, comments ) {
 	this.eventPipe = eventPipe;
 	this.$el = $el;
 	this.comments = comments ? comments.comments : [];
+	this.currentUser = currentUser || null;
 	
 	this.id = $el.data('section-id');
 
 	this.$el.on('click', '.side-comment .marker', _.bind(this.markerClick, this));
 	this.$el.on('click', '.side-comment .add-comment', _.bind(this.addCommentClick, this));
-	this.$el.on('click', '.actions .post', _.bind(this.postCommentClick, this));
-	this.$el.on('click', '.actions .cancel', _.bind(this.cancelCommentClick, this));
+	this.$el.on('click', '.side-comment .post', _.bind(this.postCommentClick, this));
+	this.$el.on('click', '.side-comment .cancel', _.bind(this.cancelCommentClick, this));
+	this.$el.on('click', '.side-comment .delete', _.bind(this.deleteCommentClick, this));
 
 	this.render();
 }
@@ -9331,9 +9340,10 @@ Section.prototype.postComment = function() {
   var commentBody = this.$el.find('.comment-box').html();
   var comment = {
   	sectionId: this.id,
-  	authorAvatarUrl: "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
-  	authorName: "Eric Anderson",
-  	comment: commentBody
+  	comment: commentBody,
+  	authorAvatarUrl: this.currentUser.avatarUrl,
+  	authorName: this.currentUser.name,
+  	authorId: this.currentUser.id
   };
   this.eventPipe.emit('commentPosted', comment);
 };
@@ -9344,10 +9354,11 @@ Section.prototype.postComment = function() {
  */
 Section.prototype.insertComment = function( comment ) {
 	this.comments.push(comment);
-	var newCommentHtml = _.template(CommentTemplate, comment);
+	var newCommentHtml = _.template(CommentTemplate, { comment: comment });
 	this.$el.find('.comments').append(newCommentHtml);
 	this.$el.find('.side-comment').addClass('has-comments');
 	this.updateCommentCount();
+	this.hideCommentForm();
 };
 
 /**
@@ -9355,6 +9366,30 @@ Section.prototype.insertComment = function( comment ) {
  */
 Section.prototype.updateCommentCount = function() {
 	this.$el.find('.marker span').text(this.comments.length);
+};
+
+/**
+ * Event handler for delete comment clicks.
+ * @param  {Object} event The event object.
+ */
+Section.prototype.deleteCommentClick = function( event ) {
+	event.preventDefault();
+	var commentId = $(event.target).closest('li').data('comment-id');
+
+	if (window.confirm("Are you sure you want to delete this comment?")) {
+		this.deleteComment(commentId);
+	}
+};
+
+/**
+ * Deletes the given comment.
+ * @return {Integer} The ID of the comment to be deleted.
+ */
+Section.prototype.deleteComment = function( commentId ) {
+	this.comments = _.reject(this.comments, { id: commentId });
+	this.$el.find('.side-comment .comments li[data-comment-id="'+commentId+'"]').remove();
+	this.updateCommentCount();
+	// TODO: Emit an event.
 };
 
 /**
@@ -9399,7 +9434,8 @@ Section.prototype.render = function() {
 	var data = {
 	  commentTemplate: CommentTemplate,
 	  comments: this.comments,
-	  commentClass: this.commentClass()
+	  commentClass: this.commentClass(),
+	  currentUser: this.currentUser
 	};
 	$(_.template(Template, data)).appendTo(this.$el);
 };
@@ -9418,10 +9454,10 @@ module.exports = Section;
 
 
 require.register("side-comments/templates/section.html", function(exports, require, module){
-module.exports = '<div class="side-comment <%= commentClass %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments-wrapper">\n    <ul class="comments">\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(commentTemplate, comment) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment">Leave a comment</a>\n\n    <div class="comment-form">\n      <div class="author-avatar">\n        <img src="https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg">\n      </div>\n      <p class="author-name">\n        Eric Anderson\n      </p>\n      <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>\n      <div class="actions">\n        <a href="#" class="post">Post</a>\n        <a href="#" class="cancel">Cancel</a>\n      </div>\n    </div>\n  </div>\n</div>';
+module.exports = '<div class="side-comment <%= commentClass %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments-wrapper">\n    <ul class="comments">\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(commentTemplate, { comment: comment, currentUser: currentUser }) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment">Leave a comment</a>\n\n    <div class="comment-form">\n      <div class="author-avatar">\n        <img src="https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg">\n      </div>\n      <p class="author-name">\n        Eric Anderson\n      </p>\n      <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>\n      <div class="actions">\n        <a href="#" class="post">Post</a>\n        <a href="#" class="cancel">Cancel</a>\n      </div>\n    </div>\n  </div>\n</div>';
 });
 require.register("side-comments/templates/comment.html", function(exports, require, module){
-module.exports = '<li>\n  <div class="author-avatar">\n    <img src="<%= authorAvatarUrl %>">\n  </div>\n  <p class="author-name">\n    <%= authorName %>\n  </p>\n  <p class="comment">\n    <%= comment %>\n  </p>\n</li>';
+module.exports = '<li data-comment-id="<%= comment.id %>">\n  <div class="author-avatar">\n    <img src="<%= comment.authorAvatarUrl %>">\n  </div>\n  <p class="author-name">\n    <%= comment.authorName %>\n  </p>\n  <p class="comment">\n    <%= comment.comment %>\n  </p>\n  <% if (comment.authorId === currentUser.id){ %>\n  <div class="actions">\n  	<a href="#" class="delete">Delete</a>\n  </div>\n  <% } %>\n</li>';
 });
 require.alias("lodash-lodash/dist/lodash.compat.js", "side-comments/deps/lodash/dist/lodash.compat.js");
 require.alias("lodash-lodash/dist/lodash.compat.js", "side-comments/deps/lodash/index.js");

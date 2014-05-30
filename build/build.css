@@ -167,12 +167,30 @@ body.side-comments-open {
   font-size: 14px;
   line-height: 18px;
 }
+.side-comment .actions a {
+  color: #B3B3B1;
+  font-size: 13px;
+  text-decoration: none;
+}
+.side-comment .actions a:hover {
+  text-decoration: none;
+}
+.side-comment .actions .post {
+  color: #89C794;
+}
+.side-comment .actions .post:hover {
+  color: #468c54;
+}
+.side-comment .actions .cancel:hover,
+.side-comment .actions .delete:hover {
+  color: #57AD68;
+}
 .side-comment .add-comment {
   color: #B3B3B1;
   font-size: 14px;
-  line-height: 28px;
+  line-height: 22px;
   font-weight: 300;
-  padding: 15px;
+  padding: 0px 8px;
   letter-spacing: 0.05em;
   text-decoration: none;
 }
@@ -180,13 +198,13 @@ body.side-comments-open {
   content: "+";
   border: 2px solid #DEDEDC;
   border-radius: 309px;
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   color: #DEDEDC;
   display: block;
   text-align: center;
-  font-size: 18px;
-  line-height: 21px;
+  font-size: 16px;
+  line-height: 17px;
   float: left;
   margin-right: 15px;
   letter-spacing: 0;
@@ -210,25 +228,10 @@ body.side-comments-open {
   margin-top: 5px;
 }
 .side-comment .actions a {
-  color: #B3B3B1;
-  font-size: 14px;
   float: left;
-  text-decoration: none;
-}
-.side-comment .actions a:hover {
-  text-decoration: none;
-}
-.side-comment .actions .post {
-  color: #89C794;
-}
-.side-comment .actions .post:hover {
-  color: #468c54;
 }
 .side-comment .actions .cancel:before {
   content: '\00B7';
   color: #B3B3B1;
   padding: 0 5px;
-}
-.side-comment .actions .cancel:hover {
-  color: #57AD68;
 }

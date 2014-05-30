@@ -10,13 +10,15 @@ var existingComments = [
         "id": 88,
         "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
         "authorName": "John Doe",
-        "comment": "This is a fantastic comment I posted from the side."
+        "comment": "This is a fantastic comment I posted from the side.",
+        "authorId": 1
       },
       {
         "id": 100,
         "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
         "authorName": "Chris Carter",
-        "comment": "I love comments."
+        "comment": "I love comments.",
+        "authorId": 2
       }
     ]
   },
@@ -27,11 +29,17 @@ var existingComments = [
         "id": 34,
         "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
         "authorName": "Jim Beam",
-        "comment": "I'm drunk!"
+        "comment": "I'm drunk!",
+        "authorId": 3
       }
     ]
   }
 ];
+var currentUser = {
+  "id": 1,
+  "avatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+  "name": "John Doe"
+};
 
 /***********/
 /* Helpers *
@@ -40,10 +48,12 @@ var existingComments = [
 var $section1;
 var $section2;
 var $section3;
+
 var newTestComment = {
   id: 278,
+  authorId: 1,
   authorAvatarUrl: "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
-  authorName: "Charles Brown",
+  authorName: "New Test Commenter",
   comment: "This is a test comment."
 };
 
@@ -59,7 +69,7 @@ function setupSideComments() {
 		sideComments = null;
 	}
 	$('#fixtures').html(fixturesHTML);
-	sideComments = new SideComments('#commentable-container', existingComments);
+	sideComments = new SideComments('#commentable-container', currentUser, existingComments);
 }
 
 function postComment( $section ) {
@@ -78,12 +88,12 @@ describe("SideComments", function() {
 		done();
 	});
 
-	after(function( done ) {
-		sideComments.destroy();
-		sideComments = null;
-		$('#fixtures').html(fixturesHTML);
-		done();
-	});
+	// after(function( done ) {
+	// 	sideComments.destroy();
+	// 	sideComments = null;
+	// 	$('#fixtures').html(fixturesHTML);
+	// 	done();
+	// });
   
   describe("Constructor", function() {
     

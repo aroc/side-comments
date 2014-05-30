@@ -3,21 +3,24 @@ var Template = require('../templates/section.html');
 var CommentTemplate = require('../templates/comment.html');
 
 /**
- * Creates a new Section object, which is responsible for managing a single comment section.
+ * Creates a new Section object, which is responsible for managing a
+ * single comment section.
  * @param {Object} eventPipe The Emitter object used for passing around events.
  * @param {Array} comments   The array of comments for this section. Optional.
  */
-function Section( eventPipe, $el, comments ) {
+function Section( eventPipe, $el, currentUser, comments ) {
 	this.eventPipe = eventPipe;
 	this.$el = $el;
 	this.comments = comments ? comments.comments : [];
+	this.currentUser = currentUser || null;
 	
 	this.id = $el.data('section-id');
 
 	this.$el.on('click', '.side-comment .marker', _.bind(this.markerClick, this));
 	this.$el.on('click', '.side-comment .add-comment', _.bind(this.addCommentClick, this));
-	this.$el.on('click', '.actions .post', _.bind(this.postCommentClick, this));
-	this.$el.on('click', '.actions .cancel', _.bind(this.cancelCommentClick, this));
+	this.$el.on('click', '.side-comment .post', _.bind(this.postCommentClick, this));
+	this.$el.on('click', '.side-comment .cancel', _.bind(this.cancelCommentClick, this));
+	this.$el.on('click', '.side-comment .delete', _.bind(this.deleteCommentClick, this));
 
 	this.render();
 }
@@ -115,9 +118,10 @@ Section.prototype.postComment = function() {
   var commentBody = this.$el.find('.comment-box').html();
   var comment = {
   	sectionId: this.id,
-  	authorAvatarUrl: "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
-  	authorName: "Eric Anderson",
-  	comment: commentBody
+  	comment: commentBody,
+  	authorAvatarUrl: this.currentUser.avatarUrl,
+  	authorName: this.currentUser.name,
+  	authorId: this.currentUser.id
   };
   this.eventPipe.emit('commentPosted', comment);
 };
@@ -128,10 +132,11 @@ Section.prototype.postComment = function() {
  */
 Section.prototype.insertComment = function( comment ) {
 	this.comments.push(comment);
-	var newCommentHtml = _.template(CommentTemplate, comment);
+	var newCommentHtml = _.template(CommentTemplate, { comment: comment });
 	this.$el.find('.comments').append(newCommentHtml);
 	this.$el.find('.side-comment').addClass('has-comments');
 	this.updateCommentCount();
+	this.hideCommentForm();
 };
 
 /**
@@ -139,6 +144,30 @@ Section.prototype.insertComment = function( comment ) {
  */
 Section.prototype.updateCommentCount = function() {
 	this.$el.find('.marker span').text(this.comments.length);
+};
+
+/**
+ * Event handler for delete comment clicks.
+ * @param  {Object} event The event object.
+ */
+Section.prototype.deleteCommentClick = function( event ) {
+	event.preventDefault();
+	var commentId = $(event.target).closest('li').data('comment-id');
+
+	if (window.confirm("Are you sure you want to delete this comment?")) {
+		this.deleteComment(commentId);
+	}
+};
+
+/**
+ * Deletes the given comment.
+ * @return {Integer} The ID of the comment to be deleted.
+ */
+Section.prototype.deleteComment = function( commentId ) {
+	this.comments = _.reject(this.comments, { id: commentId });
+	this.$el.find('.side-comment .comments li[data-comment-id="'+commentId+'"]').remove();
+	this.updateCommentCount();
+	// TODO: Emit an event.
 };
 
 /**
@@ -183,7 +212,8 @@ Section.prototype.render = function() {
 	var data = {
 	  commentTemplate: CommentTemplate,
 	  comments: this.comments,
-	  commentClass: this.commentClass()
+	  commentClass: this.commentClass(),
+	  currentUser: this.currentUser
 	};
 	$(_.template(Template, data)).appendTo(this.$el);
 };

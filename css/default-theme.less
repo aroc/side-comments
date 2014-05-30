@@ -24,12 +24,43 @@
     }
 
   }
+  
+  .actions {
+  
+    a {
+      color: #B3B3B1;
+      font-size: 13px;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    .post {
+      color: #89C794;
+
+      &:hover {
+        color: #468C54
+      }
+    }
+
+    .cancel, .delete {
+
+      &:hover {
+        color: #57AD68;
+      }
+      
+    }
+
+  }
+
   .add-comment {
     color: #B3B3B1;
     font-size: 14px;
-    line-height: 28px;
+    line-height: 22px;
     font-weight: 300;
-    padding: 15px;
+    padding: 0px 8px;
     letter-spacing: 0.05em;
     text-decoration: none;
 
@@ -37,13 +68,13 @@
       content: "+";
       border: 2px solid #DEDEDC;
       border-radius: 309px;
-      width: 24px;
-      height: 24px;
+      width: 18px;
+      height: 18px;
       color: #DEDEDC;
       display: block;
       text-align: center;
-      font-size: 18px;
-      line-height: 21px;
+      font-size: 16px;
+      line-height: 17px;
       float: left;
       margin-right: 15px;
       letter-spacing: 0;
@@ -76,22 +107,7 @@
     margin-top: 5px;
   
     a {
-      color: #B3B3B1;
-      font-size: 14px;
       float: left;
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: none;
-      }
-    }
-
-    .post {
-      color: #89C794;
-
-      &:hover {
-        color: #468C54
-      }
     }
 
     .cancel {
@@ -100,10 +116,6 @@
         content: '\00B7';
         color: #B3B3B1;
         padding: 0 5px;
-      }
-
-      &:hover {
-        color: #57AD68;
       }
       
     }

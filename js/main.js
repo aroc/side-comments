@@ -5,17 +5,23 @@ var eventPipe = new Emitter;
 
 /**
  * Creates a new SideComments instance.
- * @param {[type]} el               The selector for the element for which side comments need
- *                                  to be initialized
- * @param {[type]} existingComments An array of existing comments, in the proper structure.
+ * @param {Object} el               The selector for the element for
+ *                                  which side comments need to be initialized
+ * @param {Object} currentUser      An object defining the current user. Used
+ *                                  for posting new comments and deciding
+ *                                  whether existing ones can be deleted
+ *                                  or not.
+ * @param {Array} existingComments An array of existing comments, in
+ *                                 the proper structure.
  * 
  * TODO: **GIVE EXAMPLE OF STRUCTURE HERE***
  */
-function SideComments( el, existingComments ) {
+function SideComments( el, currentUser, existingComments ) {
   this.$el = $(el);
   this.$body = $('body');
   this.eventPipe = eventPipe;
 
+  this.currentUser = _.clone(currentUser) || null;
   this.existingComments = _.cloneDeep(existingComments) || [];
   this.sections = [];
   this.activeSection = null;
@@ -43,7 +49,7 @@ SideComments.prototype.initialize = function( existingComments ) {
     var sectionId = $section.data('section-id').toString();
     var sectionComments = _.find(this.existingComments, { sectionId: sectionId });
 
-    this.sections.push(new Section(this.eventPipe, $section, sectionComments));
+    this.sections.push(new Section(this.eventPipe, $section, this.currentUser, sectionComments));
   }, this);
 };
 
