@@ -130,7 +130,8 @@ body.side-comments-open {
   width: 238px;
   float: left;
 }
-.side-comment .actions {
+.side-comment .actions,
+.side-comment .delete {
   margin-left: 42px;
 }
 .side-comment .comment-box {
@@ -167,22 +168,22 @@ body.side-comments-open {
   font-size: 14px;
   line-height: 18px;
 }
-.side-comment .actions a {
+.side-comment .action-link {
   color: #B3B3B1;
   font-size: 13px;
   text-decoration: none;
 }
-.side-comment .actions a:hover {
+.side-comment .action-link:hover {
   text-decoration: none;
 }
-.side-comment .actions .post {
+.side-comment .action-link.post .post {
   color: #89C794;
 }
-.side-comment .actions .post:hover {
+.side-comment .action-link.post .post:hover {
   color: #468c54;
 }
-.side-comment .actions .cancel:hover,
-.side-comment .actions .delete:hover {
+.side-comment .action-link.cancel:hover,
+.side-comment .action-link.delete:hover {
   color: #57AD68;
 }
 .side-comment .add-comment {

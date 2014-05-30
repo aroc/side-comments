@@ -167,7 +167,9 @@ Section.prototype.deleteComment = function( commentId ) {
 	this.comments = _.reject(this.comments, { id: commentId });
 	this.$el.find('.side-comment .comments li[data-comment-id="'+commentId+'"]').remove();
 	this.updateCommentCount();
-	// TODO: Emit an event.
+	if (this.comments.length < 1) {
+		this.$el.find('.side-comment').removeClass('has-comments');
+	}
 };
 
 /**

@@ -101,7 +101,7 @@ SideComments.prototype.sectionDeselected = function( section ) {
  */
 SideComments.prototype.commentPosted = function( comment ) {
   this.emit('commentPosted', comment);
-}
+};
 
 /**
  * Inserts the given comment into the right section.
@@ -110,7 +110,17 @@ SideComments.prototype.commentPosted = function( comment ) {
 SideComments.prototype.insertComment = function( comment ) {
   var section = _.find(this.sections, { id: comment.sectionId });
   section.insertComment(comment);
-}
+};
+
+/**
+ * Delete the comment specified by the given sectionID and commentID.
+ * @param  {Integer} sectionId The section the comment belongs to.
+ * @param  {Integer} commentId The comment's ID
+ */
+SideComments.prototype.deleteComment = function( sectionId, commentId ) {
+  var section = _.find(this.sections, { id: sectionId });
+  section.deleteComment(commentId);
+};
 
 /**
  * Checks if comments are visible or not.

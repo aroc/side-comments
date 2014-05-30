@@ -88,12 +88,12 @@ describe("SideComments", function() {
 		done();
 	});
 
-	// after(function( done ) {
-	// 	sideComments.destroy();
-	// 	sideComments = null;
-	// 	$('#fixtures').html(fixturesHTML);
-	// 	done();
-	// });
+	after(function( done ) {
+		sideComments.destroy();
+		sideComments = null;
+		$('#fixtures').html(fixturesHTML);
+		done();
+	});
   
   describe("Constructor", function() {
     
@@ -280,6 +280,27 @@ describe("SideComments", function() {
     it("should update an empty section's comment count after adding", function(){
       sideComments.insertComment(testCommentForSection(2));
       expect($section2.find('.marker span').text().trim()).to.equal("1");
+    });
+
+    it("should update a section's comment count after deleting", function(){
+      sideComments.deleteComment(1, 88);
+      expect($section1.find('.marker span').text().trim()).to.equal("1");
+    });
+
+    it("should update a section's comment list after deleting", function(){
+      sideComments.deleteComment(1, 88);
+      expect($section1.find('.comments li')).to.have.length.of(1);
+    });
+
+    it("should remove a section's comment count after deleting if it's the last comment", function(){
+      sideComments.deleteComment(3, 34);
+      expect($section3.find('.marker').is(':visible')).to.be.false;
+    });
+
+    it("should show a section's comment form after deleting if it's the last comment", function(){
+      sideComments.deleteComment(3, 34);
+      $section3.find('.marker').trigger('click');
+      expect($section3.find('.comment-form').is(':visible')).to.be.true;
     });
 
   });

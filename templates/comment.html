@@ -9,8 +9,6 @@
     <%= comment.comment %>
   </p>
   <% if (comment.authorId === currentUser.id){ %>
-  <div class="actions">
-  	<a href="#" class="delete">Delete</a>
-  </div>
+  <a href="#" class="action-link delete">Delete</a>
   <% } %>
 </li>

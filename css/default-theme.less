@@ -24,19 +24,18 @@
     }
 
   }
-  
-  .actions {
-  
-    a {
-      color: #B3B3B1;
-      font-size: 13px;
+
+  .action-link {
+    color: #B3B3B1;
+    font-size: 13px;
+    text-decoration: none;
+
+    &:hover {
       text-decoration: none;
-
-      &:hover {
-        text-decoration: none;
-      }
     }
+  }
 
+  .action-link.post {
     .post {
       color: #89C794;
 
@@ -44,15 +43,12 @@
         color: #468C54
       }
     }
+  }
 
-    .cancel, .delete {
-
-      &:hover {
-        color: #57AD68;
-      }
-      
+  .action-link.cancel, .action-link.delete {
+    &:hover {
+      color: #57AD68;
     }
-
   }
 
   .add-comment {

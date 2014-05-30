@@ -9174,7 +9174,7 @@ SideComments.prototype.sectionDeselected = function( section ) {
  */
 SideComments.prototype.commentPosted = function( comment ) {
   this.emit('commentPosted', comment);
-}
+};
 
 /**
  * Inserts the given comment into the right section.
@@ -9183,7 +9183,17 @@ SideComments.prototype.commentPosted = function( comment ) {
 SideComments.prototype.insertComment = function( comment ) {
   var section = _.find(this.sections, { id: comment.sectionId });
   section.insertComment(comment);
-}
+};
+
+/**
+ * Delete the comment specified by the given sectionID and commentID.
+ * @param  {Integer} sectionId The section the comment belongs to.
+ * @param  {Integer} commentId The comment's ID
+ */
+SideComments.prototype.deleteComment = function( sectionId, commentId ) {
+  var section = _.find(this.sections, { id: sectionId });
+  section.deleteComment(commentId);
+};
 
 /**
  * Checks if comments are visible or not.
@@ -9389,7 +9399,9 @@ Section.prototype.deleteComment = function( commentId ) {
 	this.comments = _.reject(this.comments, { id: commentId });
 	this.$el.find('.side-comment .comments li[data-comment-id="'+commentId+'"]').remove();
 	this.updateCommentCount();
-	// TODO: Emit an event.
+	if (this.comments.length < 1) {
+		this.$el.find('.side-comment').removeClass('has-comments');
+	}
 };
 
 /**
@@ -9454,10 +9466,10 @@ module.exports = Section;
 
 
 require.register("side-comments/templates/section.html", function(exports, require, module){
-module.exports = '<div class="side-comment <%= commentClass %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments-wrapper">\n    <ul class="comments">\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(commentTemplate, { comment: comment, currentUser: currentUser }) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment">Leave a comment</a>\n\n    <div class="comment-form">\n      <div class="author-avatar">\n        <img src="https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg">\n      </div>\n      <p class="author-name">\n        Eric Anderson\n      </p>\n      <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>\n      <div class="actions">\n        <a href="#" class="post">Post</a>\n        <a href="#" class="cancel">Cancel</a>\n      </div>\n    </div>\n  </div>\n</div>';
+module.exports = '<div class="side-comment <%= commentClass %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments-wrapper">\n    <ul class="comments">\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(commentTemplate, { comment: comment, currentUser: currentUser }) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment">Leave a comment</a>\n\n    <div class="comment-form">\n      <div class="author-avatar">\n        <img src="https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg">\n      </div>\n      <p class="author-name">\n        Eric Anderson\n      </p>\n      <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>\n      <div class="actions">\n        <a href="#" class="action-link post">Post</a>\n        <a href="#" class="action-link cancel">Cancel</a>\n      </div>\n    </div>\n  </div>\n</div>';
 });
 require.register("side-comments/templates/comment.html", function(exports, require, module){
-module.exports = '<li data-comment-id="<%= comment.id %>">\n  <div class="author-avatar">\n    <img src="<%= comment.authorAvatarUrl %>">\n  </div>\n  <p class="author-name">\n    <%= comment.authorName %>\n  </p>\n  <p class="comment">\n    <%= comment.comment %>\n  </p>\n  <% if (comment.authorId === currentUser.id){ %>\n  <div class="actions">\n  	<a href="#" class="delete">Delete</a>\n  </div>\n  <% } %>\n</li>';
+module.exports = '<li data-comment-id="<%= comment.id %>">\n  <div class="author-avatar">\n    <img src="<%= comment.authorAvatarUrl %>">\n  </div>\n  <p class="author-name">\n    <%= comment.authorName %>\n  </p>\n  <p class="comment">\n    <%= comment.comment %>\n  </p>\n  <% if (comment.authorId === currentUser.id){ %>\n  <a href="#" class="action-link delete">Delete</a>\n  <% } %>\n</li>';
 });
 require.alias("lodash-lodash/dist/lodash.compat.js", "side-comments/deps/lodash/dist/lodash.compat.js");
 require.alias("lodash-lodash/dist/lodash.compat.js", "side-comments/deps/lodash/index.js");
