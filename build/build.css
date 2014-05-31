@@ -96,6 +96,7 @@ body.side-comments-open {
   top: 0;
   left: 80px;
   width: 280px;
+  padding-bottom: 120px;
 }
 .side-comment .comments-wrapper ul.comments {
   list-style: none;
