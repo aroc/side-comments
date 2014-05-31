@@ -3,6 +3,7 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var minifycss = require('gulp-minify-css');
 var less = require('gulp-less');
+var prefix = require('gulp-autoprefixer');
 
 var paths = {
   scripts: ['build/*.js'],
@@ -22,6 +23,7 @@ gulp.task('less', function () {
       paths: paths.less
     }))
     .pipe(concat('side-comments.css'))
+    .pipe(prefix({ cascade: true }))
     .pipe(gulp.dest("./"))
     .pipe(concat('styles.css'))
     .pipe(gulp.dest("css"));

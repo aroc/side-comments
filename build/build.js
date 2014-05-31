@@ -9210,6 +9210,9 @@ SideComments.prototype.commentsAreVisible = function() {
 SideComments.prototype.bodyClick = function( event ) {
   var $target = $(event.target);
   
+  // We do a check on $('body') existing here because if the $target has
+  // no parent body then it's because it belongs to a deleted comment and 
+  // we should NOT hide the SideComments.
   if ($target.closest('.side-comment').length < 1 && $target.closest('body').length > 0) {
     if (this.activeSection) {
       this.activeSection.deselect();

@@ -1,8 +1,10 @@
+@import "animations";
+
 body {
-  -webkit-transition: all .15s ease;
+  transition: all .15s ease;
 
   &.side-comments-open {
-    -webkit-transform: translate3d(-200px, 0, 0);
+    transform: translate3d(-200px, 0, 0);
   }
 }
 
@@ -40,6 +42,7 @@ body {
     cursor: pointer;
     background: #DEDEDC;
     border-radius: 2px;
+    text-decoration: none;
   }
 
   .marker:before, .marker span {
@@ -179,6 +182,7 @@ body {
 
   &.active .comments-wrapper {
     display: block;
+    animation: fadein 0.2s;
   }
 
 }

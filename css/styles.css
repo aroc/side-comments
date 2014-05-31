@@ -1,8 +1,36 @@
+@-webkit-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 body {
   -webkit-transition: all .15s ease;
+  transition: all .15s ease;
 }
 body.side-comments-open {
   -webkit-transform: translate3d(-200px, 0, 0);
+  transform: translate3d(-200px, 0, 0);
 }
 .commentable-section {
   position: relative;
@@ -31,6 +59,7 @@ body.side-comments-open {
   cursor: pointer;
   background: #DEDEDC;
   border-radius: 2px;
+  text-decoration: none;
 }
 .side-comment .marker:before,
 .side-comment .marker span {
@@ -146,6 +175,8 @@ body.side-comments-open {
 }
 .side-comment.active .comments-wrapper {
   display: block;
+  -webkit-animation: fadein 0.2s;
+  animation: fadein 0.2s;
 }
 
 .side-comment {
