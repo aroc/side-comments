@@ -137,7 +137,7 @@ SideComments.prototype.commentsAreVisible = function() {
 SideComments.prototype.bodyClick = function( event ) {
   var $target = $(event.target);
   
-  if ($target.closest('.side-comment').length < 1) {
+  if ($target.closest('.side-comment').length < 1 && $target.closest('body').length > 0) {
     if (this.activeSection) {
       this.activeSection.deselect();
     }

@@ -9210,7 +9210,7 @@ SideComments.prototype.commentsAreVisible = function() {
 SideComments.prototype.bodyClick = function( event ) {
   var $target = $(event.target);
   
-  if ($target.closest('.side-comment').length < 1) {
+  if ($target.closest('.side-comment').length < 1 && $target.closest('body').length > 0) {
     if (this.activeSection) {
       this.activeSection.deselect();
     }
@@ -9363,7 +9363,10 @@ Section.prototype.postComment = function() {
  */
 Section.prototype.insertComment = function( comment ) {
 	this.comments.push(comment);
-	var newCommentHtml = _.template(CommentTemplate, { comment: comment, currentUser: this.currentUser });
+	var newCommentHtml = _.template(CommentTemplate, { 
+		comment: comment,
+		currentUser: this.currentUser
+	});
 	this.$el.find('.comments').append(newCommentHtml);
 	this.$el.find('.side-comment').addClass('has-comments');
 	this.updateCommentCount();
@@ -9442,13 +9445,12 @@ Section.prototype.commentClass = function() {
  * Render this section into the DOM.
  */
 Section.prototype.render = function() {
-	var data = {
+	$(_.template(Template, {
 	  commentTemplate: CommentTemplate,
 	  comments: this.comments,
 	  commentClass: this.commentClass(),
 	  currentUser: this.currentUser
-	};
-	$(_.template(Template, data)).appendTo(this.$el);
+	})).appendTo(this.$el);
 };
 
 /**
