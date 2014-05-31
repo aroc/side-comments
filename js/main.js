@@ -154,4 +154,3 @@ SideComments.prototype.destroy = function() {
 };
 
 module.exports = SideComments;
-window.SideComments = SideComments;

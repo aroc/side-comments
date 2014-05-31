@@ -9227,7 +9227,6 @@ SideComments.prototype.destroy = function() {
 };
 
 module.exports = SideComments;
-window.SideComments = SideComments;
 });
 require.register("side-comments/js/section.js", function(exports, require, module){
 _ = require('lodash');
@@ -9364,7 +9363,7 @@ Section.prototype.postComment = function() {
  */
 Section.prototype.insertComment = function( comment ) {
 	this.comments.push(comment);
-	var newCommentHtml = _.template(CommentTemplate, { comment: comment });
+	var newCommentHtml = _.template(CommentTemplate, { comment: comment, currentUser: this.currentUser });
 	this.$el.find('.comments').append(newCommentHtml);
 	this.$el.find('.side-comment').addClass('has-comments');
 	this.updateCommentCount();
