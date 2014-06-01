@@ -1,9 +1,26 @@
 .container {
 	margin: 0 auto;
 }
+
 h1,h2,h3,h4,div,p,li {
 	font-family: 'Helvetica', sans-serif;
 }
+
 #fixtures {
 	margin-bottom: 100px;
+}
+
+h1.title {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+p {
+  line-height: 26px;
+  margin-bottom: 20px;
+}
+
+#commentable-container {
+  margin-top: 60px;
+  max-width: 750px;
 }
