@@ -115,6 +115,9 @@ Section.prototype.postCommentClick = function( event ) {
  * Post a comment to this section.
  */
 Section.prototype.postComment = function() {
+	this.$el.find(".comment-box").children().not("br").each(function() {
+		$(this).replaceWith(this.innerHTML);
+	});
   var commentBody = this.$el.find('.comment-box').html();
   var comment = {
   	sectionId: this.id,
