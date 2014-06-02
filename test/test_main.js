@@ -8,14 +8,14 @@ var existingComments = [
     "comments": [
       {
         "id": 88,
-        "authorAvatarUrl": "test/support/user1.png",
+        "authorAvatarUrl": "support/user1.png",
         "authorName": "John Doe",
         "comment": "This is a fantastic comment I posted from the side.",
         "authorId": 1
       },
       {
         "id": 100,
-        "authorAvatarUrl": "test/support/user2.png",
+        "authorAvatarUrl": "support/user2.png",
         "authorName": "Chris Carter",
         "comment": "I love comments.",
         "authorId": 2
@@ -27,7 +27,7 @@ var existingComments = [
     "comments": [
       {
         "id": 34,
-        "authorAvatarUrl": "test/support/user3.png",
+        "authorAvatarUrl": "support/user3.png",
         "authorName": "Jim Beam",
         "comment": "I'm drunk!",
         "authorId": 3
@@ -37,7 +37,7 @@ var existingComments = [
 ];
 var currentUser = {
   "id": 1,
-  "avatarUrl": "test/support/user1.png",
+  "avatarUrl": "support/user1.png",
   "name": "John Doe"
 };
 
@@ -57,36 +57,46 @@ var newTestComment = {
   comment: "This is a test comment."
 };
 
+function check( done, f ) {
+  try {
+    f();
+    done();
+  } catch( e ) {
+    done( e );
+  }
+}
+
 function testCommentForSection( sectionNumber ) {
   var comment = _.clone(newTestComment);
   comment.sectionId = sectionNumber;
   return comment;
 }
 
-function setupSideComments() {
+function setupSideComments( withCurrentUser ) {
+  var currentUserToPass = currentUser;
+  
+  if (withCurrentUser === undefined || withCurrentUser === true) {
+    currentUserToPass = currentUser;
+  } else {
+    currentUserToPass = null;
+  }
+
 	if (sideComments) {
 		sideComments.destroy();
 		sideComments = null;
 	}
 	$('#fixtures').html(fixturesHTML);
-	sideComments = new SideComments('#commentable-container', currentUser, existingComments);
+	sideComments = new SideComments('#commentable-container', currentUserToPass, existingComments);
 }
 
 function postComment( $section ) {
   $section.find('.marker').trigger('click');
+  $section.find('.add-comment').trigger('click');
   $section.find('.comment-box').html(newTestComment.comment);
-  $section.find('.actions .post').trigger('click');
+  $section.find('.action-link.post').trigger('click');
 }
  
 describe("SideComments", function() {
-
-	beforeEach(function( done ) {
-		setupSideComments();
-    $section1 = $('.side-comment').eq(0);
-    $section2 = $('.side-comment').eq(1);
-    $section3 = $('.side-comment').eq(2);
-		done();
-	});
 
 	after(function( done ) {
 		sideComments.destroy();
@@ -96,6 +106,14 @@ describe("SideComments", function() {
 	});
   
   describe("Constructor", function() {
+
+    beforeEach(function( done ) {
+      setupSideComments();
+      $section1 = $('.side-comment').eq(0);
+      $section2 = $('.side-comment').eq(1);
+      $section3 = $('.side-comment').eq(2);
+      done();
+    });
     
     it("should have a $el", function() {
       expect(sideComments.$el).to.not.be.empty;
@@ -112,6 +130,14 @@ describe("SideComments", function() {
   });
 
   describe("High level display and interactions", function() {
+
+    beforeEach(function( done ) {
+      setupSideComments();
+      $section1 = $('.side-comment').eq(0);
+      $section2 = $('.side-comment').eq(1);
+      $section3 = $('.side-comment').eq(2);
+      done();
+    });
 
   	it("should have the comment sections hidden at start", function() {
   		expect(sideComments.commentsAreVisible()).to.be.false;
@@ -183,6 +209,14 @@ describe("SideComments", function() {
 
 	describe("Comments display and interactions", function() {
 
+    beforeEach(function( done ) {
+      setupSideComments();
+      $section1 = $('.side-comment').eq(0);
+      $section2 = $('.side-comment').eq(1);
+      $section3 = $('.side-comment').eq(2);
+      done();
+    });
+
     it("should render comment markup correctly", function(){
       expect($section1.find('.comments li').first().find('.author-name').text().trim()).to.equal('John Doe');
     });
@@ -244,23 +278,31 @@ describe("SideComments", function() {
 	});
 
   describe("Comment management", function(){
+
+    beforeEach(function( done ) {
+      setupSideComments();
+      $section1 = $('.side-comment').eq(0);
+      $section2 = $('.side-comment').eq(1);
+      $section3 = $('.side-comment').eq(2);
+      done();
+    });
     
-    // TODO: This test does not work. >:(=)
-    // it("should emit an event when a comment is posted", function(){
-    //   this.timeout(5000);
-    //   var eventFired = false;
-      
-    //   postComment($section2);
+    it("should emit an event when a comment is posted", function( done ){
+      this.timeout(0);
+      var eventFired = false;
 
-    //   setTimeout(function () {
-    //     expect(eventFired).to.be.true;
-    //     done();
-    //   }, 1000);
+      setTimeout( function () {
+        check( done, function() {
+          expect(eventFired).to.be.true;
+        } )
+      }, 500);
 
-    //   sideComments.on('commentPosted', function( comment ) {
-    //     eventFired = true;
-    //   });
-    // });
+      sideComments.on('commentPosted', function( comment ) {
+        eventFired = true;
+      });
+
+      postComment($section2);
+    });
 
     it("should update a non-empty section's comment list after adding", function(){
       sideComments.insertComment(testCommentForSection(1));
@@ -304,5 +346,69 @@ describe("SideComments", function() {
     });
 
   });
+
+  describe("No Current User", function(){
+
+    beforeEach(function( done ) {
+      setupSideComments( false );
+      $section1 = $('.side-comment').eq(0);
+      $section2 = $('.side-comment').eq(1);
+      $section3 = $('.side-comment').eq(2);
+      done();
+    });
+
+    it("should show the add comment button rather than the comment form on sections without comments", function(){
+      $section2.find('.marker').trigger('click');
+      expect($section2.find('.add-comment').is(':visible')).to.be.true;
+      expect($section2.find('.comment-form').is(':visible')).to.be.false;
+    });
+
+    it("should add the no-curent-user class to all sections", function(){
+      expect($('.side-comment.no-current-user')).to.have.length.of(3);
+    });
+
+    it("should emit the 'addCommentAttempted' event when a user tries to add a comment", function( done ){
+      this.timeout(0);
+      var eventFired = false;
+
+      setTimeout( function () {
+        check( done, function() {
+          expect(eventFired).to.be.true;
+        } )
+      }, 500);
+
+      sideComments.on('addCommentAttempted', function( comment ) {
+        eventFired = true;
+      });
+      
+      $section1.find('.marker').trigger('click');
+      $section1.find('.add-comment').trigger('click');
+    });
+
+  });
+
+  // describe("Setting a Current User", function(){
+
+  //   beforeEach(function( done ) {
+  //     setupSideComments( false );
+  //     $section1 = $('.side-comment').eq(0);
+  //     $section2 = $('.side-comment').eq(1);
+  //     $section3 = $('.side-comment').eq(2);
+  //     done();
+  //   });
+
+
+  // });
+
+  // describe("Removing a Current User", function(){
+  //   beforeEach(function( done ) {
+  //     setupSideComments();
+  //     $section1 = $('.side-comment').eq(0);
+  //     $section2 = $('.side-comment').eq(1);
+  //     $section3 = $('.side-comment').eq(2);
+  //     done();
+  //   });
+
+  // });
 
 });

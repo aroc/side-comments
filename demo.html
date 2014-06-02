@@ -64,7 +64,7 @@
         "name": "John Doe"
       };
       var SideComments = require('side-comments');
-      var sideComments = new SideComments('#commentable-container', null, existingComments);
+      var sideComments = new SideComments('#commentable-container', currentUser, existingComments);
       sideComments.on('commentPosted', function( comment ) {
         comment.id = parseInt(Math.random() * (100000 - 1) + 1);
         sideComments.insertComment(comment);
