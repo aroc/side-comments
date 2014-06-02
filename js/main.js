@@ -32,6 +32,7 @@ function SideComments( el, currentUser, existingComments ) {
   this.eventPipe.on('sectionSelected', _.bind(this.sectionSelected ,this));
   this.eventPipe.on('sectionDeselected', _.bind(this.sectionDeselected ,this));
   this.eventPipe.on('commentPosted', _.bind(this.commentPosted ,this));
+  this.eventPipe.on('addCommentAttempted', _.bind(this.addCommentAttempted, this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
   this.initialize(this.existingComments);
@@ -101,6 +102,14 @@ SideComments.prototype.sectionDeselected = function( section ) {
  */
 SideComments.prototype.commentPosted = function( comment ) {
   this.emit('commentPosted', comment);
+};
+
+/**
+ * Fire an event to to signal that a comment as attempted to be added without
+ * a currentUser.
+ */
+SideComments.prototype.addCommentAttempted = function() {
+  this.emit('addCommentAttempted');
 };
 
 /**

@@ -104,13 +104,17 @@ body.side-comments-open {
 .side-comment .add-comment {
   display: none;
 }
+.side-comment.has-comments .add-comment,
+.side-comment.no-current-user .add-comment {
+  display: block;
+}
+.side-comment.no-current-user .add-comment {
+  margin-top: 20px;
+}
 .side-comment.has-comments .marker:before {
   content: "";
 }
 .side-comment.has-comments .marker span {
-  display: block;
-}
-.side-comment.has-comments .add-comment {
   display: block;
 }
 .side-comment.has-comments .add-comment.hide {

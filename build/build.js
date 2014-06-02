@@ -9105,6 +9105,7 @@ function SideComments( el, currentUser, existingComments ) {
   this.eventPipe.on('sectionSelected', _.bind(this.sectionSelected ,this));
   this.eventPipe.on('sectionDeselected', _.bind(this.sectionDeselected ,this));
   this.eventPipe.on('commentPosted', _.bind(this.commentPosted ,this));
+  this.eventPipe.on('addCommentAttempted', _.bind(this.addCommentAttempted, this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
   this.initialize(this.existingComments);
@@ -9174,6 +9175,14 @@ SideComments.prototype.sectionDeselected = function( section ) {
  */
 SideComments.prototype.commentPosted = function( comment ) {
   this.emit('commentPosted', comment);
+};
+
+/**
+ * Fire an event to to signal that a comment as attempted to be added without
+ * a currentUser.
+ */
+SideComments.prototype.addCommentAttempted = function() {
+  this.emit('addCommentAttempted');
 };
 
 /**
@@ -9281,7 +9290,11 @@ Section.prototype.markerClick = function( event ) {
  */
 Section.prototype.addCommentClick = function( event ) {
   event.preventDefault();
-  this.showCommentForm();
+  if (this.currentUser) {
+  	this.showCommentForm();
+  } else {
+  	this.eventPipe.emit('addCommentAttempted');
+  }
 };
 
 /**
@@ -9418,7 +9431,7 @@ Section.prototype.deleteComment = function( commentId ) {
 Section.prototype.select = function() {
 	this.$el.find('.side-comment').addClass('active');
 
-	if (this.comments.length === 0) {
+	if (this.comments.length === 0 && this.currentUser) {
 	  this.focusCommentBox();
 	}
 };
@@ -9439,12 +9452,17 @@ Section.prototype.isSelected = function() {
  * Get the class to be used on the side comment section wrapper.
  * @return {String} The class names to use.
  */
-Section.prototype.commentClass = function() {
+Section.prototype.sectionClasses = function() {
+	var classes = '';
+
 	if (this.comments.length > 0) {
-		return 'has-comments';
-	} else {
-		return '';
+		classes = classes + ' has-comments';
 	}
+	if (!this.currentUser) {
+		classes = classes + ' no-current-user'
+	}
+
+	return classes;
 };
 
 /**
@@ -9454,7 +9472,7 @@ Section.prototype.render = function() {
 	$(_.template(Template, {
 	  commentTemplate: CommentTemplate,
 	  comments: this.comments,
-	  commentClass: this.commentClass(),
+	  sectionClasses: this.sectionClasses(),
 	  currentUser: this.currentUser
 	})).appendTo(this.$el);
 };
@@ -9473,7 +9491,7 @@ module.exports = Section;
 
 
 require.register("side-comments/templates/section.html", function(exports, require, module){
-module.exports = '<div class="side-comment <%= commentClass %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments-wrapper">\n    <ul class="comments">\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(commentTemplate, { comment: comment, currentUser: currentUser }) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment">Leave a comment</a>\n\n    <div class="comment-form">\n      <div class="author-avatar">\n        <img src="<%= currentUser.avatarUrl %>">\n      </div>\n      <p class="author-name">\n        <%= currentUser.name %>\n      </p>\n      <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>\n      <div class="actions">\n        <a href="#" class="action-link post">Post</a>\n        <a href="#" class="action-link cancel">Cancel</a>\n      </div>\n    </div>\n  </div>\n</div>';
+module.exports = '<div class="side-comment <%= sectionClasses %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments-wrapper">\n    <ul class="comments">\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(commentTemplate, { comment: comment, currentUser: currentUser }) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment">Leave a comment</a>\n    \n    <% if (currentUser){ %>\n      <div class="comment-form">\n        <div class="author-avatar">\n          <img src="<%= currentUser.avatarUrl %>">\n        </div>\n        <p class="author-name">\n          <%= currentUser.name %>\n        </p>\n        <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>\n        <div class="actions">\n          <a href="#" class="action-link post">Post</a>\n          <a href="#" class="action-link cancel">Cancel</a>\n        </div>\n      </div>\n    <% } %>\n  </div>\n</div>';
 });
 require.register("side-comments/templates/comment.html", function(exports, require, module){
 module.exports = '<li data-comment-id="<%= comment.id %>">\n  <div class="author-avatar">\n    <img src="<%= comment.authorAvatarUrl %>">\n  </div>\n  <p class="author-name">\n    <%= comment.authorName %>\n  </p>\n  <p class="comment">\n    <%= comment.comment %>\n  </p>\n  <% if (currentUser && comment.authorId === currentUser.id){ %>\n  <a href="#" class="action-link delete">Delete</a>\n  <% } %>\n</li>';

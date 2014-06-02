@@ -47,7 +47,11 @@ Section.prototype.markerClick = function( event ) {
  */
 Section.prototype.addCommentClick = function( event ) {
   event.preventDefault();
-  this.showCommentForm();
+  if (this.currentUser) {
+  	this.showCommentForm();
+  } else {
+  	this.eventPipe.emit('addCommentAttempted');
+  }
 };
 
 /**
@@ -184,7 +188,7 @@ Section.prototype.deleteComment = function( commentId ) {
 Section.prototype.select = function() {
 	this.$el.find('.side-comment').addClass('active');
 
-	if (this.comments.length === 0) {
+	if (this.comments.length === 0 && this.currentUser) {
 	  this.focusCommentBox();
 	}
 };
@@ -205,12 +209,17 @@ Section.prototype.isSelected = function() {
  * Get the class to be used on the side comment section wrapper.
  * @return {String} The class names to use.
  */
-Section.prototype.commentClass = function() {
+Section.prototype.sectionClasses = function() {
+	var classes = '';
+
 	if (this.comments.length > 0) {
-		return 'has-comments';
-	} else {
-		return '';
+		classes = classes + ' has-comments';
 	}
+	if (!this.currentUser) {
+		classes = classes + ' no-current-user'
+	}
+
+	return classes;
 };
 
 /**
@@ -220,7 +229,7 @@ Section.prototype.render = function() {
 	$(_.template(Template, {
 	  commentTemplate: CommentTemplate,
 	  comments: this.comments,
-	  commentClass: this.commentClass(),
+	  sectionClasses: this.sectionClasses(),
 	  currentUser: this.currentUser
 	})).appendTo(this.$el);
 };

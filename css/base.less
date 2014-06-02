@@ -91,6 +91,14 @@ body {
     display: none;
   }
 
+  &.has-comments .add-comment, &.no-current-user .add-comment {
+    display: block;
+  }
+
+  &.no-current-user .add-comment {
+    margin-top: 20px;
+  }
+
   &.has-comments {
 
     .marker:before {
@@ -98,10 +106,6 @@ body {
     }
 
     .marker span {
-      display: block;
-    }
-
-    .add-comment {
       display: block;
     }
 
