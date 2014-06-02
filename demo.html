@@ -58,14 +58,14 @@
           ]
         }
       ];
-      var currentUser = {
+      window.currentUser = {
         "id": 1,
         "avatarUrl": "test/support/user1.png",
         "name": "John Doe"
       };
       var SideComments = require('side-comments');
-      var sideComments = new SideComments('#commentable-container', currentUser, existingComments);
-      sideComments.on('commentPosted', function( comment ) {
+      window.sideComments = new SideComments('#commentable-container', currentUser, existingComments);
+      window.sideComments.on('commentPosted', function( comment ) {
         comment.id = parseInt(Math.random() * (100000 - 1) + 1);
         sideComments.insertComment(comment);
       });

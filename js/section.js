@@ -180,6 +180,7 @@ Section.prototype.deleteComment = function( commentId ) {
 	if (this.comments.length < 1) {
 		this.$el.find('.side-comment').removeClass('has-comments');
 	}
+	this.eventPipe.emit('commentDeleted', commentId);
 };
 
 /**
@@ -226,6 +227,7 @@ Section.prototype.sectionClasses = function() {
  * Render this section into the DOM.
  */
 Section.prototype.render = function() {
+	this.$el.find('.side-comment').remove();
 	$(_.template(Template, {
 	  commentTemplate: CommentTemplate,
 	  comments: this.comments,

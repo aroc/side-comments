@@ -27,11 +27,12 @@ function SideComments( el, currentUser, existingComments ) {
   this.activeSection = null;
   
   // Event bindings
-  this.eventPipe.on('showComments', _.bind(this.showComments ,this));
-  this.eventPipe.on('hideComments', _.bind(this.hideComments ,this));
-  this.eventPipe.on('sectionSelected', _.bind(this.sectionSelected ,this));
-  this.eventPipe.on('sectionDeselected', _.bind(this.sectionDeselected ,this));
-  this.eventPipe.on('commentPosted', _.bind(this.commentPosted ,this));
+  this.eventPipe.on('showComments', _.bind(this.showComments, this));
+  this.eventPipe.on('hideComments', _.bind(this.hideComments, this));
+  this.eventPipe.on('sectionSelected', _.bind(this.sectionSelected, this));
+  this.eventPipe.on('sectionDeselected', _.bind(this.sectionDeselected, this));
+  this.eventPipe.on('commentPosted', _.bind(this.commentPosted, this));
+  this.eventPipe.on('commentDeleted', _.bind(this.commentDeleted, this));
   this.eventPipe.on('addCommentAttempted', _.bind(this.addCommentAttempted, this));
   this.$body.on('click', _.bind(this.bodyClick, this));
 
@@ -98,10 +99,18 @@ SideComments.prototype.sectionDeselected = function( section ) {
 
 /**
  * Fired when the commentPosted event is triggered.
- * @param  {comment} comment  The comment object to be posted.
+ * @param  {Object} comment  The comment object to be posted.
  */
 SideComments.prototype.commentPosted = function( comment ) {
   this.emit('commentPosted', comment);
+};
+
+/**
+ * Fired when the commentDeleted event is triggered.
+ * @param  {Integer} comment  The commentId of the deleted comment.
+ */
+SideComments.prototype.commentDeleted = function( commentId ) {
+  this.emit('commentDeleted', commentId);
 };
 
 /**
@@ -155,6 +164,31 @@ SideComments.prototype.bodyClick = function( event ) {
     }
     this.hideComments();
   }
+};
+
+/**
+ * Set the currentUser and update the UI as necessary.
+ * @param {Object} currentUser The currentUser to be used.
+ */
+SideComments.prototype.setCurrentUser = function( currentUser ) {
+  this.hideComments();
+  this.currentUser = currentUser;
+  _.each(this.sections, function( section ) {
+    section.currentUser = this.currentUser;
+    section.render();
+  });
+};
+
+/**
+ * Remove the currentUser and update the UI as necessary.
+ */
+SideComments.prototype.removeCurrentUser = function() {
+  this.hideComments();
+  this.currentUser = null;
+  _.each(this.sections, function( section ) {
+    section.currentUser = null;
+    section.render();
+  });
 };
 
 /**

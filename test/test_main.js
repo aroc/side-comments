@@ -66,6 +66,12 @@ function check( done, f ) {
   }
 }
 
+function setSections() {
+  $section1 = $('.side-comment').eq(0);
+  $section2 = $('.side-comment').eq(1);
+  $section3 = $('.side-comment').eq(2);
+}
+
 function testCommentForSection( sectionNumber ) {
   var comment = _.clone(newTestComment);
   comment.sectionId = sectionNumber;
@@ -109,9 +115,7 @@ describe("SideComments", function() {
 
     beforeEach(function( done ) {
       setupSideComments();
-      $section1 = $('.side-comment').eq(0);
-      $section2 = $('.side-comment').eq(1);
-      $section3 = $('.side-comment').eq(2);
+      setSections();
       done();
     });
     
@@ -133,9 +137,7 @@ describe("SideComments", function() {
 
     beforeEach(function( done ) {
       setupSideComments();
-      $section1 = $('.side-comment').eq(0);
-      $section2 = $('.side-comment').eq(1);
-      $section3 = $('.side-comment').eq(2);
+      setSections();
       done();
     });
 
@@ -211,9 +213,7 @@ describe("SideComments", function() {
 
     beforeEach(function( done ) {
       setupSideComments();
-      $section1 = $('.side-comment').eq(0);
-      $section2 = $('.side-comment').eq(1);
-      $section3 = $('.side-comment').eq(2);
+      setSections();
       done();
     });
 
@@ -281,9 +281,7 @@ describe("SideComments", function() {
 
     beforeEach(function( done ) {
       setupSideComments();
-      $section1 = $('.side-comment').eq(0);
-      $section2 = $('.side-comment').eq(1);
-      $section3 = $('.side-comment').eq(2);
+      setSections();
       done();
     });
     
@@ -351,9 +349,7 @@ describe("SideComments", function() {
 
     beforeEach(function( done ) {
       setupSideComments( false );
-      $section1 = $('.side-comment').eq(0);
-      $section2 = $('.side-comment').eq(1);
-      $section3 = $('.side-comment').eq(2);
+      setSections();
       done();
     });
 
@@ -387,28 +383,52 @@ describe("SideComments", function() {
 
   });
 
-  // describe("Setting a Current User", function(){
+  describe("Setting a Current User", function(){
 
-  //   beforeEach(function( done ) {
-  //     setupSideComments( false );
-  //     $section1 = $('.side-comment').eq(0);
-  //     $section2 = $('.side-comment').eq(1);
-  //     $section3 = $('.side-comment').eq(2);
-  //     done();
-  //   });
+    beforeEach(function( done ) {
+      setupSideComments( false );
+      setSections();
+      done();
+    });
 
+    it("should update the UI once a currentUser has been set", function(){
+      sideComments.setCurrentUser(currentUser);
+      setSections();
 
-  // });
+      $section2.find('.marker').trigger('click');
+      expect($section2.find('.add-comment').is(':visible')).to.be.false;
+      expect($section2.find(".comment-form").is(':visible')).to.be.true;
 
-  // describe("Removing a Current User", function(){
-  //   beforeEach(function( done ) {
-  //     setupSideComments();
-  //     $section1 = $('.side-comment').eq(0);
-  //     $section2 = $('.side-comment').eq(1);
-  //     $section3 = $('.side-comment').eq(2);
-  //     done();
-  //   });
+      $section1.find('.marker').trigger('click');
+      $section1.find('.add-comment').trigger('click');
+      expect($section1.find(".comment-form").is(':visible')).to.be.true;
+    });
 
-  // });
+  });
+
+  describe("Removing a Current User", function(){
+
+    beforeEach(function( done ) {
+      setupSideComments();
+      $section1 = $('.side-comment').eq(0);
+      $section2 = $('.side-comment').eq(1);
+      $section3 = $('.side-comment').eq(2);
+      done();
+    });
+
+    it("should update the UI once a currentUser has been removed", function(){
+      sideComments.removeCurrentUser();
+      setSections();
+
+      $section2.find('.marker').trigger('click');
+      expect($section2.find('.add-comment').is(':visible')).to.be.true;
+      expect($section2.find(".comment-form").is(':visible')).to.be.false;
+
+      $section1.find('.marker').trigger('click');
+      $section1.find('.add-comment').trigger('click');
+      expect($section1.find(".comment-form").is(':visible')).to.be.false;
+    });
+
+  });
 
 });
