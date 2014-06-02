@@ -8,14 +8,14 @@ var existingComments = [
     "comments": [
       {
         "id": 88,
-        "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+        "authorAvatarUrl": "test/support/user1.png",
         "authorName": "John Doe",
         "comment": "This is a fantastic comment I posted from the side.",
         "authorId": 1
       },
       {
         "id": 100,
-        "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+        "authorAvatarUrl": "test/support/user2.png",
         "authorName": "Chris Carter",
         "comment": "I love comments.",
         "authorId": 2
@@ -27,7 +27,7 @@ var existingComments = [
     "comments": [
       {
         "id": 34,
-        "authorAvatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+        "authorAvatarUrl": "test/support/user3.png",
         "authorName": "Jim Beam",
         "comment": "I'm drunk!",
         "authorId": 3
@@ -37,7 +37,7 @@ var existingComments = [
 ];
 var currentUser = {
   "id": 1,
-  "avatarUrl": "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+  "avatarUrl": "test/support/user1.png",
   "name": "John Doe"
 };
 

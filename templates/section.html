@@ -14,10 +14,10 @@
 
     <div class="comment-form">
       <div class="author-avatar">
-        <img src="https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg">
+        <img src="<%= currentUser.avatarUrl %>">
       </div>
       <p class="author-name">
-        Eric Anderson
+        <%= currentUser.name %>
       </p>
       <div class="comment-box" contenteditable="true" data-placeholder-content="Leave a comment..."></div>
       <div class="actions">
