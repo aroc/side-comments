@@ -183,20 +183,23 @@ body.side-comments-open {
   padding-bottom: 20px;
 }
 .side-comment .comments-wrapper {
-  top: -19px;
+  top: -22px;
 }
-.side-comment .comments-wrapper ul.comments li {
+.side-comment.has-comments .comments-wrapper {
+  top: -37px;
+}
+.side-comment ul.comments li {
   border: 1px solid #F2F2F0;
   border-left: 0;
   border-right: 0;
   padding: 15px 0;
   margin-top: -1px;
 }
-.side-comment .comments-wrapper ul.comments li .author-name {
+.side-comment ul.comments li .author-name {
   font-size: 15px;
   font-weight: 700;
 }
-.side-comment .comments-wrapper ul.comments li .comment {
+.side-comment ul.comments li .comment {
   font-size: 14px;
   line-height: 18px;
 }
