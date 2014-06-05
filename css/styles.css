@@ -24,11 +24,11 @@
     opacity: 1;
   }
 }
-body {
+.commentable-container {
   -webkit-transition: all .15s ease;
   transition: all .15s ease;
 }
-body.side-comments-open {
+.side-comments-open {
   -webkit-transform: translate3d(-200px, 0, 0);
   transform: translate3d(-200px, 0, 0);
 }

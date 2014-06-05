@@ -59,7 +59,7 @@ SideComments.prototype.initialize = function( existingComments ) {
  * Shows the side comments.
  */
 SideComments.prototype.showComments = function() {
-  this.$body.addClass('side-comments-open');
+  this.$el.addClass('side-comments-open');
 };
 
 /**
@@ -71,7 +71,7 @@ SideComments.prototype.hideComments = function() {
     this.activeSection = null;
   }
 
-  this.$body.removeClass('side-comments-open');
+  this.$el.removeClass('side-comments-open');
 };
 
 /**
@@ -145,7 +145,7 @@ SideComments.prototype.deleteComment = function( sectionId, commentId ) {
  * @return {Boolean} Whether or not the comments are visible.
  */
 SideComments.prototype.commentsAreVisible = function() {
-  return this.$body.hasClass('side-comments-open');
+  return this.$el.hasClass('side-comments-open');
 };
 
 /**

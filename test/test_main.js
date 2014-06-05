@@ -146,7 +146,7 @@ describe("SideComments", function() {
   	});
 
   	it("should know if the comment sections are hidden or not", function() {
-  		$('body').addClass('side-comments-open');
+  		$('#commentable-container').addClass('side-comments-open');
   		expect(sideComments.commentsAreVisible()).to.be.true;
   	});
 
