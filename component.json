@@ -2,12 +2,12 @@
   "name": "side-comments",
   "repo": "aroc/side-comments",
   "dependencies": {
-    "lodash/lodash": "*",
     "component/emitter": "*"
   },
   "scripts": [
     "js/main.js",
-    "js/section.js"
+    "js/section.js",
+    "js/vendor/lodash-custom.js"
   ],
   "main": "js/main.js",
   "templates": [

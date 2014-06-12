@@ -2,6 +2,7 @@ var expect = chai.expect;
 var SideComments = require('side-comments');
 var sideComments;
 var fixturesHTML = $('#fixtures').html();
+
 var existingComments = [
   {
     "sectionId": "1",

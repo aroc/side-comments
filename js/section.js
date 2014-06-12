@@ -1,4 +1,4 @@
-_ = require('lodash');
+var _ = require('./vendor/lodash-custom.js');
 var Template = require('../templates/section.html');
 var CommentTemplate = require('../templates/comment.html');
 

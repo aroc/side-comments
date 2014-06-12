@@ -1,4 +1,4 @@
-_ = require('lodash');
+var _ = require('./vendor/lodash-custom.js');
 var Section = require('./section.js');
 var Emitter = require('emitter');
 var eventPipe = new Emitter;
