@@ -134,6 +134,7 @@
 .side-comment .comments-wrapper ul.comments {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 .side-comment .comments-wrapper ul.comments li {
   overflow: hidden;
@@ -189,7 +190,7 @@
   top: -22px;
 }
 .side-comment.has-comments .comments-wrapper {
-  top: -37px;
+  top: -22px;
 }
 .side-comment ul.comments li {
   border: 1px solid #F2F2F0;
