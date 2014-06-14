@@ -79,7 +79,8 @@
   font-size: 12px;
 }
 .side-comment.active .marker,
-.side-comment.has-comments .marker {
+.side-comment.has-comments .marker,
+.side-comment.has-comments ul.comments {
   display: block;
 }
 .side-comment .marker:after {
@@ -131,12 +132,13 @@
   width: 280px;
   padding-bottom: 120px;
 }
-.side-comment .comments-wrapper ul.comments {
+.side-comment .comments {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: none;
 }
-.side-comment .comments-wrapper ul.comments li {
+.side-comment .comments li {
   overflow: hidden;
 }
 .side-comment .author-avatar {
@@ -203,8 +205,8 @@
   padding: 15px 0;
   margin-top: -1px;
 }
-.side-comment ul.comments li .comment,
-.side-comment .comment-form .comment {
+.side-comment .comment,
+.side-comment .comment-box {
   font-size: 14px;
   line-height: 18px;
 }
@@ -269,8 +271,6 @@
 }
 .side-comment .comment-box:empty:not(:focus):before {
   color: #B5B5B5;
-  font-size: 15px;
-  line-height: 18px;
 }
 .side-comment .actions {
   margin-top: 5px;

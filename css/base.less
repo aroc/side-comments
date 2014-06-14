@@ -63,7 +63,7 @@
     font-size: 12px;
   }
 
-  &.active .marker, &.has-comments .marker {
+  &.active .marker, &.has-comments .marker, &.has-comments ul.comments {
     display: block;
   }
 
@@ -126,17 +126,17 @@
     left: 80px;
     width: 280px;
     padding-bottom: 120px;
+  }
 
-    ul.comments {
-      list-style: none;
-      padding: 0;
-      margin: 0;
+  .comments {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: none;
 
-      li {
-        overflow: hidden;
-      }
+    li {
+      overflow: hidden;
     }
-
   }
 
   .author-avatar {
