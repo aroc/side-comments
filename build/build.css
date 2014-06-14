@@ -199,15 +199,15 @@
   padding: 15px 0;
   margin-top: -1px;
 }
-.side-comment ul.comments li .author-name {
+.side-comment ul.comments li .comment {
+  font-size: 14px;
+  line-height: 18px;
+}
+.side-comment .author-name {
   font-size: 15px;
   line-height: 16px;
   margin: 0 0 2px 0;
   font-weight: 700;
-}
-.side-comment ul.comments li .comment {
-  font-size: 14px;
-  line-height: 18px;
 }
 .side-comment .action-link {
   color: #B3B3B1;
