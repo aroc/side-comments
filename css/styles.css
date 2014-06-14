@@ -150,7 +150,6 @@
 }
 .side-comment .author-name {
   float: left;
-  margin: 0 0 5px 0;
   width: 238px;
 }
 .side-comment .comment-box:empty:not(:focus):before {
@@ -201,6 +200,8 @@
 }
 .side-comment ul.comments li .author-name {
   font-size: 15px;
+  line-height: 16px;
+  margin: 0 0 2px 0;
   font-weight: 700;
 }
 .side-comment ul.comments li .comment {
