@@ -180,8 +180,12 @@
     display: block;
   }
 
-  .comment-form.active {
-    display: block;
+  .comment-form {
+    overflow: hidden;
+    
+    &.active {
+      display: block;
+    }
   }
 
   &.active .comments-wrapper {

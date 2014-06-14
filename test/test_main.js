@@ -8,18 +8,14 @@ var existingComments = [
     "sectionId": "1",
     "comments": [
       {
-        "id": 88,
-        "authorAvatarUrl": "support/user1.png",
-        "authorName": "John Doe",
-        "comment": "This is a fantastic comment I posted from the side.",
-        "authorId": 1
+        "authorAvatarUrl": "http://f.cl.ly/items/1W303Y360b260u3v1P0T/jon_snow_small.png",
+        "authorName": "Jon Sno",
+        "comment": "I'm Ned Stark's bastard. Related: I know nothing."
       },
       {
-        "id": 100,
-        "authorAvatarUrl": "support/user2.png",
-        "authorName": "Chris Carter",
-        "comment": "I love comments.",
-        "authorId": 2
+        "authorAvatarUrl": "http://f.cl.ly/items/2o1a3d2f051L0V0q1p19/donald_draper.png",
+        "authorName": "Donald Draper",
+        "comment": "I need a scotch."
       }
     ]
   },
@@ -27,11 +23,9 @@ var existingComments = [
     "sectionId": "3",
     "comments": [
       {
-        "id": 34,
-        "authorAvatarUrl": "support/user3.png",
-        "authorName": "Jim Beam",
-        "comment": "I'm drunk!",
-        "authorId": 3
+        "authorAvatarUrl": "http://f.cl.ly/items/0l1j230k080S0N1P0M3e/clay-davis.png",
+        "authorName": "Senator Clay Davis",
+        "comment": "These Side Comments are incredible. Sssshhhiiiiieeeee."
       }
     ]
   }
@@ -39,7 +33,7 @@ var existingComments = [
 var currentUser = {
   "id": 1,
   "avatarUrl": "support/user1.png",
-  "name": "John Doe"
+  "name": "You!"
 };
 
 /***********/

@@ -174,6 +174,9 @@
 .side-comment .add-comment.active {
   display: block;
 }
+.side-comment .comment-form {
+  overflow: hidden;
+}
 .side-comment .comment-form.active {
   display: block;
 }
@@ -192,14 +195,16 @@
 .side-comment.has-comments .comments-wrapper {
   top: -22px;
 }
-.side-comment ul.comments li {
+.side-comment ul.comments li,
+.side-comment .comment-form {
   border: 1px solid #F2F2F0;
   border-left: 0;
   border-right: 0;
   padding: 15px 0;
   margin-top: -1px;
 }
-.side-comment ul.comments li .comment {
+.side-comment ul.comments li .comment,
+.side-comment .comment-form .comment {
   font-size: 14px;
   line-height: 18px;
 }
@@ -235,6 +240,7 @@
   padding: 0px 8px;
   letter-spacing: 0.05em;
   text-decoration: none;
+  margin-top: 10px;
 }
 .side-comment .add-comment:before {
   content: "+";
