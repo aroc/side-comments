@@ -8,13 +8,17 @@ var existingComments = [
     "sectionId": "1",
     "comments": [
       {
+        "id": 88,
         "authorAvatarUrl": "http://f.cl.ly/items/1W303Y360b260u3v1P0T/jon_snow_small.png",
         "authorName": "Jon Sno",
+        "authorId": 1,
         "comment": "I'm Ned Stark's bastard. Related: I know nothing."
       },
       {
+        "id": 112,
         "authorAvatarUrl": "http://f.cl.ly/items/2o1a3d2f051L0V0q1p19/donald_draper.png",
         "authorName": "Donald Draper",
+        "authorId": 2,
         "comment": "I need a scotch."
       }
     ]
@@ -23,8 +27,10 @@ var existingComments = [
     "sectionId": "3",
     "comments": [
       {
+        "id": 66,
         "authorAvatarUrl": "http://f.cl.ly/items/0l1j230k080S0N1P0M3e/clay-davis.png",
         "authorName": "Senator Clay Davis",
+        "authorId": 3,
         "comment": "These Side Comments are incredible. Sssshhhiiiiieeeee."
       }
     ]
@@ -32,8 +38,8 @@ var existingComments = [
 ];
 var currentUser = {
   "id": 1,
-  "avatarUrl": "support/user1.png",
-  "name": "You!"
+  "avatarUrl": "http://f.cl.ly/items/1W303Y360b260u3v1P0T/jon_snow_small.png",
+  "name": "Jon Sno",
 };
 
 /***********/
@@ -88,13 +94,6 @@ function setupSideComments( withCurrentUser ) {
 	}
 	$('#fixtures').html(fixturesHTML);
 	sideComments = new SideComments('#commentable-container', currentUserToPass, existingComments);
-}
-
-function postComment( $section ) {
-  $section.find('.marker').trigger('click');
-  $section.find('.add-comment').trigger('click');
-  $section.find('.comment-box').html(newTestComment.comment);
-  $section.find('.action-link.post').trigger('click');
 }
  
 describe("SideComments", function() {
@@ -213,7 +212,7 @@ describe("SideComments", function() {
     });
 
     it("should render comment markup correctly", function(){
-      expect($section1.find('.comments li').first().find('.author-name').text().trim()).to.equal('John Doe');
+      expect($section1.find('.comments li').first().find('.author-name').text().trim()).to.equal('Jon Sno');
     });
 
 		it("should display the right number of comments in the markers for each sections", function(){
@@ -272,7 +271,7 @@ describe("SideComments", function() {
 
 	});
 
-  describe("Comment management", function(){
+  describe("New Comment Posting", function(){
 
     beforeEach(function( done ) {
       setupSideComments();
@@ -294,7 +293,10 @@ describe("SideComments", function() {
         eventFired = true;
       });
 
-      postComment($section2);
+      $section1.find('.marker').trigger('click');
+      $section1.find('.add-comment').trigger('click');
+      $section1.find('.comment-box').html(newTestComment.comment);
+      $section1.find('.action-link.post').trigger('click');
     });
 
     it("should update a non-empty section's comment list after adding", function(){
@@ -316,28 +318,53 @@ describe("SideComments", function() {
       sideComments.insertComment(testCommentForSection(2));
       expect($section2.find('.marker span').text().trim()).to.equal("1");
     });
+  });
 
-    it("should update a section's comment count after deleting", function(){
-      sideComments.deleteComment(1, 88);
+  describe("Comment Deleting", function(){
+    
+    beforeEach(function( done ) {
+      setupSideComments();
+      setSections();
+      done();
+    });
+
+    it("should emit an event when a comment is deleted", function( done ){
+      this.timeout(0);
+      var eventFired = false;
+
+      setTimeout( function () {
+        check( done, function() {
+          expect(eventFired).to.be.true;
+        } )
+      }, 500);
+
+      sideComments.on('commentDeleted', function( comment ) {
+        eventFired = true;
+      });
+
+      sideComments.sections[0].deleteComment(88);
+    });
+
+    it("should update a section's comment count after removing", function(){
+      sideComments.removeComment(1, 88);
       expect($section1.find('.marker span').text().trim()).to.equal("1");
     });
 
     it("should update a section's comment list after deleting", function(){
-      sideComments.deleteComment(1, 88);
+      sideComments.removeComment(1, 88);
       expect($section1.find('.comments li')).to.have.length.of(1);
     });
 
     it("should remove a section's comment count after deleting if it's the last comment", function(){
-      sideComments.deleteComment(3, 34);
+      sideComments.removeComment(3, 66);
       expect($section3.find('.marker').is(':visible')).to.be.false;
     });
 
     it("should show a section's comment form after deleting if it's the last comment", function(){
-      sideComments.deleteComment(3, 34);
+      sideComments.removeComment(3, 66);
       $section3.find('.marker').trigger('click');
       expect($section3.find('.comment-form').is(':visible')).to.be.true;
     });
-
   });
 
   describe("No Current User", function(){
