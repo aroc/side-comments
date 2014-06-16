@@ -109,8 +109,8 @@ SideComments.prototype.commentPosted = function( comment ) {
  * Fired when the commentDeleted event is triggered.
  * @param  {Integer} comment  The commentId of the deleted comment.
  */
-SideComments.prototype.commentDeleted = function( commentId ) {
-  this.emit('commentDeleted', commentId);
+SideComments.prototype.commentDeleted = function( comment ) {
+  this.emit('commentDeleted', comment);
 };
 
 /**
@@ -128,6 +128,16 @@ SideComments.prototype.addCommentAttempted = function() {
 SideComments.prototype.insertComment = function( comment ) {
   var section = _.find(this.sections, { id: comment.sectionId });
   section.insertComment(comment);
+};
+
+/**
+ * Removes the given comment from the right section.
+ * @param  {Integer} sectionId The ID of the section where the comment exists.
+ * @param  {Integer} commentId The ID of the comment to be removed.
+ */
+SideComments.prototype.removeComment = function( sectionId, commentId ) {
+  var section = _.find(this.sections, { id: sectionId });
+  section.removeComment(commentId);
 };
 
 /**

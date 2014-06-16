@@ -63,6 +63,9 @@
         comment.id = parseInt(Math.random() * (100000 - 1) + 1);
         sideComments.insertComment(comment);
       });
+      window.sideComments.on('commentDeleted', function( comment ) {
+        sideComments.removeComment(comment.sectionId, comment.id);
+      });
     });
   </script>
 </body>

@@ -170,17 +170,25 @@ Section.prototype.deleteCommentClick = function( event ) {
 };
 
 /**
- * Deletes the given comment.
- * @return {Integer} The ID of the comment to be deleted.
+ * Finds the comment and emits an event with the comment to be deleted.
  */
 Section.prototype.deleteComment = function( commentId ) {
+	var comment = _.find(this.comments, { id: commentId });
+	comment.sectionId = this.id;
+	this.eventPipe.emit('commentDeleted', comment);
+};
+
+/**
+ * Removes the comment from the list of comments and the comment array.
+ * @param {Integer} commentId The ID of the comment to be removed from this section.
+ */
+Section.prototype.removeComment = function( commentId ) {
 	this.comments = _.reject(this.comments, { id: commentId });
 	this.$el.find('.side-comment .comments li[data-comment-id="'+commentId+'"]').remove();
 	this.updateCommentCount();
 	if (this.comments.length < 1) {
 		this.$el.find('.side-comment').removeClass('has-comments');
 	}
-	this.eventPipe.emit('commentDeleted', commentId);
 };
 
 /**
