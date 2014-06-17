@@ -7,7 +7,8 @@ var prefix = require('gulp-autoprefixer');
 
 var paths = {
   scripts: ['build/*.js'],
-  less: ['css/*.less']
+  less: ['css/*.less'],
+  theme: ['css/themes/*.less']
 };
 
 gulp.task('scripts', function() {
@@ -29,6 +30,15 @@ gulp.task('less', function () {
     .pipe(gulp.dest("css"));
 });
 
+gulp.task('theme', function () {
+  return gulp.src(paths.theme)
+    .pipe(less({
+      paths: paths.theme
+    }))
+    .pipe(prefix({ cascade: true }))
+    .pipe(gulp.dest("./themes"));
+});
+
 // Rerun the task when a file changes
 gulp.task('watch', function() {
   gulp.watch(paths.scripts, ['scripts']);
@@ -36,4 +46,4 @@ gulp.task('watch', function() {
 });
 
 // The default task (called when you run `gulp` from cli)
-gulp.task('default', ['scripts', 'less', 'watch']);
+gulp.task('default', ['scripts', 'less', 'theme', 'watch']);
