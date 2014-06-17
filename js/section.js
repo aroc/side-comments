@@ -180,7 +180,7 @@ Section.prototype.deleteComment = function( commentId ) {
 
 /**
  * Removes the comment from the list of comments and the comment array.
- * @param {Integer} commentId The ID of the comment to be removed from this section.
+ * @param commentId The ID of the comment to be removed from this section.
  */
 Section.prototype.removeComment = function( commentId ) {
 	this.comments = _.reject(this.comments, { id: commentId });
