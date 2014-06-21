@@ -5,7 +5,7 @@ SideComments.js is a UI component to give you [Medium.com](http://medium.com/) s
 
 ## Demo
 
-Check out a demo of SideComments here: [https://aroc.github.io/side-comments](https://aroc.github.io/side-comments)
+Check out a demo of SideComments here: [https://aroc.github.io/side-comments-demo](https://aroc.github.io/side-comments-demo)
 
 ## Get Started
 **How to start using SideComments.js on your website immediately.**
