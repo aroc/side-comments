@@ -7,8 +7,7 @@
   "scripts": [
     "js/main.js",
     "js/section.js",
-    "js/vendor/lodash-custom.js",
-    "js/helpers/mobile-check.js"
+    "js/vendor/lodash-custom.js"
   ],
   "main": "js/main.js",
   "templates": [

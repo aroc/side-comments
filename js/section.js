@@ -1,5 +1,4 @@
 var _ = require('./vendor/lodash-custom.js');
-var mobilecheck = require('./helpers/mobile-check.js');
 var Template = require('../templates/section.html');
 var CommentTemplate = require('../templates/comment.html');
 
@@ -14,15 +13,14 @@ function Section( eventPipe, $el, currentUser, comments ) {
 	this.$el = $el;
 	this.comments = comments ? comments.comments : [];
 	this.currentUser = currentUser || null;
-	var clickEvent = (mobilecheck()) ? "touchstart" : "click";
 	
 	this.id = $el.data('section-id');
 
-	this.$el.on(clickEvent, '.side-comment .marker', _.bind(this.markerClick, this));
-	this.$el.on(clickEvent, '.side-comment .add-comment', _.bind(this.addCommentClick, this));
-	this.$el.on(clickEvent, '.side-comment .post', _.bind(this.postCommentClick, this));
-	this.$el.on(clickEvent, '.side-comment .cancel', _.bind(this.cancelCommentClick, this));
-	this.$el.on(clickEvent, '.side-comment .delete', _.bind(this.deleteCommentClick, this));
+	this.$el.on('click', '.side-comment .marker', _.bind(this.markerClick, this));
+	this.$el.on('click', '.side-comment .add-comment', _.bind(this.addCommentClick, this));
+	this.$el.on('click', '.side-comment .post', _.bind(this.postCommentClick, this));
+	this.$el.on('click', '.side-comment .cancel', _.bind(this.cancelCommentClick, this));
+	this.$el.on('click', '.side-comment .delete', _.bind(this.deleteCommentClick, this));
 
 	this.render();
 }
