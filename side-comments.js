@@ -476,7 +476,7 @@ SideComments.prototype.commentPosted = function( comment ) {
 
 /**
  * Fired when the commentDeleted event is triggered.
- * @param  {Integer} comment  The commentId of the deleted comment.
+ * @param  {Object} comment  The commentId of the deleted comment.
  */
 SideComments.prototype.commentDeleted = function( comment ) {
   this.emit('commentDeleted', comment);
@@ -501,8 +501,8 @@ SideComments.prototype.insertComment = function( comment ) {
 
 /**
  * Removes the given comment from the right section.
- * @param  {Integer} sectionId The ID of the section where the comment exists.
- * @param  {Integer} commentId The ID of the comment to be removed.
+ * @param sectionId The ID of the section where the comment exists.
+ * @param commentId The ID of the comment to be removed.
  */
 SideComments.prototype.removeComment = function( sectionId, commentId ) {
   var section = _.find(this.sections, { id: sectionId });
@@ -511,8 +511,8 @@ SideComments.prototype.removeComment = function( sectionId, commentId ) {
 
 /**
  * Delete the comment specified by the given sectionID and commentID.
- * @param  {Integer} sectionId The section the comment belongs to.
- * @param  {Integer} commentId The comment's ID
+ * @param sectionId The section the comment belongs to.
+ * @param commentId The comment's ID
  */
 SideComments.prototype.deleteComment = function( sectionId, commentId ) {
   var section = _.find(this.sections, { id: sectionId });
@@ -763,7 +763,7 @@ Section.prototype.deleteComment = function( commentId ) {
 
 /**
  * Removes the comment from the list of comments and the comment array.
- * @param {Integer} commentId The ID of the comment to be removed from this section.
+ * @param commentId The ID of the comment to be removed from this section.
  */
 Section.prototype.removeComment = function( commentId ) {
 	this.comments = _.reject(this.comments, { id: commentId });

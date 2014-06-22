@@ -29,8 +29,9 @@
   transition: all .15s ease;
 }
 .side-comments-open {
-  -webkit-transform: translate3d(-280px, 0, 0);
-  transform: translate3d(-280px, 0, 0);
+  -webkit-transform: translate(-280px, 0);
+  -ms-transform: translate(-280px, 0);
+  transform: translate(-280px, 0);
 }
 .commentable-section {
   position: relative;
