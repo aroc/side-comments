@@ -1,4 +1,4 @@
-_ = require('lodash');
+var _ = require('lodash');
 var CommentTemplate = require('../templates/comment.html');
 
 /**
