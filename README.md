@@ -26,9 +26,9 @@ or include side-comments in your `component.json` file's `dependencies: {}` obje
 You must include jQuery in your project in order for SideComments.js to work. This component uses jQuery to manage DOM manipulation and will not work without it.
 
 You'll need to include the following single JavaScript file and two CSS files to get SideComments.js working.
-- `side-comments.js`
-- `side-comments.css`
-- `default-theme.css`
+- `release/side-comments.js`
+- `release/side-comments.css`
+- `release/themes/default-theme.css`
 
 You can choose **not** to include `default-theme.css`, but you'll need to style SideComments youself if you choose not to include it, as `side-comments.css` handles only the basic layout styling and not making it all pretty and looking like Medium.com.
 

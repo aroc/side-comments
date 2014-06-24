@@ -8,6 +8,7 @@
     "gulp-uglify": "*",
     "gulp-minify-css": "*",
     "gulp-less": "*",
-    "gulp-autoprefixer": "*"
+    "gulp-autoprefixer": "*",
+    "gulp-rename": "*"
   }
 }
