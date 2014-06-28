@@ -8,8 +8,7 @@ var rename = require('gulp-rename');
 
 var paths = {
   scripts: ['build/*.js'],
-  less: ['css/*.less'],
-  theme: ['css/themes/*.less']
+  themes: ['css/themes/*.less']
 };
 
 gulp.task('scripts', function() {
@@ -20,22 +19,18 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('less', function () {
-  return gulp.src(paths.less)
-    .pipe(less({
-      paths: ['css/base.less']
-    }))
+  return gulp.src('css/base.less')
+    .pipe(less())
     .pipe(prefix({ cascade: true }))
     .pipe(rename('styles.css'))
-    .pipe(gulp.dest("css"))
+    .pipe(gulp.dest("./css"))
     .pipe(rename('side-comments.css'))
     .pipe(gulp.dest("./release"));
 });
 
-gulp.task('theme', function () {
-  return gulp.src(paths.theme)
-    .pipe(less({
-      paths: paths.theme
-    }))
+gulp.task('themes', function () {
+  return gulp.src(paths.themes)
+    .pipe(less())
     .pipe(prefix({ cascade: true }))
     .pipe(rename('default-theme.css'))
     .pipe(gulp.dest("./release/themes"));
@@ -44,8 +39,8 @@ gulp.task('theme', function () {
 // Rerun the task when a file changes
 gulp.task('watch', function() {
   gulp.watch(paths.scripts, ['scripts']);
-  gulp.watch(paths.less, ['less']);
+  gulp.watch(['css/*.less', 'css/themes/*.less'], ['less']);
 });
 
 // The default task (called when you run `gulp` from cli)
-gulp.task('default', ['scripts', 'less', 'theme', 'watch']);
+gulp.task('default', ['scripts', 'less', 'themes', 'watch']);
