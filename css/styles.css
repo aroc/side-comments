@@ -147,7 +147,7 @@
   width: 100%;
   height: 100%;
 }
-.side-comment .author-name {
+.side-comment .right-of-avatar {
   float: left;
   width: 238px;
 }
@@ -159,8 +159,6 @@
 .side-comment .comment-box,
 .side-comment .actions {
   margin: 0;
-  width: 238px;
-  float: left;
 }
 .side-comment .actions,
 .side-comment .delete {
@@ -182,4 +180,17 @@
   display: block;
   -webkit-animation: fadein 0.2s;
   animation: fadein 0.2s;
+}
+@media (max-width: 768px) {
+  .side-comments-open {
+    -webkit-transform: translate(-220px, 0);
+    -ms-transform: translate(-220px, 0);
+    transform: translate(-220px, 0);
+  }
+  .side-comment .comments-wrapper {
+    width: 200px;
+  }
+  .side-comment .right-of-avatar {
+    width: 158px;
+  }
 }

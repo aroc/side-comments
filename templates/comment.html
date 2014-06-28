@@ -2,10 +2,10 @@
   <div class="author-avatar">
     <img src="<%= comment.authorAvatarUrl %>">
   </div>
-  <p class="author-name">
+  <p class="author-name right-of-avatar">
     <%= comment.authorName %>
   </p>
-  <p class="comment">
+  <p class="comment right-of-avatar">
     <%= comment.comment %>
   </p>
   <% if (currentUser && comment.authorId === currentUser.id){ %>
