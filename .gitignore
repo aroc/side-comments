@@ -2,3 +2,5 @@ node_modules
 build
 components
 .DS_STORE
+
+/.DS_Store

@@ -1,0 +1,26 @@
+{
+  "name": "side-comments",
+  "version": "0.0.1",
+  "homepage": "https://github.com/aroc/side-comments",
+  "authors": [
+    "Eric Anderson <eric@ericanderson.ca>"
+  ],
+  "description": "An interface component to give your site/app Medium.com style commenting.",
+  "main": "release/side-comments.js",
+  "keywords": [
+    "commenting",
+    "medium",
+    "medium.com",
+    "side",
+    "side-comments",
+    "discussion"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
