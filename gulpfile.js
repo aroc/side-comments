@@ -39,7 +39,7 @@ gulp.task('themes', function () {
 // Rerun the task when a file changes
 gulp.task('watch', function() {
   gulp.watch(paths.scripts, ['scripts']);
-  gulp.watch(['css/*.less', 'css/themes/*.less'], ['less']);
+  gulp.watch(['css/*.less', 'css/themes/*.less'], ['less', 'themes']);
 });
 
 // The default task (called when you run `gulp` from cli)
