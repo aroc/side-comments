@@ -16,7 +16,7 @@ gulp.task('scripts', function() {
   // Minify and copy all JavaScript (except vendor scripts)
   return gulp.src(paths.scripts)
     .pipe(rename('side-comments.js'))
-    .pipe(gulp.dest("./"));
+    .pipe(gulp.dest("./release"));
 });
 
 gulp.task('less', function () {
@@ -24,11 +24,11 @@ gulp.task('less', function () {
     .pipe(less({
       paths: ['css/base.less']
     }))
-    .pipe(rename('side-comments.css'))
     .pipe(prefix({ cascade: true }))
-    .pipe(gulp.dest("./"))
     .pipe(rename('styles.css'))
-    .pipe(gulp.dest("css"));
+    .pipe(gulp.dest("css"))
+    .pipe(rename('side-comments.css'))
+    .pipe(gulp.dest("./release"));
 });
 
 gulp.task('theme', function () {
@@ -37,7 +37,8 @@ gulp.task('theme', function () {
       paths: paths.theme
     }))
     .pipe(prefix({ cascade: true }))
-    .pipe(gulp.dest("./themes"));
+    .pipe(rename('default-theme.css'))
+    .pipe(gulp.dest("./release/themes"));
 });
 
 // Rerun the task when a file changes
