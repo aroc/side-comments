@@ -4,6 +4,7 @@ var uglify = require('gulp-uglify');
 var minifycss = require('gulp-minify-css');
 var less = require('gulp-less');
 var prefix = require('gulp-autoprefixer');
+var rename = require('gulp-rename');
 
 var paths = {
   scripts: ['build/*.js'],
@@ -14,19 +15,19 @@ var paths = {
 gulp.task('scripts', function() {
   // Minify and copy all JavaScript (except vendor scripts)
   return gulp.src(paths.scripts)
-    .pipe(concat('side-comments.js'))
+    .pipe(rename('side-comments.js'))
     .pipe(gulp.dest("./"));
 });
 
 gulp.task('less', function () {
   return gulp.src(paths.less)
     .pipe(less({
-      paths: paths.less
+      paths: ['css/base.less']
     }))
-    .pipe(concat('side-comments.css'))
+    .pipe(rename('side-comments.css'))
     .pipe(prefix({ cascade: true }))
     .pipe(gulp.dest("./"))
-    .pipe(concat('styles.css'))
+    .pipe(rename('styles.css'))
     .pipe(gulp.dest("css"));
 });
 
