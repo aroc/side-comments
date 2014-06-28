@@ -2,6 +2,7 @@ var _ = require('./vendor/lodash-custom.js');
 var Section = require('./section.js');
 var Emitter = require('emitter');
 var eventPipe = new Emitter;
+var Hammer = require('hammerjs');
 
 /**
  * Creates a new SideComments instance.
@@ -35,12 +36,55 @@ function SideComments( el, currentUser, existingComments ) {
   this.eventPipe.on('commentDeleted', _.bind(this.commentDeleted, this));
   this.eventPipe.on('addCommentAttempted', _.bind(this.addCommentAttempted, this));
   this.$body.on('click', _.bind(this.bodyClick, this));
-
+  this.bindGestures();
   this.initialize(this.existingComments);
 }
 
 // Mix in Emitter
 Emitter(SideComments.prototype);
+
+/**
+ * Bind gestures for managing comments.
+ */
+SideComments.prototype.bindGestures = function() {
+  this.gestureBinding = Hammer(this.$el.find('.commentable-section')[0], { dragLockToAxis: true }).on("dragleft dragright", _.bind(function( event ) {
+    var minOffset = -301;
+    var maxOffset = 0;
+    // console.log(event);
+
+    // stick to the finger
+    // var pane_offset = -(100/pane_count)*current_pane;
+    var offset = event.gesture.deltaX;
+
+    if (offset > minOffset && offset < maxOffset) {
+      this.setContainerOffset(offset);
+    }
+  }, this));
+};
+
+/**
+ * Set an offset on the main container.
+ * @param {Number} pixels The pixel amount to offsetthe container by.
+ */
+SideComments.prototype.setContainerOffset = function( pixels, animate ) {
+  console.log(pixels);
+    // container.removeClass("animate");
+
+    // if (animate) {
+    //   container.addClass("animate");
+    // }
+
+    // if (Modernizr.csstransforms3d) {
+      this.$el.css("transform", "translate3d("+ pixels +"px,0,0) scale3d(1,1,1)");
+    // }
+    // else if (Modernizr.csstransforms) {
+    //   this.$el.css("transform", "translate("+ percent +"%,0)");
+    // }
+    // else {
+    //   var px = ((pane_width*pane_count) / 100) * percent;
+    //   this.$el.css("left", px+"px");
+    // }
+};
 
 /**
  * Adds the comments beside each commentable section.
