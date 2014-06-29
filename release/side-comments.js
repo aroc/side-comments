@@ -2575,7 +2575,7 @@ function SideComments( el, currentUser, existingComments ) {
 }
 
 SideComments.prototype.bindGestures = function() {
-  Hammer(this.$el[0], { dragLockToAxis: true }).on("swiperight", _.bind(function( event ) {
+  Hammer(this.$el[0], { dragLockToAxis: true }).on("swiperight dragright", _.bind(function( event ) {
     if (this.commentsAreVisible()) {
       this.activeSection.select();
     }
@@ -2787,8 +2787,8 @@ function Section( eventPipe, $el, currentUser, comments ) {
  * Bind gestures for managing this section's selection.
  */
 Section.prototype.bindGestures = function() {
-  Hammer(this.$el[0], { dragLockToAxis: true }).on("swipeleft", _.bind(function( event ) {
-  	console.log('inside swipeLEFT');
+  Hammer(this.$el[0], { dragLockToAxis: true }).on("swipeleft dragleft", _.bind(function( event ) {
+  	console.log('inside swipeLEFT + dragLEFT');
     if (!this.isSelected()) {
       this.select();
     }
