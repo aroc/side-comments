@@ -1,7 +1,7 @@
 var _ = require('./vendor/lodash-custom.js');
 var Template = require('../templates/section.html');
 var CommentTemplate = require('../templates/comment.html');
-var Hammer = require('hammerjs');
+var mobileCheck = require('./helpers/mobile-check.js');
 
 /**
  * Creates a new Section object, which is responsible for managing a
@@ -14,28 +14,17 @@ function Section( eventPipe, $el, currentUser, comments ) {
 	this.$el = $el;
 	this.comments = comments ? comments.comments : [];
 	this.currentUser = currentUser || null;
+	this.clickEventName = mobileCheck() ? 'tap' : 'click';
 	
 	this.id = $el.data('section-id');
 
-	this.$el.on('click', '.side-comment .marker', _.bind(this.markerClick, this));
-	this.$el.on('click', '.side-comment .add-comment', _.bind(this.addCommentClick, this));
-	this.$el.on('click', '.side-comment .post', _.bind(this.postCommentClick, this));
-	this.$el.on('click', '.side-comment .cancel', _.bind(this.cancelCommentClick, this));
-	this.$el.on('click', '.side-comment .delete', _.bind(this.deleteCommentClick, this));
+	this.$el.on(this.clickEventName, '.side-comment .marker', _.bind(this.markerClick, this));
+	this.$el.on(this.clickEventName, '.side-comment .add-comment', _.bind(this.addCommentClick, this));
+	this.$el.on(this.clickEventName, '.side-comment .post', _.bind(this.postCommentClick, this));
+	this.$el.on(this.clickEventName, '.side-comment .cancel', _.bind(this.cancelCommentClick, this));
+	this.$el.on(this.clickEventName, '.side-comment .delete', _.bind(this.deleteCommentClick, this));
 	this.render();
-	this.bindGestures();
 }
-
-/**
- * Bind gestures for managing this section's selection.
- */
-Section.prototype.bindGestures = function() {
-  Hammer(this.$el[0], { dragLockToAxis: true }).on("swipeleft", _.bind(function( event ) {
-    if (!this.isSelected()) {
-      this.select();
-    }
-  }, this));
-};
 
 /**
  * Click callback event on markers.
