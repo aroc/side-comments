@@ -31,15 +31,8 @@ function Section( eventPipe, $el, currentUser, comments ) {
  */
 Section.prototype.markerClick = function( event ) {
 	event.preventDefault();
-	
-	if (this.isSelected()) {
-		this.deselect();
-		this.eventPipe.emit('sectionDeselected', this);
-	} else {
-		this.select();
-		this.eventPipe.emit('sectionSelected', this);
-	}
-}
+	this.select();
+};
 
 /**
  * Callback for the comment button click event.
@@ -192,13 +185,20 @@ Section.prototype.removeComment = function( commentId ) {
 };
 
 /**
- * Mark this section as selected.
+ * Mark this section as selected. Delsect if this section is already selected.
  */
 Section.prototype.select = function() {
-	this.$el.find('.side-comment').addClass('active');
+	if (this.isSelected()) {
+		this.deselect();
+		this.eventPipe.emit('sectionDeselected', this);
+	} else {
+		this.$el.find('.side-comment').addClass('active');
 
-	if (this.comments.length === 0 && this.currentUser) {
-	  this.focusCommentBox();
+		if (this.comments.length === 0 && this.currentUser) {
+		  this.focusCommentBox();
+		}
+
+		this.eventPipe.emit('sectionSelected', this);
 	}
 };
 
