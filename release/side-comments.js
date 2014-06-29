@@ -2788,7 +2788,6 @@ function Section( eventPipe, $el, currentUser, comments ) {
  */
 Section.prototype.bindGestures = function() {
   Hammer(this.$el[0], { dragLockToAxis: true }).on("swipeleft dragleft", _.bind(function( event ) {
-  	console.log('inside swipeLEFT + dragLEFT');
     if (!this.isSelected()) {
       this.select();
     }
