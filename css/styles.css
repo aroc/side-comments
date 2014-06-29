@@ -184,6 +184,9 @@
   animation: fadein 0.2s;
 }
 @media (max-width: 768px) {
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
   .side-comments-open {
     -webkit-transform: translate(-220px, 0);
     -ms-transform: translate(-220px, 0);
