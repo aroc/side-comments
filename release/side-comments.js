@@ -372,6 +372,7 @@ var Section = require('./section.js');
 var Emitter = require('emitter');
 var eventPipe = new Emitter;
 var mobileCheck = require('./helpers/mobile-check.js');
+var Hammer = require('hammerjs');
 
 /**
  * Creates a new SideComments instance.
@@ -407,7 +408,16 @@ function SideComments( el, currentUser, existingComments ) {
   this.eventPipe.on('addCommentAttempted', _.bind(this.addCommentAttempted, this));
   this.$body.on(this.clickEventName, _.bind(this.bodyClick, this));
   this.initialize(this.existingComments);
+  this.bindGestures();
 }
+
+SideComments.prototype.bindGestures = function() {
+  Hammer(this.$el[0], { dragLockToAxis: true }).on("swiperight", _.bind(function( event ) {
+    if (this.commentsAreVisible()) {
+      this.activeSection.select();
+    }
+  }, this));
+};
 
 // Mix in Emitter
 Emitter(SideComments.prototype);
@@ -586,6 +596,7 @@ var _ = require('./vendor/lodash-custom.js');
 var Template = require('../templates/section.html');
 var CommentTemplate = require('../templates/comment.html');
 var mobileCheck = require('./helpers/mobile-check.js');
+var Hammer = require('hammerjs');
 
 /**
  * Creates a new Section object, which is responsible for managing a
@@ -608,7 +619,19 @@ function Section( eventPipe, $el, currentUser, comments ) {
 	this.$el.on(this.clickEventName, '.side-comment .cancel', _.bind(this.cancelCommentClick, this));
 	this.$el.on(this.clickEventName, '.side-comment .delete', _.bind(this.deleteCommentClick, this));
 	this.render();
+	this.bindGestures();
 }
+
+/**
+ * Bind gestures for managing this section's selection.
+ */
+Section.prototype.bindGestures = function() {
+  Hammer(this.$el[0], { dragLockToAxis: true }).on("swipeleft", _.bind(function( event ) {
+    if (!this.isSelected()) {
+      this.select();
+    }
+  }, this));
+};
 
 /**
  * Click callback event on markers.

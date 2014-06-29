@@ -3,6 +3,7 @@ var Section = require('./section.js');
 var Emitter = require('emitter');
 var eventPipe = new Emitter;
 var mobileCheck = require('./helpers/mobile-check.js');
+var Hammer = require('hammerjs');
 
 /**
  * Creates a new SideComments instance.
@@ -38,7 +39,16 @@ function SideComments( el, currentUser, existingComments ) {
   this.eventPipe.on('addCommentAttempted', _.bind(this.addCommentAttempted, this));
   this.$body.on(this.clickEventName, _.bind(this.bodyClick, this));
   this.initialize(this.existingComments);
+  this.bindGestures();
 }
+
+SideComments.prototype.bindGestures = function() {
+  Hammer(this.$el[0], { dragLockToAxis: true }).on("swiperight", _.bind(function( event ) {
+    if (this.commentsAreVisible()) {
+      this.activeSection.select();
+    }
+  }, this));
+};
 
 // Mix in Emitter
 Emitter(SideComments.prototype);
