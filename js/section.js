@@ -1,6 +1,7 @@
 var _ = require('./vendor/lodash-custom.js');
 var Template = require('../templates/section.html');
 var CommentTemplate = require('../templates/comment.html');
+var Hammer = require('hammerjs');
 
 /**
  * Creates a new Section object, which is responsible for managing a
@@ -21,9 +22,21 @@ function Section( eventPipe, $el, currentUser, comments ) {
 	this.$el.on('click', '.side-comment .post', _.bind(this.postCommentClick, this));
 	this.$el.on('click', '.side-comment .cancel', _.bind(this.cancelCommentClick, this));
 	this.$el.on('click', '.side-comment .delete', _.bind(this.deleteCommentClick, this));
-
 	this.render();
+	this.bindGestures();
 }
+
+/**
+ * Bind gestures for managing this section's selection.
+ */
+Section.prototype.bindGestures = function() {
+  Hammer(this.$el[0], { dragLockToAxis: true }).on("swipeleft", _.bind(function( event ) {
+  	console.log('inside swipeLEFT');
+    if (!this.isSelected()) {
+      this.select();
+    }
+  }, this));
+};
 
 /**
  * Click callback event on markers.

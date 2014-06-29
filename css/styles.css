@@ -15,8 +15,8 @@
   }
 }
 .commentable-container {
-  -webkit-transition: all .15s ease;
-  transition: all .15s ease;
+  -webkit-transition: all 0.22s ease;
+  transition: all 0.22s ease;
 }
 .side-comments-open {
   -webkit-transform: translate(-300px, 0);
