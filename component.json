@@ -2,7 +2,8 @@
   "name": "side-comments",
   "repo": "aroc/side-comments",
   "dependencies": {
-    "component/emitter": "*"
+    "component/emitter": "*",
+    "EightMedia/hammer.js": "*"
   },
   "scripts": [
     "js/main.js",
