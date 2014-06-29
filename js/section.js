@@ -1,6 +1,7 @@
 var _ = require('./vendor/lodash-custom.js');
 var Template = require('../templates/section.html');
 var CommentTemplate = require('../templates/comment.html');
+var mobileCheck = require('./helpers/mobile-check.js');
 
 /**
  * Creates a new Section object, which is responsible for managing a
@@ -13,15 +14,15 @@ function Section( eventPipe, $el, currentUser, comments ) {
 	this.$el = $el;
 	this.comments = comments ? comments.comments : [];
 	this.currentUser = currentUser || null;
+	this.clickEventName = mobileCheck() ? 'tap' : 'click';
 	
 	this.id = $el.data('section-id');
 
-	this.$el.on('click', '.side-comment .marker', _.bind(this.markerClick, this));
-	this.$el.on('click', '.side-comment .add-comment', _.bind(this.addCommentClick, this));
-	this.$el.on('click', '.side-comment .post', _.bind(this.postCommentClick, this));
-	this.$el.on('click', '.side-comment .cancel', _.bind(this.cancelCommentClick, this));
-	this.$el.on('click', '.side-comment .delete', _.bind(this.deleteCommentClick, this));
-
+	this.$el.on(this.clickEventName, '.side-comment .marker', _.bind(this.markerClick, this));
+	this.$el.on(this.clickEventName, '.side-comment .add-comment', _.bind(this.addCommentClick, this));
+	this.$el.on(this.clickEventName, '.side-comment .post', _.bind(this.postCommentClick, this));
+	this.$el.on(this.clickEventName, '.side-comment .cancel', _.bind(this.cancelCommentClick, this));
+	this.$el.on(this.clickEventName, '.side-comment .delete', _.bind(this.deleteCommentClick, this));
 	this.render();
 }
 
@@ -31,15 +32,8 @@ function Section( eventPipe, $el, currentUser, comments ) {
  */
 Section.prototype.markerClick = function( event ) {
 	event.preventDefault();
-	
-	if (this.isSelected()) {
-		this.deselect();
-		this.eventPipe.emit('sectionDeselected', this);
-	} else {
-		this.select();
-		this.eventPipe.emit('sectionSelected', this);
-	}
-}
+	this.select();
+};
 
 /**
  * Callback for the comment button click event.
@@ -192,13 +186,20 @@ Section.prototype.removeComment = function( commentId ) {
 };
 
 /**
- * Mark this section as selected.
+ * Mark this section as selected. Delsect if this section is already selected.
  */
 Section.prototype.select = function() {
-	this.$el.find('.side-comment').addClass('active');
+	if (this.isSelected()) {
+		this.deselect();
+		this.eventPipe.emit('sectionDeselected', this);
+	} else {
+		this.$el.find('.side-comment').addClass('active');
 
-	if (this.comments.length === 0 && this.currentUser) {
-	  this.focusCommentBox();
+		if (this.comments.length === 0 && this.currentUser) {
+		  this.focusCommentBox();
+		}
+
+		this.eventPipe.emit('sectionSelected', this);
 	}
 };
 

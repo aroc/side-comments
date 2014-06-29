@@ -1,0 +1,28 @@
+@media (max-width: 768px) {
+	body {
+		-webkit-overflow-scrolling: touch;
+		overflow-x: hidden;
+	}
+
+	@comments-wrapper-width: 200px;
+
+	.side-comments-open {
+	  transform: translate(-(@comments-wrapper-width + @marker-width), 0);
+	}
+	
+	.side-comment {
+			
+		.comments-wrapper {
+			width: @comments-wrapper-width;
+		}
+
+		.right-of-avatar {
+		  width: @comments-wrapper-width - (@avatar-width + 10);
+		}
+
+		.marker {
+			display: block;
+		}
+
+	}
+}
