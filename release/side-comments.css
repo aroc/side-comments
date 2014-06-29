@@ -186,6 +186,7 @@
 @media (max-width: 768px) {
   body {
     -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
   }
   .side-comments-open {
     -webkit-transform: translate(-220px, 0);

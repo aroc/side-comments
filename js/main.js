@@ -41,7 +41,7 @@ function SideComments( el, currentUser, existingComments ) {
 }
 
 SideComments.prototype.bindGestures = function() {
-  Hammer(this.$el[0], { dragLockToAxis: true }).on("swiperight dragright", _.bind(function( event ) {
+  Hammer(this.$el[0], { dragLockToAxis: true }).on("swiperight", _.bind(function( event ) {
     if (this.commentsAreVisible()) {
       this.activeSection.select();
     }
