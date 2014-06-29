@@ -199,4 +199,7 @@
   .side-comment .right-of-avatar {
     width: 158px;
   }
+  .side-comment .marker {
+    display: block;
+  }
 }
