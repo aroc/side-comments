@@ -26,7 +26,6 @@
 .side-comment .marker:before,
 .side-comment .marker span {
   content: "+";
-  display: block;
   position: absolute;
   width: 20px;
   height: 18px;
