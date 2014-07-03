@@ -700,7 +700,8 @@ Section.prototype.postCommentClick = function( event ) {
  * Post a comment to this section.
  */
 Section.prototype.postComment = function() {
-  var commentBody = this.$el.find('.comment-box').val();
+	var $commentBox = this.$el.find('.comment-box');
+  var commentBody = $commentBox.val();
   var comment = {
   	sectionId: this.id,
   	comment: commentBody,
@@ -709,6 +710,7 @@ Section.prototype.postComment = function() {
   	authorId: this.currentUser.id,
   	authorUrl: this.currentUser.authorUrl || null
   };
+  $commentBox.val(''); // Clear the comment.
   this.eventPipe.emit('commentPosted', comment);
 };
 

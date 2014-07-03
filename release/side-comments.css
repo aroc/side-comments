@@ -162,10 +162,6 @@
 .side-comment .delete {
   margin-left: 42px;
 }
-.side-comment .comment-box {
-  outline: none;
-  border: none;
-}
 .side-comment .add-comment.active {
   display: block;
 }
