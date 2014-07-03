@@ -370,7 +370,6 @@ require.register("side-comments/js/main.js", function(exports, require, module){
 var _ = require('./vendor/lodash-custom.js');
 var Section = require('./section.js');
 var Emitter = require('emitter');
-var eventPipe = new Emitter;
 
 /**
  * Creates a new SideComments instance.
@@ -388,7 +387,7 @@ var eventPipe = new Emitter;
 function SideComments( el, currentUser, existingComments ) {
   this.$el = $(el);
   this.$body = $('body');
-  this.eventPipe = eventPipe;
+  this.eventPipe = new Emitter;
 
   this.currentUser = _.clone(currentUser) || null;
   this.existingComments = _.cloneDeep(existingComments) || [];
@@ -578,6 +577,7 @@ SideComments.prototype.destroy = function() {
 };
 
 module.exports = SideComments;
+
 });
 require.register("side-comments/js/section.js", function(exports, require, module){
 var _ = require('./vendor/lodash-custom.js');
