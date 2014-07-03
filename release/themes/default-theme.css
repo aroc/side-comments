@@ -31,6 +31,11 @@
   line-height: 16px;
   margin: 0 0 2px 0;
   font-weight: 700;
+  text-decoration: none;
+  color: #222;
+}
+.side-comment a.author-name:hover {
+  text-decoration: underline;
 }
 .side-comment .action-link {
   color: #B3B3B1;

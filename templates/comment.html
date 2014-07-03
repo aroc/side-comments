@@ -2,9 +2,15 @@
   <div class="author-avatar">
     <img src="<%= comment.authorAvatarUrl %>">
   </div>
-  <p class="author-name right-of-avatar">
-    <%= comment.authorName %>
-  </p>
+  <% if (comment.authorUrl) { %>
+    <a class="author-name right-of-avatar" href="<%= comment.authorUrl %>">
+      <%= comment.authorName %>
+    </a>
+  <% } else { %>
+    <p class="author-name right-of-avatar">
+      <%= comment.authorName %>
+    </p>
+  <% } %>
   <p class="comment right-of-avatar">
     <%= comment.comment %>
   </p>
