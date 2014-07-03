@@ -3,45 +3,6 @@ var SideComments = require('side-comments');
 var sideComments;
 var fixturesHTML = $('#fixtures').html();
 
-var existingComments = [
-  {
-    "sectionId": "1",
-    "comments": [
-      {
-        "id": 88,
-        "authorAvatarUrl": "http://f.cl.ly/items/1W303Y360b260u3v1P0T/jon_snow_small.png",
-        "authorName": "Jon Sno",
-        "authorId": 1,
-        "comment": "I'm Ned Stark's bastard. Related: I know nothing."
-      },
-      {
-        "id": 112,
-        "authorAvatarUrl": "http://f.cl.ly/items/2o1a3d2f051L0V0q1p19/donald_draper.png",
-        "authorName": "Donald Draper",
-        "authorId": 2,
-        "comment": "I need a scotch."
-      }
-    ]
-  },
-  {
-    "sectionId": "3",
-    "comments": [
-      {
-        "id": 66,
-        "authorAvatarUrl": "http://f.cl.ly/items/0l1j230k080S0N1P0M3e/clay-davis.png",
-        "authorName": "Senator Clay Davis",
-        "authorId": 3,
-        "comment": "These Side Comments are incredible. Sssshhhiiiiieeeee."
-      }
-    ]
-  }
-];
-var currentUser = {
-  "id": 1,
-  "avatarUrl": "http://f.cl.ly/items/1W303Y360b260u3v1P0T/jon_snow_small.png",
-  "name": "Jon Sno",
-};
-
 /***********/
 /* Helpers *
 /***********/
@@ -53,7 +14,7 @@ var $section3;
 var newTestComment = {
   id: 278,
   authorId: 1,
-  authorAvatarUrl: "https://d262ilb51hltx0.cloudfront.net/fit/c/64/64/0*bBRLkZqOcffcRwKl.jpeg",
+  authorAvatarUrl: "support/images/user/png",
   authorName: "New Test Commenter",
   comment: "This is a test comment."
 };
