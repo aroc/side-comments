@@ -613,7 +613,6 @@ function Section( eventPipe, $el, currentUser, comments ) {
  * @param  {Object} event The event object.
  */
 Section.prototype.markerClick = function( event ) {
-	console.log('clicked');
 	event.preventDefault();
 	this.select();
 };
