@@ -3,9 +3,9 @@
   transition: all 0.22s ease;
 }
 .side-comments-open {
-  -webkit-transform: translate(-300px, 0);
-  -ms-transform: translate(-300px, 0);
-  transform: translate(-300px, 0);
+  -webkit-transform: translate(-220px, 0);
+  -ms-transform: translate(-220px, 0);
+  transform: translate(-220px, 0);
 }
 .commentable-section {
   -webkit-box-sizing: border-box;
@@ -59,7 +59,7 @@
 }
 .side-comment .comments-wrapper {
   top: -22px;
-  width: 280px;
+  width: 200px;
   padding-bottom: 120px;
 }
 .side-comment.active .comments-wrapper {
@@ -81,7 +81,6 @@
 .side-comment .comment-box {
   font-size: 14px;
   line-height: 18px;
-  word-break: break-all;
 }
 .side-comment .author-avatar {
   float: left;
@@ -95,7 +94,7 @@
 }
 .side-comment .right-of-avatar {
   float: left;
-  width: 238px;
+  width: 158px;
 }
 .side-comment .author-name {
   font-size: 15px;
@@ -183,15 +182,15 @@
 }
 @media (max-width: 768px) {
   .side-comments-open {
-    -webkit-transform: translate(-300px, 0);
-    -ms-transform: translate(-300px, 0);
-    transform: translate(-300px, 0);
+    -webkit-transform: translate(-220px, 0);
+    -ms-transform: translate(-220px, 0);
+    transform: translate(-220px, 0);
   }
   .side-comment .comments-wrapper {
-    width: 280px;
+    width: 200px;
   }
   .side-comment .right-of-avatar {
-    width: 238px;
+    width: 158px;
   }
   .side-comment .marker {
     display: block;
