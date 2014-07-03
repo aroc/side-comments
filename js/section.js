@@ -76,7 +76,12 @@ Section.prototype.hideCommentForm = function() {
  * Focus on the comment box in the comment form.
  */
 Section.prototype.focusCommentBox = function() {
-	this.$el.find('.comment-box').get(0).focus();
+	// NOTE: !!HACK!! Using a timeout here because the autofocus causes a weird
+	// "jump" in the form. It renders wider than it should be on screens under 768px
+	// and then jumps to a smaller size.
+	setTimeout(_.bind(function(){
+		this.$el.find('.comment-box').get(0).focus();
+	}, this), 300);
 };
 
 /**

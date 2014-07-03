@@ -25,6 +25,7 @@
 .side-comment .comment-box {
   font-size: 14px;
   line-height: 18px;
+  word-break: break-all;
 }
 .side-comment .author-name {
   font-size: 15px;
@@ -35,7 +36,7 @@
   color: #222;
 }
 .side-comment a.author-name:hover {
-  text-decoration: underline;
+  color: #444;
 }
 .side-comment .action-link {
   color: #B3B3B1;
