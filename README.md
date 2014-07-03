@@ -1,11 +1,13 @@
 # SideComments.js
-Version 0.0.1
+######Current Version 0.0.3
 
-SideComments.js is a UI component to give you [Medium.com](http://medium.com/) style comment management on the front-end. It allows users to comment directly on sections of content rather than the boring comment stream on the bottom of the page that we're so used to. Note that this component only handles the display / user interface of how your comments are presented. It does not provide any utilities to help manage storing or retreiving your comment data from your server, how you do that is entirely up to you.
+SideComments.js is a UI component to give you [Medium.com](http://medium.com/) style comment management on the front-end. It allows users to comment directly on sections of content rather than the boring comment stream on the bottom of the page that we're so used to.
+
+**Note:** This component only handles the display / user interface of how your comments are presented. It does _not_ provide any utilities to help manage storing or retreiving your comment data from your server, how you do that is entirely up to you. Check out the integrations section for resources related to back-end integration.
 
 ## Demo
 
-Check out a demo of SideComments here: [https://aroc.github.io/side-comments-demo](https://aroc.github.io/side-comments-demo)
+Check out a sweet demo of SideComments here: [https://aroc.github.io/side-comments-demo](https://aroc.github.io/side-comments-demo)
 
 ## Get Started
 **How to start using SideComments.js on your website immediately.**
@@ -216,7 +218,18 @@ Values passed: `comment (Object)`
 Fired after a user has clicked "Delete" on one of their comments and has confirmed with the dialog that they do want to delete it.
 
 
-### License
+## Integrating with your back-end
+
+SideComments has no opinion on how you should integrate with your back-end or what technology stack you should use on your back-end. However, here are some resources that may help you depending on your platform:
+
+### WordPress
+
+- WP-Side-Comments plugin that wraps this project in a plugin (currently very early stage): [https://github.com/richardtape/wp-side-comments](https://github.com/richardtape/wp-side-comments) 
+
+- [@dcondrey](https://github.com/dcondrey) has an exmaple of how you might be able to enqueue the SideComments scripts for WordPress: [https://github.com/aroc/side-comments/pull/14](https://github.com/aroc/side-comments/pull/14)
+
+
+## License
 
 The MIT License (MIT)
 
