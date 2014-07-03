@@ -123,7 +123,8 @@ Section.prototype.postComment = function() {
   	comment: commentBody,
   	authorAvatarUrl: this.currentUser.avatarUrl,
   	authorName: this.currentUser.name,
-  	authorId: this.currentUser.id
+  	authorId: this.currentUser.id,
+  	authorUrl: this.currentUser.authorUrl || null
   };
   this.eventPipe.emit('commentPosted', comment);
 };

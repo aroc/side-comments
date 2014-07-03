@@ -35,5 +35,6 @@ var existingComments = [
 var currentUser = {
   "id": 4,
   "avatarUrl": "support/images/user.png",
+  "authorUrl": "http://google.com/",
   "name": "You"
 };

@@ -56,13 +56,17 @@ function setupSideComments( withCurrentUser ) {
 	$('#fixtures').html(fixturesHTML);
 	sideComments = new SideComments('#commentable-container', currentUserToPass, existingComments);
 }
+
+function teardownSideComments() {
+  sideComments.destroy();
+  sideComments = null;
+  $('#fixtures').html(fixturesHTML);
+}
  
 describe("SideComments", function() {
 
 	after(function( done ) {
-		sideComments.destroy();
-		sideComments = null;
-		$('#fixtures').html(fixturesHTML);
+		teardownSideComments();
 		done();
 	});
   
@@ -290,6 +294,21 @@ describe("SideComments", function() {
     it("should update an empty section's comment count after adding", function(){
       sideComments.insertComment(testCommentForSection(2));
       expect($section2.find('.marker span').text().trim()).to.equal("1");
+    });
+
+    it("should have a link for comments posted by a currentUser that has a authorUrl", function(){
+      sideComments.on('commentPosted', function( comment ) {
+        comment.id = 99;
+        sideComments.insertComment(comment);
+      });
+
+      $section1.find('.marker').trigger('click');
+      $section1.find('.add-comment').trigger('click');
+      $section1.find('.comment-box').val('Test Comment');
+      $section1.find('.action-link.post').trigger('click');
+      var $lastCommentAuthor = $section1.find('.comments li').last().find('.author-name');
+
+      expect($lastCommentAuthor.attr('href')).to.eq(currentUser.authorUrl);
     });
   });
 
