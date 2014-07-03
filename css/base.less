@@ -1,27 +1,10 @@
 @import "animations";
 
-// Variables
-@comments-wrapper-width: 280px;
-@avatar-width: 32px;
-@marker-width: 20px;
-
-.commentable-container {
-  transition: all 0.22s ease;
-}
-
-.side-comments-open {
-  transform: translate(-(@comments-wrapper-width + @marker-width), 0);
-}
-
 .commentable-section {
   position: relative;
 
-  &:hover {
-
-    .side-comment .marker {
-      display: block;
-    }
-
+  &:hover .side-comment .marker {
+    display: block;
   }
 }
 
@@ -46,54 +29,15 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: @marker-width;
-    height: 18px;
     cursor: pointer;
-    background: #DEDEDC;
-    border-radius: 2px;
-    text-decoration: none;
-  }
-
-  .marker:before, .marker span {
-    content: "+";
-    display: block;
-    position: absolute;
-    width: 20px;
-    height: 18px;
-    line-height: 16px;
-    font-size: 14px;
-    color: #FFF;
-    text-align: center;
   }
 
   .marker span {
     display: none;
-    line-height: 20px;
-    font-size: 12px;
   }
 
   &.active .marker, &.has-comments .marker, &.has-comments ul.comments {
     display: block;
-  }
-
-  .marker:after {
-    content: "";
-    display: block;
-    position: absolute;
-    bottom: -7px;
-    left: 5px;
-    width: 0;
-    border-width: 7px 8px 0 0;
-    border-style: solid;
-    border-color: #DEDEDC transparent;
-  }
-
-  .marker:hover, &.active .marker {
-    background: #4FAF62;
-  }
-
-  .marker:hover:after, &.active .marker:after {
-    border-color: #4FAF62 transparent;
   }
 
   .add-comment {
@@ -133,8 +77,6 @@
     position: absolute;
     top: 0;
     left: 40px;
-    width: @comments-wrapper-width;
-    padding-bottom: 120px;
   }
 
   .comments {
@@ -148,24 +90,6 @@
       width: 100%;
       overflow: hidden;
     }
-  }
-
-  .author-avatar {
-    float: left;
-    width: @avatar-width;
-    height: @avatar-width;
-    margin-right: 10px;
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
-
-  }
-
-  .right-of-avatar {
-    float: left;
-    width: @comments-wrapper-width - (@avatar-width + 10);
   }
 
   .comment, .comment-box, .actions {
@@ -190,7 +114,6 @@
 
   &.active .comments-wrapper {
     display: block;
-    animation: fadein 0.2s;
   }
 
 }

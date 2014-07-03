@@ -1,3 +1,16 @@
+// Variables
+@comments-wrapper-width: 280px;
+@avatar-width: 32px;
+@marker-width: 20px;
+
+.commentable-container {
+  transition: all 0.22s ease;
+}
+
+.side-comments-open {
+  transform: translate(-(@comments-wrapper-width + @marker-width), 0);
+}
+
 .commentable-section {
   box-sizing: border-box;
   padding-right: 30px;
@@ -6,8 +19,59 @@
 .side-comment {
   padding-bottom: 20px;
 
+  .marker {
+    width: @marker-width;
+    height: 18px;
+    background: #DEDEDC;
+    border-radius: 2px;
+    text-decoration: none;
+  }
+
+  .marker:before, .marker span {
+    content: "+";
+    display: block;
+    position: absolute;
+    width: 20px;
+    height: 18px;
+    line-height: 16px;
+    font-size: 14px;
+    color: #FFF;
+    text-align: center;
+  }
+
+  .marker span {
+    line-height: 20px;
+    font-size: 12px;
+  }
+
+  .marker:after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: -7px;
+    left: 5px;
+    width: 0;
+    border-width: 7px 8px 0 0;
+    border-style: solid;
+    border-color: #DEDEDC transparent;
+  }
+
+  .marker:hover, &.active .marker {
+    background: #4FAF62;
+  }
+
+  .marker:hover:after, &.active .marker:after {
+    border-color: #4FAF62 transparent;
+  }
+
   .comments-wrapper {
     top: -22px;
+    width: @comments-wrapper-width;
+    padding-bottom: 120px;
+  }
+
+  &.active .comments-wrapper {
+    animation: fadein 0.2s;
   }
 
   &.has-comments .comments-wrapper {
@@ -26,6 +90,24 @@
     font-size: 14px;
     line-height: 18px;
     word-break: break-all;
+  }
+
+  .author-avatar {
+    float: left;
+    width: @avatar-width;
+    height: @avatar-width;
+    margin-right: 10px;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+  }
+
+  .right-of-avatar {
+    float: left;
+    width: @comments-wrapper-width - (@avatar-width + 10);
   }
 
   .author-name {
@@ -129,5 +211,27 @@
       color: #B3B3B1;
       padding: 0 5px;
     }
+  }
+}
+
+@media (max-width: 768px) {
+  .side-comments-open {
+    transform: translate(-(@comments-wrapper-width + @marker-width), 0);
+  }
+  
+  .side-comment {
+      
+    .comments-wrapper {
+      width: @comments-wrapper-width;
+    }
+
+    .right-of-avatar {
+      width: @comments-wrapper-width - (@avatar-width + 10);
+    }
+
+    .marker {
+      display: block;
+    }
+
   }
 }

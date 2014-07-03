@@ -21,7 +21,7 @@ gulp.task('scripts', function() {
     .pipe(gulp.dest("./release"));
 });
 
-gulp.task('less', function () {
+gulp.task('base-styles', function () {
   return gulp.src('css/base.less')
     .pipe(less())
     .pipe(prefix({ cascade: true }))
@@ -34,7 +34,7 @@ gulp.task('less', function () {
     .pipe(gulp.dest("./release/"));
 });
 
-gulp.task('themes', function () {
+gulp.task('theme-styles', function () {
   return gulp.src(paths.themes)
     .pipe(less())
     .pipe(prefix({ cascade: true }))
@@ -52,4 +52,4 @@ gulp.task('watch', function() {
 });
 
 // The default task (called when you run `gulp` from cli)
-gulp.task('default', ['scripts', 'less', 'themes', 'watch']);
+gulp.task('default', ['scripts', 'base-styles', 'theme-styles', 'watch']);
