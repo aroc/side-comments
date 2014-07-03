@@ -39,6 +39,9 @@ gulp.task('themes', function () {
     .pipe(less())
     .pipe(prefix({ cascade: true }))
     .pipe(rename('default-theme.css'))
+    .pipe(gulp.dest("./release/themes"))
+    .pipe(minifycss())
+    .pipe(rename('default-theme.min.css'))
     .pipe(gulp.dest("./release/themes"));
 });
 
