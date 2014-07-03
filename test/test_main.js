@@ -230,6 +230,18 @@ describe("SideComments", function() {
       expect(sideComments.commentsAreVisible()).to.be.false;
     });
 
+    it("should not have a link for comments that do not have a authorUrl", function(){
+      $section1.find('.marker').trigger('click');
+      var $authorName = $section1.find('.author-name').eq(2);
+      expect($authorName.prop('tagName').toLowerCase()).to.eq('p');
+    });
+
+    it("should have a link for comments that have a authorUrl", function(){
+      $section1.find('.marker').trigger('click');
+      var $authorName = $section1.find('.author-name').eq(0);
+      expect($authorName.prop('tagName').toLowerCase()).to.eq('a');
+    });
+
 	});
 
   describe("New Comment Posting", function(){
