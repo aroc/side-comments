@@ -1,10 +1,6 @@
 .commentable-section {
   box-sizing: border-box;
   padding-right: 30px;
-  
-  // &::selection {
-  //   background: rgba(133,246,150,0.5);
-  // }
 }
 
 .side-comment {
@@ -29,6 +25,7 @@
   .comment, .comment-box {
     font-size: 14px;
     line-height: 18px;
+    word-break: break-all;
   }
 
   .author-name {
@@ -36,6 +33,12 @@
     line-height: 16px;
     margin: 0 0 2px 0;
     font-weight: 700;
+    text-decoration: none;
+    color: #222;
+  }
+
+  a.author-name:hover {
+    color: #444;
   }
 
   .action-link {

@@ -15,6 +15,9 @@ gulp.task('scripts', function() {
   // Minify and copy all JavaScript (except vendor scripts)
   return gulp.src(paths.scripts)
     .pipe(rename('side-comments.js'))
+    .pipe(gulp.dest("./release"))
+    .pipe(uglify())
+    .pipe(rename('side-comments.min.js'))
     .pipe(gulp.dest("./release"));
 });
 
@@ -25,7 +28,10 @@ gulp.task('less', function () {
     .pipe(rename('styles.css'))
     .pipe(gulp.dest("./css"))
     .pipe(rename('side-comments.css'))
-    .pipe(gulp.dest("./release"));
+    .pipe(gulp.dest("./release"))
+    .pipe(minifycss())
+    .pipe(rename('side-comments.min.css'))
+    .pipe(gulp.dest("./release/"));
 });
 
 gulp.task('themes', function () {
@@ -33,6 +39,9 @@ gulp.task('themes', function () {
     .pipe(less())
     .pipe(prefix({ cascade: true }))
     .pipe(rename('default-theme.css'))
+    .pipe(gulp.dest("./release/themes"))
+    .pipe(minifycss())
+    .pipe(rename('default-theme.min.css'))
     .pipe(gulp.dest("./release/themes"));
 });
 

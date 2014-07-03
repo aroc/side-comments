@@ -153,10 +153,6 @@
   float: left;
   width: 238px;
 }
-.side-comment .comment-box:empty:not(:focus):before {
-  content: attr(data-placeholder-content);
-  float: left;
-}
 .side-comment .comment,
 .side-comment .comment-box,
 .side-comment .actions {
@@ -168,6 +164,7 @@
 }
 .side-comment .comment-box {
   outline: none;
+  border: none;
 }
 .side-comment .add-comment.active {
   display: block;

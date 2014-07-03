@@ -15,7 +15,7 @@ function Section( eventPipe, $el, currentUser, comments ) {
 	this.$el = $el;
 	this.comments = comments ? comments.comments : [];
 	this.currentUser = currentUser || null;
-	this.clickEventName = mobileCheck() ? 'tap' : 'click';
+	this.clickEventName = mobileCheck() ? 'touchstart' : 'click';
 	
 	this.id = $el.data('section-id');
 
@@ -89,7 +89,12 @@ Section.prototype.hideCommentForm = function() {
  * Focus on the comment box in the comment form.
  */
 Section.prototype.focusCommentBox = function() {
-	this.$el.find('.comment-box').get(0).focus();
+	// NOTE: !!HACK!! Using a timeout here because the autofocus causes a weird
+	// "jump" in the form. It renders wider than it should be on screens under 768px
+	// and then jumps to a smaller size.
+	setTimeout(_.bind(function(){
+		this.$el.find('.comment-box').get(0).focus();
+	}, this), 300);
 };
 
 /**
@@ -135,7 +140,8 @@ Section.prototype.postComment = function() {
   	comment: commentBody,
   	authorAvatarUrl: this.currentUser.avatarUrl,
   	authorName: this.currentUser.name,
-  	authorId: this.currentUser.id
+  	authorId: this.currentUser.id,
+  	authorUrl: this.currentUser.authorUrl || null
   };
   this.eventPipe.emit('commentPosted', comment);
 };

@@ -168,11 +168,6 @@
     width: @comments-wrapper-width - (@avatar-width + 10);
   }
 
-  .comment-box:empty:not(:focus):before {
-    content: attr(data-placeholder-content);
-    float: left;
-  }
-
   .comment, .comment-box, .actions {
     margin: 0;
   }
@@ -183,6 +178,7 @@
 
   .comment-box {
     outline: none;
+    border: none;
   }
 
   .add-comment.active {

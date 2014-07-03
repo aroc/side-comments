@@ -25,12 +25,18 @@
 .side-comment .comment-box {
   font-size: 14px;
   line-height: 18px;
+  word-break: break-all;
 }
 .side-comment .author-name {
   font-size: 15px;
   line-height: 16px;
   margin: 0 0 2px 0;
   font-weight: 700;
+  text-decoration: none;
+  color: #222;
+}
+.side-comment a.author-name:hover {
+  color: #444;
 }
 .side-comment .action-link {
   color: #B3B3B1;
