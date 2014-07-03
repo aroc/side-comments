@@ -224,7 +224,10 @@ SideComments has no opinion on how you should integrate with your back-end or wh
 
 ### WordPress
 
-- WP-Side-Comments plugin that wraps this project in a plugin (currently very early stage): [https://github.com/richardtape/wp-side-comments](https://github.com/richardtape/wp-side-comments) 
+- WP-Side-Comments by [@richardtape](https://github.com/richardtape): A WP plugin that wraps this project in a plugin (currently very early stage) [https://github.com/richardtape/wp-side-comments](https://github.com/richardtape/wp-side-comments) 
+
+- WPSideComments by [@strategio](https://github.com/strategio): Another WP plugin that wraps this project (early stage) [http://wordpress.org/plugins/wp-side-comments/](http://wordpress.org/plugins/wp-side-comments/)
+
 
 - [@dcondrey](https://github.com/dcondrey) has an exmaple of how you might be able to enqueue the SideComments scripts for WordPress: [https://github.com/aroc/side-comments/pull/14](https://github.com/aroc/side-comments/pull/14)
 
