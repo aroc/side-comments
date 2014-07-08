@@ -182,7 +182,7 @@ SideComments.prototype.setCurrentUser = function( currentUser ) {
   this.hideComments();
   this.currentUser = currentUser;
   _.each(this.sections, function( section ) {
-    section.currentUser = this.currentUser;
+    section.currentUser = currentUser;
     section.render();
   });
 };
