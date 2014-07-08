@@ -181,22 +181,17 @@ SideComments.prototype.bodyClick = function( event ) {
 SideComments.prototype.setCurrentUser = function( currentUser ) {
   this.hideComments();
   this.currentUser = currentUser;
-  _.each(this.sections, function( section ) {
-    section.currentUser = currentUser;
+  _.each(this.sections, _.bind(function( section ) {
+    section.currentUser = this.currentUser;
     section.render();
-  });
+  }, this));
 };
 
 /**
  * Remove the currentUser and update the UI as necessary.
  */
 SideComments.prototype.removeCurrentUser = function() {
-  this.hideComments();
-  this.currentUser = null;
-  _.each(this.sections, function( section ) {
-    section.currentUser = null;
-    section.render();
-  });
+  this.setCurrentUser(null);
 };
 
 /**
