@@ -166,7 +166,9 @@
 }
 .side-comment .comment-box {
   outline: none;
-  border: none;
+  border: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
   padding: 0;
 }
 .side-comment .actions {

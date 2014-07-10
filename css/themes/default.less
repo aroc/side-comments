@@ -193,13 +193,14 @@
 
   .comment-box {
     outline: none;
-    border: none;
+    border: 0;
+    box-shadow: none;
     padding: 0;
   }
 
   .actions {
     margin-top: 5px;
-  
+
     a {
       float: left;
     }
@@ -218,9 +219,9 @@
   .side-comments-open {
     transform: translate(-(@comments-wrapper-width + @marker-width), 0);
   }
-  
+
   .side-comment {
-      
+
     .comments-wrapper {
       width: @comments-wrapper-width;
     }
