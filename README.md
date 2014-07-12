@@ -232,6 +232,12 @@ SideComments has no opinion on how you should integrate with your back-end or wh
 - [@dcondrey](https://github.com/dcondrey) has an exmaple of how you might be able to enqueue the SideComments scripts for WordPress: [https://github.com/aroc/side-comments/pull/14](https://github.com/aroc/side-comments/pull/14)
 
 
+### Hull [hull.io](http://hull.io/)
+
+A component to integrate SideComments with Hull, which gives you a full back-end to power your comments.
+[http://hull-components.github.io/side-comments/](http://hull-components.github.io/side-comments/)
+
+
 ## License
 
 The MIT License (MIT)
