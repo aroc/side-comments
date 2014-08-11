@@ -370,6 +370,7 @@ require.register("side-comments/js/main.js", function(exports, require, module){
 var _ = require('./vendor/lodash-custom.js');
 var Section = require('./section.js');
 var Emitter = require('emitter');
+var $ = jQuery;
 
 /**
  * Creates a new SideComments instance.
@@ -381,7 +382,7 @@ var Emitter = require('emitter');
  *                                  or not.
  * @param {Array} existingComments An array of existing comments, in
  *                                 the proper structure.
- * 
+ *
  * TODO: **GIVE EXAMPLE OF STRUCTURE HERE***
  */
 function SideComments( el, currentUser, existingComments ) {
@@ -393,7 +394,7 @@ function SideComments( el, currentUser, existingComments ) {
   this.existingComments = _.cloneDeep(existingComments) || [];
   this.sections = [];
   this.activeSection = null;
-  
+
   // Event bindings
   this.eventPipe.on('showComments', _.bind(this.showComments, this));
   this.eventPipe.on('hideComments', _.bind(this.hideComments, this));
@@ -451,7 +452,7 @@ SideComments.prototype.sectionSelected = function( section ) {
   if (this.activeSection) {
     this.activeSection.deselect();
   }
-  
+
   this.activeSection = section;
 };
 
@@ -531,9 +532,9 @@ SideComments.prototype.commentsAreVisible = function() {
  */
 SideComments.prototype.bodyClick = function( event ) {
   var $target = $(event.target);
-  
+
   // We do a check on $('body') existing here because if the $target has
-  // no parent body then it's because it belongs to a deleted comment and 
+  // no parent body then it's because it belongs to a deleted comment and
   // we should NOT hide the SideComments.
   if ($target.closest('.side-comment').length < 1 && $target.closest('body').length > 0) {
     if (this.activeSection) {
@@ -579,6 +580,7 @@ var _ = require('./vendor/lodash-custom.js');
 var Template = require('../templates/section.html');
 var CommentTemplate = require('../templates/comment.html');
 var mobileCheck = require('./helpers/mobile-check.js');
+var $ = jQuery;
 
 /**
  * Creates a new Section object, which is responsible for managing a
@@ -592,7 +594,7 @@ function Section( eventPipe, $el, currentUser, comments ) {
 	this.comments = comments ? comments.comments : [];
 	this.currentUser = currentUser || null;
 	this.clickEventName = mobileCheck() ? 'touchstart' : 'click';
-	
+
 	this.id = $el.data('section-id');
 
 	this.$el.on(this.clickEventName, '.side-comment .marker', _.bind(this.markerClick, this));
@@ -715,7 +717,7 @@ Section.prototype.postComment = function() {
  */
 Section.prototype.insertComment = function( comment ) {
 	this.comments.push(comment);
-	var newCommentHtml = _.template(CommentTemplate, { 
+	var newCommentHtml = _.template(CommentTemplate, {
 		comment: comment,
 		currentUser: this.currentUser
 	});
