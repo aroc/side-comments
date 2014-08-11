@@ -1,6 +1,7 @@
 var _ = require('./vendor/lodash-custom.js');
 var Section = require('./section.js');
 var Emitter = require('emitter');
+var $ = jQuery;
 
 /**
  * Creates a new SideComments instance.
@@ -12,7 +13,7 @@ var Emitter = require('emitter');
  *                                  or not.
  * @param {Array} existingComments An array of existing comments, in
  *                                 the proper structure.
- * 
+ *
  * TODO: **GIVE EXAMPLE OF STRUCTURE HERE***
  */
 function SideComments( el, currentUser, existingComments ) {
@@ -24,7 +25,7 @@ function SideComments( el, currentUser, existingComments ) {
   this.existingComments = _.cloneDeep(existingComments) || [];
   this.sections = [];
   this.activeSection = null;
-  
+
   // Event bindings
   this.eventPipe.on('showComments', _.bind(this.showComments, this));
   this.eventPipe.on('hideComments', _.bind(this.hideComments, this));
@@ -82,7 +83,7 @@ SideComments.prototype.sectionSelected = function( section ) {
   if (this.activeSection) {
     this.activeSection.deselect();
   }
-  
+
   this.activeSection = section;
 };
 
@@ -162,9 +163,9 @@ SideComments.prototype.commentsAreVisible = function() {
  */
 SideComments.prototype.bodyClick = function( event ) {
   var $target = $(event.target);
-  
+
   // We do a check on $('body') existing here because if the $target has
-  // no parent body then it's because it belongs to a deleted comment and 
+  // no parent body then it's because it belongs to a deleted comment and
   // we should NOT hide the SideComments.
   if ($target.closest('.side-comment').length < 1 && $target.closest('body').length > 0) {
     if (this.activeSection) {

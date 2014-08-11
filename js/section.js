@@ -2,6 +2,7 @@ var _ = require('./vendor/lodash-custom.js');
 var Template = require('../templates/section.html');
 var CommentTemplate = require('../templates/comment.html');
 var mobileCheck = require('./helpers/mobile-check.js');
+var $ = jQuery;
 
 /**
  * Creates a new Section object, which is responsible for managing a
@@ -15,7 +16,7 @@ function Section( eventPipe, $el, currentUser, comments ) {
 	this.comments = comments ? comments.comments : [];
 	this.currentUser = currentUser || null;
 	this.clickEventName = mobileCheck() ? 'touchstart' : 'click';
-	
+
 	this.id = $el.data('section-id');
 
 	this.$el.on(this.clickEventName, '.side-comment .marker', _.bind(this.markerClick, this));
@@ -138,7 +139,7 @@ Section.prototype.postComment = function() {
  */
 Section.prototype.insertComment = function( comment ) {
 	this.comments.push(comment);
-	var newCommentHtml = _.template(CommentTemplate, { 
+	var newCommentHtml = _.template(CommentTemplate, {
 		comment: comment,
 		currentUser: this.currentUser
 	});
