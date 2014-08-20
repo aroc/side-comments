@@ -114,7 +114,7 @@ Finally, in order to know when a comment has been posted or deleted, just bind t
 sideComments.on('commentPosted', function( comment ) {
     $.ajax({
         url: '/comments',
-        type: 'POST'
+        type: 'POST',
         data: comment,
         success: function( savedComment ) {
             // Once the comment is saved, you can insert the comment into the comment stream with "insertComment(comment)".
