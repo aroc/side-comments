@@ -1,16 +1,15 @@
 .commentable-container {
   -webkit-transition: all 0.22s ease;
-  transition: all 0.22s ease;
+          transition: all 0.22s ease;
 }
 .side-comments-open {
   -webkit-transform: translate(-220px, 0);
-  -ms-transform: translate(-220px, 0);
-  transform: translate(-220px, 0);
+      -ms-transform: translate(-220px, 0);
+          transform: translate(-220px, 0);
 }
 .commentable-section {
-  -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
-  box-sizing: border-box;
+       box-sizing: border-box;
   padding-right: 30px;
 }
 .side-comment {
@@ -64,7 +63,7 @@
 }
 .side-comment.active .comments-wrapper {
   -webkit-animation: fadein 0.2s;
-  animation: fadein 0.2s;
+          animation: fadein 0.2s;
 }
 .side-comment.has-comments .comments-wrapper {
   top: -22px;
@@ -76,6 +75,10 @@
   border-right: 0;
   padding: 15px 0;
   margin-top: -1px;
+}
+.side-comment .reply-form {
+  padding-left: 42px;
+  padding-top: 10px;
 }
 .side-comment .comment,
 .side-comment .comment-box {
@@ -150,9 +153,8 @@
   float: left;
   margin-right: 15px;
   letter-spacing: 0;
-  -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
-  box-sizing: border-box;
+       box-sizing: border-box;
 }
 .side-comment .add-comment:hover {
   text-decoration: none;
@@ -167,7 +169,6 @@
 .side-comment .comment-box {
   outline: none;
   border: 0;
-  -webkit-box-shadow: none;
   box-shadow: none;
   padding: 0;
 }
@@ -182,11 +183,14 @@
   color: #B3B3B1;
   padding: 0 5px;
 }
+.side-comment .replies .author-name {
+  width: 116px;
+}
 @media (max-width: 768px) {
   .side-comments-open {
     -webkit-transform: translate(-220px, 0);
-    -ms-transform: translate(-220px, 0);
-    transform: translate(-220px, 0);
+        -ms-transform: translate(-220px, 0);
+            transform: translate(-220px, 0);
   }
   .side-comment .comments-wrapper {
     width: 200px;

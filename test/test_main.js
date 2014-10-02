@@ -16,7 +16,8 @@ var newTestComment = {
   authorId: 1,
   authorAvatarUrl: "support/images/user/png",
   authorName: "New Test Commenter",
-  comment: "This is a test comment."
+  comment: "This is a test comment.",
+  replies: []
 };
 
 function check( done, f ) {
@@ -34,9 +35,11 @@ function setSections() {
   $section3 = $('.side-comment').eq(2);
 }
 
-function testCommentForSection( sectionNumber ) {
+function testCommentForSection( sectionNumber, replyFor ) {
   var comment = _.clone(newTestComment);
   comment.sectionId = sectionNumber;
+  if ( replyFor )
+    comment.parentId = replyFor;
   return comment;
 }
 
@@ -109,16 +112,6 @@ describe("SideComments", function() {
   		expect(sideComments.commentsAreVisible()).to.be.true;
   	});
 
-  	it("should toggle the display of the comments when a marker is clicked", function() {
-  		$('.side-comment').first().find('.marker').trigger('click');
-  		expect(sideComments.commentsAreVisible()).to.be.true;
-  	});
-
-  	it("should toggle the display of the comments when a marker is clicked", function() {
-  		$('.side-comment').first().find('.marker').trigger('click');
-  		expect(sideComments.commentsAreVisible()).to.be.true;
-  	});
-
   	it("should make comments visible when a marker is clicked", function() {
   		$('.side-comment').first().find('.marker').trigger('click');
   		expect(sideComments.commentsAreVisible()).to.be.true;
@@ -177,7 +170,7 @@ describe("SideComments", function() {
     });
 
     it("should render comment markup correctly", function(){
-      expect($section1.find('.comments li').first().find('.author-name').text().trim()).to.equal('Jon Sno');
+      expect($section1.find('.comments > li').first().children('.author-name').text().trim()).to.equal('Jon Sno');
     });
 
 		it("should display the right number of comments in the markers for each sections", function(){
@@ -187,9 +180,9 @@ describe("SideComments", function() {
 		});
 
 		it("should display the right number of comments in the list for each sections", function(){
-			expect($section1.find('.comments li')).to.have.length.of(2);
-			expect($section2.find('.comments li')).to.have.length.of(0);
-			expect($section3.find('.comments li')).to.have.length.of(1);
+			expect($section1.find('.comments > li')).to.have.length.of(2);
+			expect($section2.find('.comments > li')).to.have.length.of(0);
+			expect($section3.find('.comments > li')).to.have.length.of(1);
 		});
 
     it("should show the add button when there is one or more comments", function(){
@@ -232,6 +225,34 @@ describe("SideComments", function() {
       $section2.find('.marker').trigger('click');
       $section2.find('.actions .cancel').trigger('click');
       expect(sideComments.commentsAreVisible()).to.be.false;
+    });
+
+    it("should assign the reply form to the correct comment", function () {
+      expect($section1.find('.comments > li').first().find('.reply-form').data('parent')).to.equal($section1.find('.comments > li').first().data('comment-id'));
+    });
+
+    it("should hide the previous reply form when clicking to reply another comment", function () {
+      $section1.find('.marker').trigger('click');
+      $section1.find('.comments > li').first().find('.reply-comment').trigger('click');
+      var $form1 = $section1.find('.reply-form.active');
+
+      $section1.find('.comments > li').last().find('.reply-comment').trigger('click');
+
+      expect($form1.is(":visible")).to.be.false;
+    });
+
+    it("should hide the add comments form when clicking to reply a comment", function () {
+      $section1.find('.marker').trigger('click');
+      $section1.find('.add-comment').trigger('click');
+
+      $section1.find('.comments > li').first().find('.reply-comment').trigger('click');
+      expect($section1.find('.comment-form').is(':visible')).to.be.false
+    });
+
+    it("should display the reply form when the reply button is clicked in a comment", function () {
+      $section1.find('.marker').trigger('click');
+      $section1.find('.comments > li').first().find('.reply-comment').trigger('click');
+      expect($section1.find('.comments > li').first().find('.reply-form').is(':visible')).to.be.true;
     });
 
     it("should not have a link for comments that do not have a authorUrl", function(){
@@ -278,7 +299,7 @@ describe("SideComments", function() {
 
     it("should update a non-empty section's comment list after adding", function(){
       sideComments.insertComment(testCommentForSection(1));
-      expect($section1.find('.comments li')).to.have.length.of(3);
+      expect($section1.find('.comments > li')).to.have.length.of(3);
     });
 
     it("should update a non-empty section's comment count after adding", function(){
@@ -288,7 +309,7 @@ describe("SideComments", function() {
 
     it("should update an empty section's comment list after adding", function(){
       sideComments.insertComment(testCommentForSection(2));
-      expect($section2.find('.comments li')).to.have.length.of(1);
+      expect($section2.find('.comments > li')).to.have.length.of(1);
     });
 
     it("should update an empty section's comment count after adding", function(){
@@ -306,11 +327,42 @@ describe("SideComments", function() {
       $section1.find('.add-comment').trigger('click');
       $section1.find('.comment-box').val('Test Comment');
       $section1.find('.action-link.post').trigger('click');
-      var $lastCommentAuthor = $section1.find('.comments li').last().find('.author-name');
+      var $lastCommentAuthor = $section1.find('.comments > li').last().find('.author-name');
 
       expect($lastCommentAuthor.attr('href')).to.eq(currentUser.authorUrl);
     });
+
+    describe("Comment is a reply", function () {
+
+      it("should emit an event when a reply is posted", function ( done ) {
+        this.timeout(0);
+        var eventFired = false;
+
+        setTimeout( function () {
+          check( done, function() {
+            expect(eventFired).to.be.true;
+          } )
+        }, 500);
+
+        sideComments.on('commentPosted', function( comment ) {
+          eventFired = true;
+        });
+
+        $section1.find('.marker').trigger('click');
+        $section1.find('.comments > li').first().find('.reply-comment').trigger('click');
+        $section1.find('.comments > li').first().find('.comment-box').html(newTestComment.comment);
+        $section1.find('.comments > li').first().find('.action-link.post').trigger('click');
+      });
+
+      it("should update a non-empty reply list after adding", function(){
+        sideComments.insertComment(testCommentForSection(1, 88));
+        expect($section1.find('.comments > li').first().find('.replies li')).to.have.length.of(2);
+      });
+
+    });
+
   });
+
 
   describe("Comment Deleting", function(){
     
@@ -344,7 +396,7 @@ describe("SideComments", function() {
 
     it("should update a section's comment list after deleting", function(){
       sideComments.removeComment(1, 88);
-      expect($section1.find('.comments li')).to.have.length.of(1);
+      expect($section1.find('.comments > li')).to.have.length.of(1);
     });
 
     it("should remove a section's comment count after deleting if it's the last comment", function(){

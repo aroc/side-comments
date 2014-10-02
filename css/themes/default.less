@@ -85,6 +85,12 @@
     margin-top: -1px;
   }
 
+  .reply-form {
+    &:extend(.comment-form);
+    padding-left: 42px;
+    padding-top: 10px;
+  }
+
   .comment, .comment-box {
     font-size: 14px;
     line-height: 18px;
@@ -209,6 +215,13 @@
       content: '\00B7';
       color: #B3B3B1;
       padding: 0 5px;
+    }
+  }
+
+  .replies {
+
+    .author-name {
+      width: @comments-wrapper-width - ( (@avatar-width + 10) * 2);
     }
   }
 }

@@ -6,26 +6,13 @@
   <div class="comments-wrapper">
     <ul class="comments">
       <% _.each(comments, function( comment ){ %>
-        <%= _.template(commentTemplate, { comment: comment, currentUser: currentUser }) %>
+        <%= _.template(commentTemplate, { comment: comment, currentUser: currentUser, formTemplate: formTemplate, self: commentTemplate }) %>
       <% }) %>
     </ul>
     
     <a href="#" class="add-comment">Leave a comment</a>
-    
-    <% if (currentUser){ %>
-      <div class="comment-form">
-        <div class="author-avatar">
-          <img src="<%= currentUser.avatarUrl %>">
-        </div>
-        <p class="author-name">
-          <%= currentUser.name %>
-        </p>
-        <input type="text" class="comment-box right-of-avatar" placeholder="Leave a comment...">
-        <div class="actions right-of-avatar">
-          <a href="#" class="action-link post">Post</a>
-          <a href="#" class="action-link cancel">Cancel</a>
-        </div>
-      </div>
+    <% if (currentUser) { %>
+      <%= _.template(formTemplate, { currentUser: currentUser, formClass: 'comment-form', commentId: null }) %>
     <% } %>
   </div>
 </div>

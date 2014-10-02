@@ -499,6 +499,15 @@ SideComments.prototype.insertComment = function( comment ) {
 };
 
 /**
+ * Inserts the given comment into the right section as a reply.
+ * @param  {Object} comment A comment to be inserted.
+ */
+SideComments.prototype.replyComment = function( comment ) {
+  var section = _.find(this.sections, { id: comment.sectionId});
+  section.insertComment(comment);
+};
+
+/**
  * Removes the given comment from the right section.
  * @param sectionId The ID of the section where the comment exists.
  * @param commentId The ID of the comment to be removed.
@@ -579,6 +588,7 @@ require.register("side-comments/js/section.js", function(exports, require, modul
 var _ = require('./vendor/lodash-custom.js');
 var Template = require('../templates/section.html');
 var CommentTemplate = require('../templates/comment.html');
+var FormTemplate = require('../templates/form.html');
 var mobileCheck = require('./helpers/mobile-check.js');
 var $ = jQuery;
 
@@ -599,6 +609,7 @@ function Section( eventPipe, $el, currentUser, comments ) {
 
 	this.$el.on(this.clickEventName, '.side-comment .marker', _.bind(this.markerClick, this));
 	this.$el.on(this.clickEventName, '.side-comment .add-comment', _.bind(this.addCommentClick, this));
+	this.$el.on(this.clickEventName, '.side-comment .reply-comment', _.bind(this.replyCommentClick, this));
 	this.$el.on(this.clickEventName, '.side-comment .post', _.bind(this.postCommentClick, this));
 	this.$el.on(this.clickEventName, '.side-comment .cancel', _.bind(this.cancelCommentClick, this));
 	this.$el.on(this.clickEventName, '.side-comment .delete', _.bind(this.deleteCommentClick, this));
@@ -632,8 +643,36 @@ Section.prototype.addCommentClick = function( event ) {
  */
 Section.prototype.showCommentForm = function() {
   if (this.comments.length > 0) {
+  	this.hideCommentForm();
     this.$el.find('.add-comment').addClass('hide');
     this.$el.find('.comment-form').addClass('active');
+  }
+
+  this.focusCommentBox();
+};
+
+/**
+ * Callback for the reply button click event.
+ * @param {Object} event The event object.
+ */
+Section.prototype.replyCommentClick = function( event ) {
+  event.preventDefault();
+  if (this.currentUser) {
+  	this.showReplyForm(event.currentTarget);
+  } else {
+  	this.eventPipe.emit('addCommentAttempted');
+  }
+};
+
+/**
+ * Show the reply form for this section.
+ */
+Section.prototype.showReplyForm = function( replyButton ) {
+  if (this.comments.length > 0) {
+    this.hideCommentForm();
+    this.$el.find(replyButton).addClass('hide');
+    $form = $(_.find($.makeArray(this.$el.find('.reply-form')), function (el) {return el.dataset.parent === replyButton.dataset.comment}));
+    $form.addClass('active');
   }
 
   this.focusCommentBox();
@@ -644,8 +683,8 @@ Section.prototype.showCommentForm = function() {
  */
 Section.prototype.hideCommentForm = function() {
   if (this.comments.length > 0) {
-    this.$el.find('.add-comment').removeClass('hide');
-    this.$el.find('.comment-form').removeClass('active');
+    this.$el.find('a[class*="-comment"]').removeClass('hide');
+    this.$el.find('div[class*="-form"]').removeClass('active');
   }
 
   this.$el.find('.comment-box').empty();
@@ -697,8 +736,10 @@ Section.prototype.postCommentClick = function( event ) {
  * Post a comment to this section.
  */
 Section.prototype.postComment = function() {
-	var $commentBox = this.$el.find('.comment-box');
+  var $commentForm = this.$el.find('div[class*="-form"].active');
+  var $commentBox = $commentForm.find('.comment-box');
   var commentBody = $commentBox.val();
+  
   var comment = {
   	sectionId: this.id,
   	comment: commentBody,
@@ -707,6 +748,11 @@ Section.prototype.postComment = function() {
   	authorId: this.currentUser.id,
   	authorUrl: this.currentUser.authorUrl || null
   };
+
+  if ( Number($commentForm.data('parent')) ) {
+  	comment.parentId = Number($commentForm.data('parent'));
+  }
+
   $commentBox.val(''); // Clear the comment.
   this.eventPipe.emit('commentPosted', comment);
 };
@@ -716,12 +762,23 @@ Section.prototype.postComment = function() {
  * @param  {Object} comment A comment object.
  */
 Section.prototype.insertComment = function( comment ) {
-	this.comments.push(comment);
+
 	var newCommentHtml = _.template(CommentTemplate, {
 		comment: comment,
-		currentUser: this.currentUser
+		currentUser: this.currentUser,
+		formTemplate: FormTemplate,
+		self: CommentTemplate
 	});
-	this.$el.find('.comments').append(newCommentHtml);
+
+	if ( comment.parentId !== undefined ) {
+		_.find(this.comments, { id: comment.parentId }).replies.push(comment);
+		$parent = $(_.find($.makeArray(this.$el.find('.comments > li')), function ( el ) { return el.dataset.commentId == comment.parentId }));
+		$parent.find('.replies').append(newCommentHtml);
+	} else {
+		this.comments.push(comment);
+		this.$el.find('.comments').append(newCommentHtml);
+	}
+
 	this.$el.find('.side-comment').addClass('has-comments');
 	this.updateCommentCount();
 	this.hideCommentForm();
@@ -825,6 +882,7 @@ Section.prototype.render = function() {
 	  commentTemplate: CommentTemplate,
 	  comments: this.comments,
 	  sectionClasses: this.sectionClasses(),
+	  formTemplate: FormTemplate,
 	  currentUser: this.currentUser
 	})).appendTo(this.$el);
 };
@@ -3240,10 +3298,13 @@ module.exports = function() {
 });
 
 require.register("side-comments/templates/section.html", function(exports, require, module){
-module.exports = '<div class="side-comment <%= sectionClasses %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments-wrapper">\n    <ul class="comments">\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(commentTemplate, { comment: comment, currentUser: currentUser }) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment">Leave a comment</a>\n    \n    <% if (currentUser){ %>\n      <div class="comment-form">\n        <div class="author-avatar">\n          <img src="<%= currentUser.avatarUrl %>">\n        </div>\n        <p class="author-name">\n          <%= currentUser.name %>\n        </p>\n        <input type="text" class="comment-box right-of-avatar" placeholder="Leave a comment...">\n        <div class="actions right-of-avatar">\n          <a href="#" class="action-link post">Post</a>\n          <a href="#" class="action-link cancel">Cancel</a>\n        </div>\n      </div>\n    <% } %>\n  </div>\n</div>';
+module.exports = '<div class="side-comment <%= sectionClasses %>">\n  <a href="#" class="marker">\n    <span><%= comments.length %></span>\n  </a>\n  \n  <div class="comments-wrapper">\n    <ul class="comments">\n      <% _.each(comments, function( comment ){ %>\n        <%= _.template(commentTemplate, { comment: comment, currentUser: currentUser, formTemplate: formTemplate, self: commentTemplate }) %>\n      <% }) %>\n    </ul>\n    \n    <a href="#" class="add-comment">Leave a comment</a>\n    <% if (currentUser) { %>\n      <%= _.template(formTemplate, { currentUser: currentUser, formClass: \'comment-form\', commentId: null }) %>\n    <% } %>\n  </div>\n</div>';
+});
+require.register("side-comments/templates/form.html", function(exports, require, module){
+module.exports = '<div class="<%= formClass %>" data-parent="<%= commentId %>">\n  <div class="author-avatar">\n    <img src="<%= currentUser.avatarUrl %>">\n  </div>\n  <p class="author-name">\n    <%= currentUser.name %>\n  </p>\n  <input type="text" class="comment-box right-of-avatar" placeholder="Leave a comment...">\n  <div class="actions right-of-avatar">\n    <a href="#" class="action-link post">Post</a>\n    <a href="#" class="action-link cancel">Cancel</a>\n  </div>\n</div>';
 });
 require.register("side-comments/templates/comment.html", function(exports, require, module){
-module.exports = '<li data-comment-id="<%= comment.id %>">\n  <div class="author-avatar">\n    <img src="<%= comment.authorAvatarUrl %>">\n  </div>\n  <% if (comment.authorUrl) { %>\n    <a class="author-name right-of-avatar" href="<%= comment.authorUrl %>">\n      <%= comment.authorName %>\n    </a>\n  <% } else { %>\n    <p class="author-name right-of-avatar">\n      <%= comment.authorName %>\n    </p>\n  <% } %>\n  <p class="comment right-of-avatar">\n    <%= comment.comment %>\n  </p>\n  <% if (currentUser && comment.authorId === currentUser.id){ %>\n  <a href="#" class="action-link delete">Delete</a>\n  <% } %>\n</li>';
+module.exports = '<li data-comment-id="<%= comment.id %>">\n  <div class="author-avatar">\n    <img src="<%= comment.authorAvatarUrl %>">\n  </div>\n  <% if (comment.authorUrl) { %>\n    <a class="author-name right-of-avatar" href="<%= comment.authorUrl %>">\n      <%= comment.authorName %>\n    </a>\n  <% } else { %>\n    <p class="author-name right-of-avatar">\n      <%= comment.authorName %>\n    </p>\n  <% } %>\n  <p class="comment right-of-avatar">\n    <%= comment.comment %>\n  </p>\n\n  <% if ( comment.parentId === undefined ) { %>\n  \n    <ul class="replies">\n      <% _.each(comment.replies, function ( reply ) {%>\n        <%= _.template(self, { comment: reply, currentUser: currentUser, formTemplate: formTemplate }) %>\n      <% });%>\n    </ul>\n\n    <% if (currentUser){ %>\n      <a href="#" class="action-link reply-comment" data-comment="<%= comment.id %>">Reply</a>\n      <%= _.template(formTemplate, { currentUser: currentUser, formClass: \'reply-form\', commentId: comment.id })%>\n      <% if (comment.authorId === currentUser.id) { %>\n        <a href="#" class="action-link delete">Delete</a>\n      <% } %>\n    <% } %>\n\n  <% } %>\n\n  <% if (currentUser && comment.authorId === currentUser.id) { %>\n    <a href="#" class="action-link delete">Delete</a>\n  <% } %>\n\n</li>';
 });
 require.alias("component-emitter/index.js", "side-comments/deps/emitter/index.js");
 require.alias("component-emitter/index.js", "emitter/index.js");

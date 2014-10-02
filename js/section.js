@@ -1,6 +1,7 @@
 var _ = require('./vendor/lodash-custom.js');
 var Template = require('../templates/section.html');
 var CommentTemplate = require('../templates/comment.html');
+var FormTemplate = require('../templates/form.html');
 var mobileCheck = require('./helpers/mobile-check.js');
 var $ = jQuery;
 
@@ -21,6 +22,7 @@ function Section( eventPipe, $el, currentUser, comments ) {
 
 	this.$el.on(this.clickEventName, '.side-comment .marker', _.bind(this.markerClick, this));
 	this.$el.on(this.clickEventName, '.side-comment .add-comment', _.bind(this.addCommentClick, this));
+	this.$el.on(this.clickEventName, '.side-comment .reply-comment', _.bind(this.replyCommentClick, this));
 	this.$el.on(this.clickEventName, '.side-comment .post', _.bind(this.postCommentClick, this));
 	this.$el.on(this.clickEventName, '.side-comment .cancel', _.bind(this.cancelCommentClick, this));
 	this.$el.on(this.clickEventName, '.side-comment .delete', _.bind(this.deleteCommentClick, this));
@@ -54,8 +56,36 @@ Section.prototype.addCommentClick = function( event ) {
  */
 Section.prototype.showCommentForm = function() {
   if (this.comments.length > 0) {
+  	this.hideCommentForm();
     this.$el.find('.add-comment').addClass('hide');
     this.$el.find('.comment-form').addClass('active');
+  }
+
+  this.focusCommentBox();
+};
+
+/**
+ * Callback for the reply button click event.
+ * @param {Object} event The event object.
+ */
+Section.prototype.replyCommentClick = function( event ) {
+  event.preventDefault();
+  if (this.currentUser) {
+  	this.showReplyForm(event.currentTarget);
+  } else {
+  	this.eventPipe.emit('addCommentAttempted');
+  }
+};
+
+/**
+ * Show the reply form for this section.
+ */
+Section.prototype.showReplyForm = function( replyButton ) {
+  if (this.comments.length > 0) {
+    this.hideCommentForm();
+    this.$el.find(replyButton).addClass('hide');
+    $form = $(_.find($.makeArray(this.$el.find('.reply-form')), function (el) {return el.dataset.parent === replyButton.dataset.comment}));
+    $form.addClass('active');
   }
 
   this.focusCommentBox();
@@ -66,8 +96,8 @@ Section.prototype.showCommentForm = function() {
  */
 Section.prototype.hideCommentForm = function() {
   if (this.comments.length > 0) {
-    this.$el.find('.add-comment').removeClass('hide');
-    this.$el.find('.comment-form').removeClass('active');
+    this.$el.find('a[class*="-comment"]').removeClass('hide');
+    this.$el.find('div[class*="-form"]').removeClass('active');
   }
 
   this.$el.find('.comment-box').empty();
@@ -119,8 +149,10 @@ Section.prototype.postCommentClick = function( event ) {
  * Post a comment to this section.
  */
 Section.prototype.postComment = function() {
-	var $commentBox = this.$el.find('.comment-box');
+  var $commentForm = this.$el.find('div[class*="-form"].active');
+  var $commentBox = $commentForm.find('.comment-box');
   var commentBody = $commentBox.val();
+  
   var comment = {
   	sectionId: this.id,
   	comment: commentBody,
@@ -129,6 +161,11 @@ Section.prototype.postComment = function() {
   	authorId: this.currentUser.id,
   	authorUrl: this.currentUser.authorUrl || null
   };
+
+  if ( Number($commentForm.data('parent')) ) {
+  	comment.parentId = Number($commentForm.data('parent'));
+  }
+
   $commentBox.val(''); // Clear the comment.
   this.eventPipe.emit('commentPosted', comment);
 };
@@ -138,12 +175,23 @@ Section.prototype.postComment = function() {
  * @param  {Object} comment A comment object.
  */
 Section.prototype.insertComment = function( comment ) {
-	this.comments.push(comment);
+
 	var newCommentHtml = _.template(CommentTemplate, {
 		comment: comment,
-		currentUser: this.currentUser
+		currentUser: this.currentUser,
+		formTemplate: FormTemplate,
+		self: CommentTemplate
 	});
-	this.$el.find('.comments').append(newCommentHtml);
+
+	if ( comment.parentId !== undefined ) {
+		_.find(this.comments, { id: comment.parentId }).replies.push(comment);
+		$parent = $(_.find($.makeArray(this.$el.find('.comments > li')), function ( el ) { return el.dataset.commentId == comment.parentId }));
+		$parent.find('.replies').append(newCommentHtml);
+	} else {
+		this.comments.push(comment);
+		this.$el.find('.comments').append(newCommentHtml);
+	}
+
 	this.$el.find('.side-comment').addClass('has-comments');
 	this.updateCommentCount();
 	this.hideCommentForm();
@@ -247,6 +295,7 @@ Section.prototype.render = function() {
 	  commentTemplate: CommentTemplate,
 	  comments: this.comments,
 	  sectionClasses: this.sectionClasses(),
+	  formTemplate: FormTemplate,
 	  currentUser: this.currentUser
 	})).appendTo(this.$el);
 };

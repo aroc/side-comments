@@ -130,6 +130,15 @@ SideComments.prototype.insertComment = function( comment ) {
 };
 
 /**
+ * Inserts the given comment into the right section as a reply.
+ * @param  {Object} comment A comment to be inserted.
+ */
+SideComments.prototype.replyComment = function( comment ) {
+  var section = _.find(this.sections, { id: comment.sectionId});
+  section.insertComment(comment);
+};
+
+/**
  * Removes the given comment from the right section.
  * @param sectionId The ID of the section where the comment exists.
  * @param commentId The ID of the comment to be removed.

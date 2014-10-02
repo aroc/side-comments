@@ -1,0 +1,13 @@
+<div class="<%= formClass %>" data-parent="<%= commentId %>">
+  <div class="author-avatar">
+    <img src="<%= currentUser.avatarUrl %>">
+  </div>
+  <p class="author-name">
+    <%= currentUser.name %>
+  </p>
+  <input type="text" class="comment-box right-of-avatar" placeholder="Leave a comment...">
+  <div class="actions right-of-avatar">
+    <a href="#" class="action-link post">Post</a>
+    <a href="#" class="action-link cancel">Cancel</a>
+  </div>
+</div>
