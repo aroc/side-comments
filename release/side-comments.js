@@ -511,20 +511,22 @@ SideComments.prototype.replyComment = function( comment ) {
  * Removes the given comment from the right section.
  * @param sectionId The ID of the section where the comment exists.
  * @param commentId The ID of the comment to be removed.
+ * @param parentId The ID of the parent comment of the reply to be removed. Optional
  */
-SideComments.prototype.removeComment = function( sectionId, commentId ) {
+SideComments.prototype.removeComment = function( sectionId, commentId, parentId ) {
   var section = _.find(this.sections, { id: sectionId });
-  section.removeComment(commentId);
+  section.removeComment(commentId, parentId);
 };
 
 /**
  * Delete the comment specified by the given sectionID and commentID.
  * @param sectionId The section the comment belongs to.
  * @param commentId The comment's ID
+ * @param parentId The parent comment's ID. Optional
  */
-SideComments.prototype.deleteComment = function( sectionId, commentId ) {
+SideComments.prototype.deleteComment = function( sectionId, commentId, parentId ) {
   var section = _.find(this.sections, { id: sectionId });
-  section.deleteComment(commentId);
+  section.deleteComment(commentId, parentId);
 };
 
 /**
@@ -736,18 +738,23 @@ Section.prototype.postCommentClick = function( event ) {
  * Post a comment to this section.
  */
 Section.prototype.postComment = function() {
-  var $commentForm = this.$el.find('div[class*="-form"].active');
-  var $commentBox = $commentForm.find('.comment-box');
-  var commentBody = $commentBox.val();
-  
-  var comment = {
-  	sectionId: this.id,
-  	comment: commentBody,
-  	authorAvatarUrl: this.currentUser.avatarUrl,
-  	authorName: this.currentUser.name,
-  	authorId: this.currentUser.id,
-  	authorUrl: this.currentUser.authorUrl || null
-  };
+  if ( this.$el.find('.comments > li').length > 0 ){
+  	var $commentForm = this.$el.find('div[class*="-form"].active');
+  } else {
+  	var $commentForm = this.$el.find('div[class*="-form"]');
+  }
+
+  var $commentBox = $commentForm.find('.comment-box'),
+  	  commentBody = $commentBox.val(),
+  	  comment = {
+	  	sectionId: this.id,
+	  	comment: commentBody,
+	  	authorAvatarUrl: this.currentUser.avatarUrl,
+	  	authorName: this.currentUser.name,
+	  	authorId: this.currentUser.id,
+	  	authorUrl: this.currentUser.authorUrl || null,
+	  	replies: []
+	  };
 
   if ( Number($commentForm.data('parent')) ) {
   	comment.parentId = Number($commentForm.data('parent'));
@@ -797,34 +804,70 @@ Section.prototype.updateCommentCount = function() {
  */
 Section.prototype.deleteCommentClick = function( event ) {
 	event.preventDefault();
-	var commentId = $(event.target).closest('li').data('comment-id');
+	var commentId = $(event.target).closest('li').data('comment-id'),
+		parentId = $(event.target).data('parent-id');
 
 	if (window.confirm("Are you sure you want to delete this comment?")) {
-		this.deleteComment(commentId);
+		this.deleteComment(commentId, parentId);
 	}
 };
 
 /**
  * Finds the comment and emits an event with the comment to be deleted.
+ * @param commentId ID of the comment to be deleted
+ * @param parentId ID of the parent comment of the reply to be deleted. Optional
  */
-Section.prototype.deleteComment = function( commentId ) {
-	var comment = _.find(this.comments, { id: commentId });
+Section.prototype.deleteComment = function( commentId, parentId ) {
+	if ( parentId != null ) {
+		var parent = _.find(this.comments, { id: parentId }),
+			comment = _.find(parent.replies, { id: commentId });
+	} else {
+		var comment = _.find(this.comments, { id: commentId });
+	}
+
 	comment.sectionId = this.id;
 	this.eventPipe.emit('commentDeleted', comment);
 };
 
 /**
  * Removes the comment from the list of comments and the comment array.
- * @param commentId The ID of the comment to be removed from this section.
+ * @param commentId ID of the comment to be removed from this section
+ * @param parentId ID of the parent comment of the reply to be removed from this section. Optional
  */
-Section.prototype.removeComment = function( commentId ) {
-	this.comments = _.reject(this.comments, { id: commentId });
-	this.$el.find('.side-comment .comments li[data-comment-id="'+commentId+'"]').remove();
-	this.updateCommentCount();
+Section.prototype.removeComment = function( commentId, parentId ) {
+	
+	if ( parentId != null ) {
+		var comment = _.find(this.comments, { id: parentId });
+		comment.replies = _.reject( comment.replies, { id: commentId });
+		this.$el.find('.side-comment .comments > li[data-comment-id="'+parentId+'"] .replies li[data-comment-id="'+commentId+'"]').remove();
+	} else {
+		var comment = _.find(this.comments, { id: commentId });
+
+		if ( comment.replies.length > 0 ) {
+			this.replaceCommentWithReplies( comment );
+		} else {
+			this.comments = _.reject(this.comments, { id: commentId });
+			this.$el.find('.side-comment .comments li[data-comment-id="'+commentId+'"]').remove();
+			this.updateCommentCount();
+		}
+	}
+	
 	if (this.comments.length < 1) {
 		this.$el.find('.side-comment').removeClass('has-comments');
 	}
 };
+
+/**
+ * Replace a comment with replies
+ *
+ *
+*/
+Section.prototype.replaceCommentWithReplies = function ( comment ) {
+	var $commentEl = this.$el.find('.side-comment .comments > li[data-comment-id="'+ comment.id +'"] > .comment');
+
+	comment.deleted = true;
+	$commentEl.html('<em>Comment deleted by the author</em>');
+}
 
 /**
  * Mark this section as selected. Delsect if this section is already selected.
@@ -3304,7 +3347,7 @@ require.register("side-comments/templates/form.html", function(exports, require,
 module.exports = '<div class="<%= formClass %>" data-parent="<%= commentId %>">\n  <div class="author-avatar">\n    <img src="<%= currentUser.avatarUrl %>">\n  </div>\n  <p class="author-name">\n    <%= currentUser.name %>\n  </p>\n  <input type="text" class="comment-box right-of-avatar" placeholder="Leave a comment...">\n  <div class="actions right-of-avatar">\n    <a href="#" class="action-link post">Post</a>\n    <a href="#" class="action-link cancel">Cancel</a>\n  </div>\n</div>';
 });
 require.register("side-comments/templates/comment.html", function(exports, require, module){
-module.exports = '<li data-comment-id="<%= comment.id %>">\n  <div class="author-avatar">\n    <img src="<%= comment.authorAvatarUrl %>">\n  </div>\n  <% if (comment.authorUrl) { %>\n    <a class="author-name right-of-avatar" href="<%= comment.authorUrl %>">\n      <%= comment.authorName %>\n    </a>\n  <% } else { %>\n    <p class="author-name right-of-avatar">\n      <%= comment.authorName %>\n    </p>\n  <% } %>\n  <p class="comment right-of-avatar">\n    <%= comment.comment %>\n  </p>\n\n  <% if ( comment.parentId === undefined ) { %>\n  \n    <ul class="replies">\n      <% _.each(comment.replies, function ( reply ) {%>\n        <%= _.template(self, { comment: reply, currentUser: currentUser, formTemplate: formTemplate }) %>\n      <% });%>\n    </ul>\n\n    <% if (currentUser){ %>\n      <a href="#" class="action-link reply-comment" data-comment="<%= comment.id %>">Reply</a>\n      <%= _.template(formTemplate, { currentUser: currentUser, formClass: \'reply-form\', commentId: comment.id })%>\n      <% if (comment.authorId === currentUser.id) { %>\n        <a href="#" class="action-link delete">Delete</a>\n      <% } %>\n    <% } %>\n\n  <% } %>\n\n  <% if (currentUser && comment.authorId === currentUser.id) { %>\n    <a href="#" class="action-link delete">Delete</a>\n  <% } %>\n\n</li>';
+module.exports = '<li data-comment-id="<%= comment.id %>">\n  <div class="author-avatar">\n    <img src="<%= comment.authorAvatarUrl %>">\n  </div>\n  <% if (comment.authorUrl) { %>\n    <a class="author-name right-of-avatar" href="<%= comment.authorUrl %>">\n      <%= comment.authorName %>\n    </a>\n  <% } else { %>\n    <p class="author-name right-of-avatar">\n      <%= comment.authorName %>\n    </p>\n  <% } %>\n  <p class="comment right-of-avatar">\n    <%= (comment.deleted != null && comment.deleted) ? "<em>Comment deleted by the author</em>" : comment.comment %>\n  </p>\n\n  <% if ( comment.parentId == null ) { %>\n  \n    <ul class="replies">\n      <% _.each(comment.replies, function ( reply ) {%>\n        <%= _.template(self, { comment: reply, currentUser: currentUser, formTemplate: formTemplate }) %>\n      <% });%>\n    </ul>\n\n    <% if (currentUser){ %>\n      <a href="#" class="action-link reply-comment" data-comment="<%= comment.id %>">Reply</a>\n      <%= _.template(formTemplate, { currentUser: currentUser, formClass: \'reply-form\', commentId: comment.id })%>\n      <% if (comment.authorId === currentUser.id) { %>\n        <a href="#" class="action-link delete">Delete</a>\n      <% } %>\n    <% } %>\n\n  <% } else { %>\n\n    <% if (currentUser && comment.authorId === currentUser.id) { %>\n      <a href="#" class="action-link delete" data-parent-id="<%= comment.parentId %>">Delete</a>\n    <% } %>\n\n  <% } %>\n\n</li>';
 });
 require.alias("component-emitter/index.js", "side-comments/deps/emitter/index.js");
 require.alias("component-emitter/index.js", "emitter/index.js");

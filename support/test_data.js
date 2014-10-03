@@ -22,6 +22,26 @@ var existingComments = [
         ]
       },
       {
+        "id": 79,
+        "authorAvatarUrl": "support/images/jon_snow.png",
+        "authorName": "Jon Sno",
+        "authorId": 1,
+        "authorUrl": "http://en.wikipedia.org/wiki/Kit_Harington",
+        "comment": "Again, I AM Ned Stark's bastard",
+        "deleted" : true,
+        "replies": [
+          {
+            "id": 894,
+            "authorAvatarUrl": "support/images/cattelyn_stark.png",
+            "authorName": "Catellyn Stark",
+            "authorId": 5,
+            "authorUrl": "http://pt.wikipedia.org/wiki/Michelle_Fairley",
+            "comment": "Booooh!",
+            "parentId": 79
+          }
+        ]
+      },
+      {
         "id": 112,
         "authorAvatarUrl": "support/images/donald_draper.png",
         "authorName": "Donald Draper",

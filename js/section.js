@@ -149,18 +149,23 @@ Section.prototype.postCommentClick = function( event ) {
  * Post a comment to this section.
  */
 Section.prototype.postComment = function() {
-  var $commentForm = this.$el.find('div[class*="-form"].active');
-  var $commentBox = $commentForm.find('.comment-box');
-  var commentBody = $commentBox.val();
-  
-  var comment = {
-  	sectionId: this.id,
-  	comment: commentBody,
-  	authorAvatarUrl: this.currentUser.avatarUrl,
-  	authorName: this.currentUser.name,
-  	authorId: this.currentUser.id,
-  	authorUrl: this.currentUser.authorUrl || null
-  };
+  if ( this.$el.find('.comments > li').length > 0 ){
+  	var $commentForm = this.$el.find('div[class*="-form"].active');
+  } else {
+  	var $commentForm = this.$el.find('div[class*="-form"]');
+  }
+
+  var $commentBox = $commentForm.find('.comment-box'),
+  	  commentBody = $commentBox.val(),
+  	  comment = {
+	  	sectionId: this.id,
+	  	comment: commentBody,
+	  	authorAvatarUrl: this.currentUser.avatarUrl,
+	  	authorName: this.currentUser.name,
+	  	authorId: this.currentUser.id,
+	  	authorUrl: this.currentUser.authorUrl || null,
+	  	replies: []
+	  };
 
   if ( Number($commentForm.data('parent')) ) {
   	comment.parentId = Number($commentForm.data('parent'));
@@ -210,34 +215,70 @@ Section.prototype.updateCommentCount = function() {
  */
 Section.prototype.deleteCommentClick = function( event ) {
 	event.preventDefault();
-	var commentId = $(event.target).closest('li').data('comment-id');
+	var commentId = $(event.target).closest('li').data('comment-id'),
+		parentId = $(event.target).data('parent-id');
 
 	if (window.confirm("Are you sure you want to delete this comment?")) {
-		this.deleteComment(commentId);
+		this.deleteComment(commentId, parentId);
 	}
 };
 
 /**
  * Finds the comment and emits an event with the comment to be deleted.
+ * @param commentId ID of the comment to be deleted
+ * @param parentId ID of the parent comment of the reply to be deleted. Optional
  */
-Section.prototype.deleteComment = function( commentId ) {
-	var comment = _.find(this.comments, { id: commentId });
+Section.prototype.deleteComment = function( commentId, parentId ) {
+	if ( parentId != null ) {
+		var parent = _.find(this.comments, { id: parentId }),
+			comment = _.find(parent.replies, { id: commentId });
+	} else {
+		var comment = _.find(this.comments, { id: commentId });
+	}
+
 	comment.sectionId = this.id;
 	this.eventPipe.emit('commentDeleted', comment);
 };
 
 /**
  * Removes the comment from the list of comments and the comment array.
- * @param commentId The ID of the comment to be removed from this section.
+ * @param commentId ID of the comment to be removed from this section
+ * @param parentId ID of the parent comment of the reply to be removed from this section. Optional
  */
-Section.prototype.removeComment = function( commentId ) {
-	this.comments = _.reject(this.comments, { id: commentId });
-	this.$el.find('.side-comment .comments li[data-comment-id="'+commentId+'"]').remove();
-	this.updateCommentCount();
+Section.prototype.removeComment = function( commentId, parentId ) {
+	
+	if ( parentId != null ) {
+		var comment = _.find(this.comments, { id: parentId });
+		comment.replies = _.reject( comment.replies, { id: commentId });
+		this.$el.find('.side-comment .comments > li[data-comment-id="'+parentId+'"] .replies li[data-comment-id="'+commentId+'"]').remove();
+	} else {
+		var comment = _.find(this.comments, { id: commentId });
+
+		if ( comment.replies.length > 0 ) {
+			this.replaceCommentWithReplies( comment );
+		} else {
+			this.comments = _.reject(this.comments, { id: commentId });
+			this.$el.find('.side-comment .comments li[data-comment-id="'+commentId+'"]').remove();
+			this.updateCommentCount();
+		}
+	}
+	
 	if (this.comments.length < 1) {
 		this.$el.find('.side-comment').removeClass('has-comments');
 	}
 };
+
+/**
+ * Replace a comment with replies
+ *
+ *
+*/
+Section.prototype.replaceCommentWithReplies = function ( comment ) {
+	var $commentEl = this.$el.find('.side-comment .comments > li[data-comment-id="'+ comment.id +'"] > .comment');
+
+	comment.deleted = true;
+	$commentEl.html('<em>Comment deleted by the author</em>');
+}
 
 /**
  * Mark this section as selected. Delsect if this section is already selected.

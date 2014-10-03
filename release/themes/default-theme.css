@@ -183,8 +183,13 @@
   color: #B3B3B1;
   padding: 0 5px;
 }
-.side-comment .replies .author-name {
+.side-comment .replies .right-of-avatar {
   width: 116px;
+}
+.side-comment .replies .delete {
+  display: inline-block;
+  float: left;
+  margin: 0;
 }
 @media (max-width: 768px) {
   .side-comments-open {

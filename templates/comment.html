@@ -12,10 +12,10 @@
     </p>
   <% } %>
   <p class="comment right-of-avatar">
-    <%= comment.comment %>
+    <%= (comment.deleted != null && comment.deleted) ? "<em>Comment deleted by the author</em>" : comment.comment %>
   </p>
 
-  <% if ( comment.parentId === undefined ) { %>
+  <% if ( comment.parentId == null ) { %>
   
     <ul class="replies">
       <% _.each(comment.replies, function ( reply ) {%>
@@ -31,10 +31,12 @@
       <% } %>
     <% } %>
 
-  <% } %>
+  <% } else { %>
 
-  <% if (currentUser && comment.authorId === currentUser.id) { %>
-    <a href="#" class="action-link delete">Delete</a>
+    <% if (currentUser && comment.authorId === currentUser.id) { %>
+      <a href="#" class="action-link delete" data-parent-id="<%= comment.parentId %>">Delete</a>
+    <% } %>
+
   <% } %>
 
 </li>
