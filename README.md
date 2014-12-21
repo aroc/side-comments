@@ -144,9 +144,9 @@ The constructor takes one required and two optional arguments:
 
 - `$el` (String): The element which contains all the `.commentable-section` elements.
 
-- `currentUser` (Object): The user representation new comments will be posted under. As it's optional, you can just pass `null` if there is no current user at the time and set one at a later time with the `setCurrentUser` method, which is documented below. The current user object needs to look like this: [https://gist.github.com/aroc/02a0f8badf219da12667">https://gist.github.com/aroc/02a0f8badf219da12667](https://gist.github.com/aroc/02a0f8badf219da12667">https://gist.github.com/aroc/02a0f8badf219da12667)
+- `currentUser` (Object): The user representation new comments will be posted under. As it's optional, you can just pass `null` if there is no current user at the time and set one at a later time with the `setCurrentUser` method, which is documented below. The current user object needs to look like this: [https://gist.github.com/aroc/02a0f8badf219da12667](https://gist.github.com/aroc/02a0f8badf219da12667)
 
-- `existingComments` (Array): An array of existing comments that you want inserted at initialization time. You can also insert comments yourself at later time with the `insertComment` method, outlined below. The structure of the objects in this array needs to look like this: [https://gist.github.com/aroc/54a2669783231a0d2215">https://gist.github.com/aroc/54a2669783231a0d2215](https://gist.github.com/aroc/54a2669783231a0d2215">https://gist.github.com/aroc/54a2669783231a0d2215)
+- `existingComments` (Array): An array of existing comments that you want inserted at initialization time. You can also insert comments yourself at later time with the `insertComment` method, outlined below. The structure of the objects in this array needs to look like this: [https://gist.github.com/aroc/54a2669783231a0d2215](https://gist.github.com/aroc/54a2669783231a0d2215)
 
 ### Methods
 
