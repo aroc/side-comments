@@ -136,7 +136,8 @@ sideComments.on('commentDeleted', function( commentId ) {
 });
 ```
 
-## Docs
+## Docs [![Inline docs](http://inch-ci.org/github/aroc/side-comments.svg?branch=master)](http://inch-ci.org/github/aroc/side-comments)
+
 **Overview of all events and method you can leverage in SideComments.js**
 
 ### SideComments Constructor
