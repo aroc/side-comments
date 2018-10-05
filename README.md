@@ -1,5 +1,5 @@
 # SideComments.js
-######Current Version 0.0.3
+###### Current Version 0.0.3
 
 SideComments.js is a UI component to give you [Medium.com](http://medium.com/) style comment management on the front-end. It allows users to comment directly on sections of content rather than the boring comment stream on the bottom of the page that we're so used to.
 
