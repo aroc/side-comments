@@ -29,9 +29,8 @@
   height: 100%;
 }
 .side-comment * {
-  -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
-  box-sizing: border-box;
+       box-sizing: border-box;
 }
 .side-comment .hide {
   display: none;
@@ -70,7 +69,8 @@
 .side-comment.has-comments .add-comment.hide {
   display: none;
 }
-.side-comment.has-comments .comment-form {
+.side-comment.has-comments .comment-form,
+.side-comment.has-comments .reply-form {
   display: none;
 }
 .side-comment .comments-wrapper {
@@ -102,10 +102,12 @@
 .side-comment .add-comment.active {
   display: block;
 }
-.side-comment .comment-form {
+.side-comment .comment-form,
+.side-comment .reply-form {
   overflow: hidden;
 }
-.side-comment .comment-form.active {
+.side-comment .comment-form.active,
+.side-comment .reply-form.active {
   display: block;
 }
 .side-comment.active .comments-wrapper {

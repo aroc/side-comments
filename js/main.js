@@ -130,23 +130,34 @@ SideComments.prototype.insertComment = function( comment ) {
 };
 
 /**
+ * Inserts the given comment into the right section as a reply.
+ * @param  {Object} comment A comment to be inserted.
+ */
+SideComments.prototype.replyComment = function( comment ) {
+  var section = _.find(this.sections, { id: comment.sectionId});
+  section.insertComment(comment);
+};
+
+/**
  * Removes the given comment from the right section.
  * @param sectionId The ID of the section where the comment exists.
  * @param commentId The ID of the comment to be removed.
+ * @param parentId The ID of the parent comment of the reply to be removed. Optional
  */
-SideComments.prototype.removeComment = function( sectionId, commentId ) {
+SideComments.prototype.removeComment = function( sectionId, commentId, parentId ) {
   var section = _.find(this.sections, { id: sectionId });
-  section.removeComment(commentId);
+  section.removeComment(commentId, parentId);
 };
 
 /**
  * Delete the comment specified by the given sectionID and commentID.
  * @param sectionId The section the comment belongs to.
  * @param commentId The comment's ID
+ * @param parentId The parent comment's ID. Optional
  */
-SideComments.prototype.deleteComment = function( sectionId, commentId ) {
+SideComments.prototype.deleteComment = function( sectionId, commentId, parentId ) {
   var section = _.find(this.sections, { id: sectionId });
-  section.deleteComment(commentId);
+  section.deleteComment(commentId, parentId);
 };
 
 /**

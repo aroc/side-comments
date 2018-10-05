@@ -1,6 +1,7 @@
 var _ = require('./vendor/lodash-custom.js');
 var Template = require('../templates/section.html');
 var CommentTemplate = require('../templates/comment.html');
+var FormTemplate = require('../templates/form.html');
 var mobileCheck = require('./helpers/mobile-check.js');
 var $ = jQuery;
 
@@ -21,6 +22,7 @@ function Section( eventPipe, $el, currentUser, comments ) {
 
 	this.$el.on(this.clickEventName, '.side-comment .marker', _.bind(this.markerClick, this));
 	this.$el.on(this.clickEventName, '.side-comment .add-comment', _.bind(this.addCommentClick, this));
+	this.$el.on(this.clickEventName, '.side-comment .reply-comment', _.bind(this.replyCommentClick, this));
 	this.$el.on(this.clickEventName, '.side-comment .post', _.bind(this.postCommentClick, this));
 	this.$el.on(this.clickEventName, '.side-comment .cancel', _.bind(this.cancelCommentClick, this));
 	this.$el.on(this.clickEventName, '.side-comment .delete', _.bind(this.deleteCommentClick, this));
@@ -54,8 +56,36 @@ Section.prototype.addCommentClick = function( event ) {
  */
 Section.prototype.showCommentForm = function() {
   if (this.comments.length > 0) {
+  	this.hideCommentForm();
     this.$el.find('.add-comment').addClass('hide');
     this.$el.find('.comment-form').addClass('active');
+  }
+
+  this.focusCommentBox();
+};
+
+/**
+ * Callback for the reply button click event.
+ * @param {Object} event The event object.
+ */
+Section.prototype.replyCommentClick = function( event ) {
+  event.preventDefault();
+  if (this.currentUser) {
+  	this.showReplyForm(event.currentTarget);
+  } else {
+  	this.eventPipe.emit('addCommentAttempted');
+  }
+};
+
+/**
+ * Show the reply form for this section.
+ */
+Section.prototype.showReplyForm = function( replyButton ) {
+  if (this.comments.length > 0) {
+    this.hideCommentForm();
+    this.$el.find(replyButton).addClass('hide');
+    $form = $(_.find($.makeArray(this.$el.find('.reply-form')), function (el) {return el.dataset.parent === replyButton.dataset.comment}));
+    $form.addClass('active');
   }
 
   this.focusCommentBox();
@@ -66,8 +96,8 @@ Section.prototype.showCommentForm = function() {
  */
 Section.prototype.hideCommentForm = function() {
   if (this.comments.length > 0) {
-    this.$el.find('.add-comment').removeClass('hide');
-    this.$el.find('.comment-form').removeClass('active');
+    this.$el.find('a[class*="-comment"]').removeClass('hide');
+    this.$el.find('div[class*="-form"]').removeClass('active');
   }
 
   this.$el.find('.comment-box').empty();
@@ -119,16 +149,28 @@ Section.prototype.postCommentClick = function( event ) {
  * Post a comment to this section.
  */
 Section.prototype.postComment = function() {
-	var $commentBox = this.$el.find('.comment-box');
-  var commentBody = $commentBox.val();
-  var comment = {
-  	sectionId: this.id,
-  	comment: commentBody,
-  	authorAvatarUrl: this.currentUser.avatarUrl,
-  	authorName: this.currentUser.name,
-  	authorId: this.currentUser.id,
-  	authorUrl: this.currentUser.authorUrl || null
-  };
+  if ( this.$el.find('.comments > li').length > 0 ){
+  	var $commentForm = this.$el.find('div[class*="-form"].active');
+  } else {
+  	var $commentForm = this.$el.find('div[class*="-form"]');
+  }
+
+  var $commentBox = $commentForm.find('.comment-box'),
+  	  commentBody = $commentBox.val(),
+  	  comment = {
+	  	sectionId: this.id,
+	  	comment: commentBody,
+	  	authorAvatarUrl: this.currentUser.avatarUrl,
+	  	authorName: this.currentUser.name,
+	  	authorId: this.currentUser.id,
+	  	authorUrl: this.currentUser.authorUrl || null,
+	  	replies: []
+	  };
+
+  if ( Number($commentForm.data('parent')) ) {
+  	comment.parentId = Number($commentForm.data('parent'));
+  }
+
   $commentBox.val(''); // Clear the comment.
   this.eventPipe.emit('commentPosted', comment);
 };
@@ -138,12 +180,23 @@ Section.prototype.postComment = function() {
  * @param  {Object} comment A comment object.
  */
 Section.prototype.insertComment = function( comment ) {
-	this.comments.push(comment);
+
 	var newCommentHtml = _.template(CommentTemplate, {
 		comment: comment,
-		currentUser: this.currentUser
+		currentUser: this.currentUser,
+		formTemplate: FormTemplate,
+		self: CommentTemplate
 	});
-	this.$el.find('.comments').append(newCommentHtml);
+
+	if ( comment.parentId !== undefined ) {
+		_.find(this.comments, { id: comment.parentId }).replies.push(comment);
+		$parent = $(_.find($.makeArray(this.$el.find('.comments > li')), function ( el ) { return el.dataset.commentId == comment.parentId }));
+		$parent.find('.replies').append(newCommentHtml);
+	} else {
+		this.comments.push(comment);
+		this.$el.find('.comments').append(newCommentHtml);
+	}
+
 	this.$el.find('.side-comment').addClass('has-comments');
 	this.updateCommentCount();
 	this.hideCommentForm();
@@ -162,34 +215,70 @@ Section.prototype.updateCommentCount = function() {
  */
 Section.prototype.deleteCommentClick = function( event ) {
 	event.preventDefault();
-	var commentId = $(event.target).closest('li').data('comment-id');
+	var commentId = $(event.target).closest('li').data('comment-id'),
+		parentId = $(event.target).data('parent-id');
 
 	if (window.confirm("Are you sure you want to delete this comment?")) {
-		this.deleteComment(commentId);
+		this.deleteComment(commentId, parentId);
 	}
 };
 
 /**
  * Finds the comment and emits an event with the comment to be deleted.
+ * @param commentId ID of the comment to be deleted
+ * @param parentId ID of the parent comment of the reply to be deleted. Optional
  */
-Section.prototype.deleteComment = function( commentId ) {
-	var comment = _.find(this.comments, { id: commentId });
+Section.prototype.deleteComment = function( commentId, parentId ) {
+	if ( parentId != null ) {
+		var parent = _.find(this.comments, { id: parentId }),
+			comment = _.find(parent.replies, { id: commentId });
+	} else {
+		var comment = _.find(this.comments, { id: commentId });
+	}
+
 	comment.sectionId = this.id;
 	this.eventPipe.emit('commentDeleted', comment);
 };
 
 /**
  * Removes the comment from the list of comments and the comment array.
- * @param commentId The ID of the comment to be removed from this section.
+ * @param commentId ID of the comment to be removed from this section
+ * @param parentId ID of the parent comment of the reply to be removed from this section. Optional
  */
-Section.prototype.removeComment = function( commentId ) {
-	this.comments = _.reject(this.comments, { id: commentId });
-	this.$el.find('.side-comment .comments li[data-comment-id="'+commentId+'"]').remove();
-	this.updateCommentCount();
+Section.prototype.removeComment = function( commentId, parentId ) {
+	
+	if ( parentId != null ) {
+		var comment = _.find(this.comments, { id: parentId });
+		comment.replies = _.reject( comment.replies, { id: commentId });
+		this.$el.find('.side-comment .comments > li[data-comment-id="'+parentId+'"] .replies li[data-comment-id="'+commentId+'"]').remove();
+	} else {
+		var comment = _.find(this.comments, { id: commentId });
+
+		if ( comment.replies.length > 0 ) {
+			this.replaceCommentWithReplies( comment );
+		} else {
+			this.comments = _.reject(this.comments, { id: commentId });
+			this.$el.find('.side-comment .comments li[data-comment-id="'+commentId+'"]').remove();
+			this.updateCommentCount();
+		}
+	}
+	
 	if (this.comments.length < 1) {
 		this.$el.find('.side-comment').removeClass('has-comments');
 	}
 };
+
+/**
+ * Replace a comment with replies
+ *
+ *
+*/
+Section.prototype.replaceCommentWithReplies = function ( comment ) {
+	var $commentEl = this.$el.find('.side-comment .comments > li[data-comment-id="'+ comment.id +'"] > .comment');
+
+	comment.deleted = true;
+	$commentEl.html('<em>Comment deleted by the author</em>');
+}
 
 /**
  * Mark this section as selected. Delsect if this section is already selected.
@@ -247,6 +336,7 @@ Section.prototype.render = function() {
 	  commentTemplate: CommentTemplate,
 	  comments: this.comments,
 	  sectionClasses: this.sectionClasses(),
+	  formTemplate: FormTemplate,
 	  currentUser: this.currentUser
 	})).appendTo(this.$el);
 };

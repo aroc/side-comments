@@ -13,6 +13,7 @@
   "main": "js/main.js",
   "templates": [
     "templates/section.html",
+    "templates/form.html",
     "templates/comment.html"
   ]
 }

@@ -8,14 +8,46 @@ var existingComments = [
         "authorName": "Jon Sno",
         "authorId": 1,
         "authorUrl": "http://en.wikipedia.org/wiki/Kit_Harington",
-        "comment": "I'm Ned Stark's bastard. Related: I know nothing."
+        "comment": "I'm Ned Stark's bastard",
+        "replies": [
+          {
+            "id" : 100,
+            "authorAvatarUrl": "support/images/jon_snow.png",
+            "authorName": "Jon Sno",
+            "authorId": 1,
+            "authorUrl": "http://en.wikipedia.org/wiki/Kit_Harington",
+            "comment": "P.S.: I know nothing.",
+            "parentId": 88
+          }
+        ]
+      },
+      {
+        "id": 79,
+        "authorAvatarUrl": "support/images/jon_snow.png",
+        "authorName": "Jon Sno",
+        "authorId": 1,
+        "authorUrl": "http://en.wikipedia.org/wiki/Kit_Harington",
+        "comment": "Again, I AM Ned Stark's bastard",
+        "deleted" : true,
+        "replies": [
+          {
+            "id": 894,
+            "authorAvatarUrl": "support/images/cattelyn_stark.png",
+            "authorName": "Catellyn Stark",
+            "authorId": 5,
+            "authorUrl": "http://pt.wikipedia.org/wiki/Michelle_Fairley",
+            "comment": "Booooh!",
+            "parentId": 79
+          }
+        ]
       },
       {
         "id": 112,
         "authorAvatarUrl": "support/images/donald_draper.png",
         "authorName": "Donald Draper",
         "authorId": 2,
-        "comment": "I need a scotch."
+        "comment": "I need a scotch.",
+        "replies": []
       }
     ]
   },
@@ -27,7 +59,8 @@ var existingComments = [
         "authorAvatarUrl": "support/images/clay_davis.png",
         "authorName": "Senator Clay Davis",
         "authorId": 3,
-        "comment": "These Side Comments are incredible. Sssshhhiiiiieeeee."
+        "comment": "These Side Comments are incredible. Sssshhhiiiiieeeee.",
+        "replies": []
       }
     ]
   }
